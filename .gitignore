@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/src/app/components/shared/chackingDesign.tsx
 
 # next.js
 /.next/

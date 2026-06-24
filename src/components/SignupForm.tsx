@@ -3,7 +3,7 @@
 import { signUpSchema } from '../zod-Schemas/signupSchemas';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signUp } from '../lib/appwrite/auth';
+import { signUp } from '../services/appwrite/auth';
 import z from 'zod';
 
 type FormData = z.infer<typeof signUpSchema>
