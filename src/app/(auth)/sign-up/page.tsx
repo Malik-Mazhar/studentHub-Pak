@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { FaApple } from "react-icons/fa6";
+import { signIn } from "next-auth/react";
 
 type FormData = z.infer<typeof signUpSchema>
 
@@ -173,7 +174,7 @@ function page() {
         {/* Social Buttons */}
         <div className="flex items-center justify-center gap-4">
 
-          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md">
+          <button onClick={() => signIn("google")} className="flex h-12 w-12 items-center justify-center rounded-full cursor-pointer bg-white shadow-md">
             <FcGoogle className='h-8 w-8' />
           </button>
 

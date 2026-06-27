@@ -19,6 +19,7 @@ import { signIn } from 'next-auth/react';
 import { account } from "@/src/services/appwrite/config";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 
 const page = () => {
@@ -101,58 +102,71 @@ const page = () => {
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-800"> 
             <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+
                 <div className="text-center">
-                <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-                    LogIn
-                </h1>
+                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+                        LogIn
+                    </h1>
                 </div>
+
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FieldGroup>
-                    <Field>
-                        <FieldLabel htmlFor="fieldgroup-email" className="font-bold">Email</FieldLabel>
-                        <Input
-                        id="fieldgroup-email"
-                        type="email"
-                        placeholder="name@example.com"
-                        {...register("identifier")}
-                        />
-                        {/* //dobara anna he error handling k liye */}
-                        <div className="relative">
-                        <p className="absolute text-red-500 text-sm top-full left-0">
-                            {errors.identifier && errors.identifier.message || error && "Invalid email or password"}
-                        </p>
-                        </div>
 
-                    </Field>
-                    <Field>
-                        <FieldLabel htmlFor="fieldgroup-password" className="font-bold">Password</FieldLabel>
-                        <Input 
-                        id="fieldgroup-password"
-                        placeholder="Enter your password" 
-                        {...register("password")}
-                        />
-                        {/* {errors.password && <p className="text-red-500">{}</p>} */}
-                        <div className="relative">
-                        <p className="absolute text-red-500 text-sm top-full left-0">
-                            {errors.password && errors.password.message || error && "Invalid email or password"}
-                        </p>
-                        </div>
-                    </Field>
-                    <Field orientation="horizontal" className="pt-5">
-                        
-                        <Button type="submit" disabled={isSubmitting} className="w-3/4 m-auto py-4 text-lg font-bold cursor-pointer">
-                        {isSubmitting ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Please wait
-                            </>
-                            ) : (
-                            'Sign In'
-                        )}
-                        </Button>
-                    </Field>
+                        <Field>
+                            <FieldLabel htmlFor="fieldgroup-email" className="font-bold">Email</FieldLabel>
+                            <Input
+                            id="fieldgroup-email"
+                            type="email"
+                            placeholder="name@example.com"
+                            {...register("identifier")}
+                            />
+                            {/* //dobara anna he error handling k liye */}
+                            <div className="relative">
+                            <p className="absolute text-red-500 text-sm top-full left-0">
+                                {errors.identifier && errors.identifier.message || error && "Invalid email or password"}
+                            </p>
+                            </div>
+
+                        </Field>
+                        <Field>
+                            <FieldLabel htmlFor="fieldgroup-password" className="font-bold">Password</FieldLabel>
+                            <Input 
+                            id="fieldgroup-password"
+                            placeholder="Enter your password" 
+                            {...register("password")}
+                            />
+                            {/* {errors.password && <p className="text-red-500">{}</p>} */}
+                            <div className="relative">
+                            <p className="absolute text-red-500 text-sm top-full left-0">
+                                {errors.password && errors.password.message || error && "Invalid email or password"}
+                            </p>
+                            </div>
+                        </Field>
+                        <Field orientation="horizontal" className="pt-5">
+                            
+                            <Button type="submit" disabled={isSubmitting} className="w-3/4 m-auto py-4 text-lg font-bold cursor-pointer">
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Please wait
+                                </>
+                                ) : (
+                                'Sign In'
+                            )}
+                            </Button>
+                        </Field>
+
                     </FieldGroup>
                 </form>
+
+                <div className="flex items-center justify-center gap-4">
+        
+                    <button onClick={() => signIn("google", { callbackUrl: "/"})} className="flex h-12 w-12 items-center justify-center rounded-full cursor-pointer bg-white shadow-md">
+                        <FcGoogle className='h-8 w-8' />
+                    </button>
+
+                    </div>
+
                 <div className="text-center mt-4">
                     <p className="flex">
                         Create New Account?
@@ -161,6 +175,7 @@ const page = () => {
                         </Link>
                     </p>
                 </div>
+
             </div>
         </div>
     )

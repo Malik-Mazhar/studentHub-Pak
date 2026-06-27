@@ -39,7 +39,7 @@ export async function POST(req: Request){
     }else{
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const verificationCodeExpiry = new Date(Date.now() + 60 * 60 * 1000);;
+      const verificationCodeExpiry = new Date(Date.now() + 60 * 60 * 1000);
 
       const newUser = new UserModel({
         username: username,

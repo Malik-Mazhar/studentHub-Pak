@@ -77,7 +77,7 @@ export interface User extends Document {
 const userSchema: Schema<User> = new Schema({
     username: {
         type: String,
-        required: [ true, "userName is required"],
+        required: [ true, "userName is required"], 
         trim: true,
         lowercase: true,
         index: true
@@ -92,7 +92,7 @@ const userSchema: Schema<User> = new Schema({
     },
     password: {
         type: String,
-        required: [ true, "Password is required"],
+        // required: [ true, "Password is required"],
     },
 
     profileImgUrl: {
@@ -104,7 +104,7 @@ const userSchema: Schema<User> = new Schema({
 
     verifyCode: {
         type: String,
-        required: [true, "verify code is required"]
+        // required: [true, "verify code is required"]
     },
     verifyCodeExpiry: {
         type: Date,

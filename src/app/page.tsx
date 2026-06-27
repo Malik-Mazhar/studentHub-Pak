@@ -9,7 +9,13 @@ export default function Home() {
   
   const isAuthenticated = useAppSelector(satate => satate.userData.isAuthenticated);
   const { data: session, status } = useSession();
-  console.log("session...", isAuthenticated)
+
+  if (status === "loading") {
+  return <p>Loading...</p>;
+  }
+
+
+  const isLoggedIn = Boolean(session?.user?.email || session?.user?._id);
 
   return (
     <div className="relative min-h-screen">
@@ -20,7 +26,7 @@ export default function Home() {
 
         {/* Main Layout */}
 
-      {isAuthenticated ? 
+      {isLoggedIn ? 
           <div className="flex">
             <HomePage />
           </div>

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useAppDispatch, useAppSelector } from '@/src/store/useSelecterhook';
 import { useEffect, useRef, useState } from 'react';
 import { logout } from '@/src/store/userDataSlice';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Loader2 } from 'lucide-react';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -19,9 +19,10 @@ function AppHeader() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.userData.isAuthenticated);
   const userDeta = useAppSelector((state) => state.userData.profileData);
+  const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
 
-  const profileImg = userDeta?.userProfile?.profileImgUrl
+  // const profileImg = userDeta?.userProfile?.profileImgUrl
 
   const handleLogout = async () => {
     try {
@@ -118,7 +119,7 @@ function AppHeader() {
         </div>
 
         <div className='flex justify-between items-center gap-3'>
-          {isAuthenticated ? (
+          {session?.user.email ? (
             //  <CustomButton onClick={handleLogout}>{isLoading ? `please wait.. ${<Loader2 className='ml-2 h-4 w-4 animate-spin' />}` : "LogOut"}</CustomButton>
               <div className='flex items-center gap-1 relative'>
                 <div className='pr-5'>
@@ -127,7 +128,7 @@ function AppHeader() {
 
                 <div className="w-10 h-10 relative">
                   <Image
-                    src={profileImg || "/img/defaultProfile.JFIF"}
+                    src={ "/img/defaultProfile.JFIF"}
                     alt="Logo"
                     fill
                     className='object-contain rounded-full'
@@ -168,6 +169,7 @@ function AppHeader() {
 
                           <li>
                             <button
+                              onClick={() => handleLogout()}
                               className="w-full px-4 py-2 text-left hover:bg-gray-100"
                             >
                               Logout
