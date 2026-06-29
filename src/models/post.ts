@@ -1,15 +1,49 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-export interface Userpost extends Document {
-   title: string,
-   content?: string,
-   postImageUrl?: string,
-   postImgPublicId?: string,
-   author: Types.ObjectId,
-   createdAt: Date,
+export interface UserPost extends Document {
+    author: Types.ObjectId;
+    postType: string;
+
+    title: string;
+    content?: string;
+
+    category?: string;
+
+    tags?: string[];
+
+    resourceLink?: string;
+
+    postImageUrl?: string[];
+    postImgPublicId?: string;
+
+    videoLink?: string;
+
+    pollQuestion?: string;
+    pollOptions?: string[];
+    pollDuration?: number;
+
+    visibility: string;
 };
 
-const userPostSchema: Schema<Userpost> = new Schema({
+const userPostSchema: Schema<UserPost> = new Schema({
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    postType: {
+        type: String,
+        enum: [
+            "discussion",
+            "notes",
+            "question",
+            "poll",
+            "resource",
+            "video",
+            "simple",
+        ],
+        default: "simple",
+    },
     title: {
         type: String,
         required: [true, "Title is required"],
@@ -17,23 +51,42 @@ const userPostSchema: Schema<Userpost> = new Schema({
     content: {
         type: String,
     },
-    postImageUrl: {
+
+    category: {
         type: String,
+        enum: ["General Discussion", "Education", "Technology", "Science", "Career"]
+    },
+
+    tags: {
+        type: [String],
+        default: [],
+    },
+    resourceLink: {
+        type: String,
+    },
+
+    postImageUrl: {
+        type: [String],
     },
     postImgPublicId: {
         type: String,
     },
-    author: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
-});
+     videoLink: String,
 
-const UserPostModel = ( mongoose.models.Post as mongoose.Model <Userpost> || mongoose.model<Userpost>("UserPost", userPostSchema));
+    pollQuestion: String,
+    pollOptions: {
+        type: [String],
+        default: [],
+    },
+    pollDuration: Number,
+     
+    visibility: {
+        type: String,
+        enum: ["Everyone", "Only Members", "Private"],
+        default: "Everyone",
+    }
+}, { timestamps: true });
+
+export const UserPostModel = (mongoose.models.UserPost as mongoose.Model<UserPost>) || mongoose.model<UserPost>("UserPost", userPostSchema);
 
 export default UserPostModel;

@@ -14,12 +14,43 @@ import {
   FaPoll,
   FaLink,
 } from "react-icons/fa";
-import { FaVideo } from "react-icons/fa6";
+import { FaTrash, FaVideo } from "react-icons/fa6";
 
 export default function CreatePostPage() {
   const router = useRouter();
   const[selectPostType, setSelectPostType] = useState("Discussion");
   const [postMode, setPostMode] = useState("simple");
+  const [question, setQuestion] = useState("");
+  const [duration, setDuration] = useState("");
+
+  const [options, setOptions] = useState([
+    { id: 1, value: "" },
+    { id: 2, value: "" },
+  ]);
+
+  const addOption = () => {
+    setOptions([
+      ...options,
+      {
+        id: Date.now(),
+        value: "",
+      },
+    ]);
+  };
+
+  const updateOption = (id: number, value: string) => {
+    setOptions(
+      options.map((option) =>
+        option.id === id ? { ...option, value } : option
+      )
+    );
+  };
+
+  const removeOption = (id: number) => {
+    if (options.length <= 2) return;
+
+    setOptions(options.filter((option) => option.id !== id));
+  };
 
   const postTypes = [
     {
@@ -450,101 +481,109 @@ export default function CreatePostPage() {
           }
 
             {findUserSelectPostType && findUserSelectPostType.title === "Question" && 
-              <form action="">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+              <form className="space-y-6">
 
-                      <h1 className="text-3xl font-bold text-gray-800">
-                          Ask a Question
-                      </h1>
+                {/* Poll Question */}
+                <div>
+                  <label className="block mb-2 font-semibold">
+                    Poll Question
+                    <span className="text-red-500">*</span>
+                  </label>
 
-                      <p className="text-gray-500 mt-2">
-                          Ask your question and get help from the community.
-                      </p>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="What do you want to ask?"
+                    className="w-full h-12 border rounded-xl px-4 outline-none"
+                  />
+                </div>
 
-                      <div className="space-y-6 mt-8">
+                {/* Options */}
+                <div>
+                  <label className="block mb-2 font-semibold">
+                    Options
+                    <span className="text-red-500">*</span>
+                  </label>
 
-                          {/* Question Title */}
-                          <div>
-                              <label className="block font-medium text-gray-700 mb-2">
-                                  Question Title
-                              </label>
+                  <div className="space-y-3">
 
-                              <input
-                                  type="text"
-                                  placeholder="e.g. How do I use useEffect in React?"
-                                  className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
-                              />
-                          </div>
+                    {options.map((option, index) => (
+                      <div
+                        key={option.id}
+                        className="flex items-center gap-3"
+                      >
 
-                          {/* Description */}
-                          <div>
-                              <label className="block font-medium text-gray-700 mb-2">
-                                  Describe Your Problem
-                              </label>
+                        <input
+                          type="radio"
+                          disabled
+                        />
 
-                              <textarea
-                                  rows={6}
-                                  placeholder="Explain your problem in detail..."
-                                  className="w-full border rounded-xl p-3 resize-none outline-none focus:ring-2 focus:ring-blue-500"
-                              />
-                          </div>
+                        <input
+                          type="text"
+                          value={option.value}
+                          onChange={(e) =>
+                            updateOption(option.id, e.target.value)
+                          }
+                          placeholder={`Option ${index + 1}`}
+                          className="flex-1 h-12 border rounded-xl px-4 outline-none"
+                        />
 
-                          {/* Category */}
-                          <div>
-                              <label className="block font-medium text-gray-700 mb-2">
-                                  Category
-                              </label>
-
-                              <select className="w-full border rounded-xl p-3">
-                                  <option>Select Category</option>
-                                  <option>Programming</option>
-                                  <option>Mathematics</option>
-                                  <option>Science</option>
-                              </select>
-                          </div>
-
-                          {/* Tags */}
-                          <div>
-                              <label className="block font-medium text-gray-700 mb-2">
-                                  Tags
-                              </label>
-
-                              <input
-                                  type="text"
-                                  placeholder="React, JavaScript, Next.js"
-                                  className="w-full border rounded-xl p-3"
-                              />
-                          </div>
-
-                          {/* Attachment */}
-                          <div>
-                              <label className="block font-medium text-gray-700 mb-2">
-                                  Attachment (Optional)
-                              </label>
-
-                              <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="w-full border rounded-xl p-3"
-                              />
-                          </div>
-
-                          {/* Buttons */}
-                          <div className="flex justify-end gap-4">
-
-                              <button className="px-6 py-3 rounded-xl border">
-                                  Cancel
-                              </button>
-
-                              <button className="px-6 py-3 rounded-xl bg-blue-600 text-white">
-                                  Post Question
-                              </button>
-
-                          </div>
+                        <button
+                          type="button"
+                          onClick={() => removeOption(option.id)}
+                          className="w-12 h-12 border rounded-xl flex items-center justify-center"
+                        >
+                          <FaTrash />
+                        </button>
 
                       </div>
+                    ))}
 
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={addOption}
+                    className="mt-4 text-blue-600 font-medium"
+                  >
+                    + Add Option
+                  </button>
+                </div>
+
+                {/* Duration */}
+                <div>
+                  <label className="block mb-2 font-semibold">
+                    Poll Duration
+                    <span className="text-gray-400">
+                      {" "} (Optional)
+                    </span>
+                  </label>
+
+                  <select
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                    className="w-full h-12 border rounded-xl px-4"
+                  >
+                    <option value="">Select duration</option>
+                    <option value="1">1 Day</option>
+                    <option value="3">3 Days</option>
+                    <option value="7">7 Days</option>
+                    <option value="14">14 Days</option>
+                    <option value="30">30 Days</option>
+                  </select>
+                </div>
+
+                {/* Submit */}
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="bg-blue-600 text-white px-8 h-11 rounded-xl"
+                  >
+                    Create Poll
+                  </button>
+                </div>
+
               </form>
             }
 

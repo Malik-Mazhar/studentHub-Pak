@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadToCloudinary } from '@/src/services/uploadToCloudinary';
+import { uploadMediaHandler } from '@/src/services/uploadToCloudinary';
 
    
 export async function uploadImageHandler(file: File, folder: string) {
@@ -14,7 +14,7 @@ export async function uploadImageHandler(file: File, folder: string) {
       }
     }
 
-    const result = await uploadToCloudinary(file, folder);
+    const result = await uploadMediaHandler(file, folder);
 
     if (!result?.secure_url) {
       return {
@@ -22,13 +22,6 @@ export async function uploadImageHandler(file: File, folder: string) {
         message: "Upload failed"
       }
     }
-
-    // return NextResponse.json({
-    //   success: true,
-    //   message: "Image uploaded successfully",
-    //   publicId: result.publicId,
-    //   secure_url: result.secure_url
-    // });
 
     return {
       success: true,
