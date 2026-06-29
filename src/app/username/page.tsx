@@ -1,262 +1,560 @@
+"use client";
+
+import CoustomButton from "@/src/components/shared/CustomButton"
+import { useRouter } from "next/navigation";
+import CustomInput from "@/src/components/shared/CustomInput";
+import CustomSelect from "@/src/components/shared/CustomSelect";
+import CustomTagInput from "@/src/components/shared/CustomTagInput";
+import { useState } from "react";
 import {
-  FaImage,
-  FaVideo,
-  FaPoll,
+  FaArrowLeft,
+  FaComments,
   FaFileAlt,
-  FaGlobeAsia,
-  FaRegHeart,
-  FaHeart,
-  FaRegComment,
-  FaShare,
-  FaBookmark,
-  FaEllipsisH,
-  FaPlayCircle,
+  FaQuestionCircle,
+  FaPoll,
+  FaLink,
 } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa6";
 
-const posts = [
-  {
-    id: 1,
-    name: "Fatima Noor",
-    badge: "Top Contributor",
-    time: "2 hours ago",
-    text: "Just completed my Physics practical 💡 Here's a short video explaining how to find resistance using Ohm's Law.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000",
-    likes: 124,
-    comments: 23,
-    shares: 12,
-    video: true,
-  },
-  {
-    id: 2,
-    name: "Usman Ali",
-    time: "3 hours ago",
-    text: "Made these Biology notes for Chapter 5. Hope it helps everyone 🌿",
-    image:
-      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1000",
-    likes: 89,
-    comments: 16,
-    shares: 8,
-  },
-  {
-    id: 3,
-    name: "Ayesha Khan",
-    time: "5 hours ago",
-    text: "Sunset at my university today 🌅",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1000",
-    likes: 76,
-    comments: 10,
-    shares: 3,
-  },
-];
+export default function CreatePostPage() {
+  const router = useRouter();
+  const[selectPostType, setSelectPostType] = useState("Discussion");
+  const [postMode, setPostMode] = useState("simple");
 
-export default function CommunityCenter() {
+  const postTypes = [
+    {
+      id: 1,
+      title: "Discussion",
+      postTitle: "General Discussion",
+      content: "Share your thoughts, ask opinions, and start meaningful discussions with the community.",
+      icon: FaComments,
+      active: true,
+    },
+    {
+      id: 2,
+      title: "Notes",
+      postTitle: "Share Notes",
+      content: "Share your study notes to help others learn and revise important topics.",
+      icon: FaFileAlt,
+    },
+    {
+      id: 6,
+      title: "Video",
+      postTitle: "Share Video",
+      content: "Share educational videos, tutorials, and explanations with your community.",
+      icon: FaVideo
+    },
+    {
+      id: 3,
+      title: "Question",
+      postTitle: "Ask Question",
+      content: "Ask your questions and get help from the community quickly and easily.",
+      icon: FaQuestionCircle,
+    },
+    {
+      id: 4,
+      title: "Poll",
+      postTitle: "Vote & Decide",
+      content: "Create polls and let others vote to share their opinions easily.",
+      icon: FaPoll,
+    },
+    {
+      id: 5,
+      title: "Resource",
+      postTitle: "Share Resource",
+      content: "Share useful links, files, and resources to help others learn and grow.",
+      icon: FaLink,
+    },
+  ];
+
+  const findUserSelectPostType = postTypes.find((selectType) => selectType.title === selectPostType)
+
   return (
-    <div className="flex-1 px-6 py-6">
+    <div className="flex gap-6 p-6 bg-[#FBFCFE] min-h-screen">
 
-      {/* Create Post */}
+      {/* LEFT */}
+      <div className="flex-1">
 
-      <div className="bg-white rounded-2xl shadow-sm border p-6">
+        <div>
 
-        <div className="flex gap-4">
+          {/* Back */}
 
-          <img
-            src="https://i.pravatar.cc/150?img=12"
-            className="w-12 h-12 rounded-full"
-          />
+          <CoustomButton onClick={() => router.push("/community")} className="flex items-center gap-3 text-gray-700 bg-none shadow-none hover:text-[#0aa382] transition">
 
-          <div className="flex-1">
+            <FaArrowLeft />
 
-            <h3 className="font-semibold mb-3">Create Post</h3>
+            <span className="font-medium">
+              Back to Community
+            </span>
 
-            <textarea
-              rows={4}
-              placeholder="What's on your mind?"
-              className="w-full border rounded-xl p-4 resize-none outline-none"
-            />
+          </CoustomButton>
 
-            <div className="flex justify-between mt-4 flex-wrap gap-3">
+          {/* Card */}
 
-              <div className="flex gap-3 flex-wrap">
+          <div className="bg-white rounded-2xl mt-6 shadow-sm border border-gray-200 p-8">
 
-                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
-                  <FaImage className="text-blue-600" />
-                  Image
-                </button>
+           <div className="flex items-center justify-between">
+            <div>
+              
+              <h1 className="text-2xl font-bold text-gray-800">             
+                {postMode === "simple"? "Create New Post" : findUserSelectPostType?.postTitle}
+              </h1>
 
-                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
-                  <FaVideo className="text-red-500" />
-                  Video
-                </button>
-
-                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
-                  <FaPoll />
-                  Poll
-                </button>
-
-                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
-                  <FaFileAlt />
-                  File
-                </button>
-
-              </div>
-
-              <div className="flex gap-3">
-
-                <button className="flex items-center gap-2 border px-4 rounded-lg">
-                  <FaGlobeAsia />
-                  Public
-                </button>
-
-                <button className="bg-green-600 text-white px-8 rounded-lg">
-                  Post
-                </button>
-
-              </div>
-
+              <p className="text-gray-500 mt-2">
+                {postMode === "simple"? "Share your knowledge, help others and be a part of our community." : findUserSelectPostType?.content}
+              </p>
             </div>
 
-          </div>
+              <div>
 
-        </div>
+                {postMode === "advanced" ? 
 
-      </div>
+                  <CoustomButton
+                    onClick={() => setPostMode("simple")}
+                    className="text-sm mt-2"
+                  >
+                    Back to simple post
+                  </CoustomButton>
 
-      {/* Tabs */}
+                  :
 
-      <div className="flex justify-between items-center my-6">
+                  <CoustomButton
+                    onClick={() => setPostMode("advanced")}
+                    className="text-sm mt-2"
+                  >
+                    + Advanced post options
+                  </CoustomButton>
+                }
 
-        <div className="flex gap-3">
+              </div>
 
-          <button className="px-5 py-2 rounded-full bg-blue-600 text-white">
-            All
-          </button>
+           </div>
 
-          <button className="px-5 py-2 rounded-full bg-gray-100">
-            Following
-          </button>
+            {/* Post Types */}
+            {postMode === "advanced" &&
 
-          <button className="px-5 py-2 rounded-full bg-gray-100">
-            Popular
-          </button>
+                <div className="grid grid-cols-6 mt-8 border rounded-xl overflow-hidden">
 
-        </div>
+                  {postTypes.map((item) => {
 
-        <select className="border rounded-lg px-4 py-2">
-          <option>Latest</option>
-          <option>Popular</option>
-        </select>
+                    const Icon = item.icon;
 
-      </div>
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => setSelectPostType(item.title)}
+                        className={`flex flex-col items-center justify-center gap-3 py-4 border-r cursor-pointer last:border-r-0 transition
 
-      {/* Posts */}
+                        ${
+                          selectPostType === item.title
+                            ? "bg-blue-50 text-blue-600"
+                            : "hover:bg-gray-50 text-gray-700"
+                        }
+                        
+                        `}
+                      >
+                        <Icon size={24} />
 
-      <div className="space-y-6">
+                        <span className="font-medium">
+                          {item.title}
+                        </span>
 
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            className="bg-white rounded-2xl shadow-sm border p-6"
-          >
-            {/* Header */}
+                      </button>
+                    );
+                  })}
+                </div>
 
-            <div className="flex justify-between">
+            }
 
-              <div className="flex gap-3">
 
-                <img
-                  src={`https://i.pravatar.cc/150?img=${post.id + 10}`}
-                  className="w-12 h-12 rounded-full"
-                />
 
-                <div>
+            
+        {/* Title */}
+          {findUserSelectPostType && findUserSelectPostType.title === "Discussion" && 
+            <form action="">
 
-                  <div className="flex items-center gap-2">
+                <div className="mt-8">
 
-                    <h3 className="font-semibold">{post.name}</h3>
-
-                    {post.badge && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                        {post.badge}
-                      </span>
-                    )}
-
-                  </div>
-
-                  <p className="text-sm text-gray-500">{post.time}</p>
+                  <CustomInput
+                    label={`Post Title`}
+                    type="text"
+                    placeholder="Give your post a short title..."
+                    optional = {true}
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
+                  />
 
                 </div>
 
-              </div>
+                {/* Description */}
 
-              <FaEllipsisH />
+                <div className="mt-6">
 
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Write Something
+                    <span className="text-red-500">*</span>
+                  </label>
+
+                  <textarea
+                    rows={8}
+                    placeholder="Write your post content here..."
+                    className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
+                  />
+
+                </div>
+
+                {/* Category */}
+
+                <div className="mt-6">
+
+                  <CustomSelect 
+                    label="Category"
+                    value=""
+                    onChange={() => ""}
+                    options={["General Discussion", "Education", "Technology", "Science", "Career"]}
+                  />
+
+                </div>
+
+                {/* Upload */}
+
+                <div className="mt-6">
+
+                  <label className="block text-sm font-semibold mb-2">
+
+                    Attach File
+
+                    <span className="text-gray-400">
+                      {" "} (Optional)
+                    </span>
+
+                  </label>
+
+                  <div className="border-2 border-dashed rounded-2xl py-12 flex flex-col items-center">
+
+                    <div className="text-5xl">
+                      ☁️
+                    </div>
+
+                    <h3 className="font-semibold mt-4">
+
+                      Drag & Drop files here
+
+                    </h3>
+
+                    <p className="text-gray-500 mt-2">
+
+                      or click to browse
+
+                    </p>
+
+                    <p className="text-xs text-gray-400 mt-2">
+
+                      PDF • DOC • PPT • Image • Video
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+                {/* Tags */}
+
+                <div className="mt-6">
+
+                  <CustomTagInput 
+                            label="Tags"
+                    tags={[]}
+                    setTags={() => ["XXXX", ""]}
+                    max={5}
+                  />
+
+                </div>
+
+                {/* Bottom */}
+
+                <div className="flex justify-between items-center mt-10">
+
+                  <CustomSelect
+                    label="Visibility"
+                    value=""
+                    onChange={() => ""}
+                    options={["Everyone", "Only Members", "Private"]}
+                  />
+
+                  <CoustomButton
+                    className="px-10 h-10 rounded-xl"
+                  >
+
+                    Publish Post
+
+                  </CoustomButton>
+
+                </div>
+
+            </form>
+          }
+          {findUserSelectPostType && findUserSelectPostType.title === "Video" && 
+          <form>
+
+            {/* TITLE (Required) */}
+            <div className="mt-8">
+              <CustomInput
+                label="Video Title"
+                type="text"
+                placeholder="Give your video a clear title..."
+                optional= {true}
+              />
             </div>
 
-            {/* Content */}
+            {/* VIDEO LINK (MOST IMPORTANT) */}
+            <div className="mt-6">
+              <CustomInput
+                label="Video Link"
+                type="text"
+                placeholder="Paste YouTube or video URL..."
+                optional= {true}
+              />
+            </div>
 
-            <p className="my-4 text-gray-700 leading-7">{post.text}</p>
+            {/* DESCRIPTION */}
+            <div className="mt-6">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Description <span className="text-red-500">*</span>
+              </label>
 
-            {/* Image */}
+              <textarea
+                rows={6}
+                placeholder="Explain what this video is about..."
+                className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
+              />
+            </div>
 
-            <div className="relative">
+            {/* CATEGORY */}
+            <div className="mt-6">
+              <CustomSelect
+                label="Category"
+                value=""
+                onChange={() => ""}
+                options={["Education", "Tutorial", "Lecture", "Entertainment", "Other"]}
+              />
+            </div>
 
-              <img
-                src={post.image}
-                className="rounded-xl w-full h-95 object-cover"
+            {/* THUMBNAIL (OPTIONAL BUT IMPORTANT) */}
+            <div className="mt-6">
+              <label className="block text-sm font-semibold mb-2">
+                Thumbnail (Optional)
+              </label>
+
+              <div className="border-2 border-dashed rounded-2xl py-10 flex flex-col items-center">
+                <div className="text-4xl">🎬</div>
+                <p className="text-gray-500 mt-2">Upload video thumbnail</p>
+              </div>
+            </div>
+
+            {/* TAGS */}
+            <div className="mt-6">
+              <CustomTagInput
+                label="Tags"
+                tags={[]}
+                setTags={() => {}}
+                max={5}
+              />
+            </div>
+
+            {/* VISIBILITY + SUBMIT */}
+            <div className="flex justify-between items-center mt-10">
+
+              <CustomSelect
+                label="Visibility"
+                value=""
+                onChange={() => ""}
+                options={["Everyone", "Only Members", "Private"]}
               />
 
-              {post.video && (
-                <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-              )}
+              <CoustomButton className="px-10 h-10 rounded-xl">
+                Publish Video
+              </CoustomButton>
 
             </div>
 
-            {/* Tags */}
+          </form>
+          }
 
-            <div className="flex gap-3 text-blue-600 text-sm mt-4">
+          {findUserSelectPostType && findUserSelectPostType.title === "Notes" && 
+            <form action="">
 
-              <span>#Physics</span>
+                <div className="mt-8 space-y-6">
 
-              <span>#Notes</span>
+                  <CustomInput
+                    label="Notes Title"
+                    type="text"
+                    placeholder="Enter your notes title"
+                    optional = {true}
+                  />
 
-              <span>#Study</span>
+                  {/* Description */}
+                  <div>
+                    <label className="font-medium text-gray-700">
+                      Description
+                    </label>
 
-            </div>
+                    <textarea
+                      rows={5}
+                      placeholder="Write a short description..."
+                      className="w-full mt-2 border rounded-xl p-3 resize-none"
+                    />
+                  </div>
 
-            {/* Footer */}
+                  {/* Upload */}
+                  <div>
+                    <label className="font-medium text-gray-700">
+                      Upload Notes
+                    </label>
 
-            <div className="flex justify-between mt-6 border-t pt-4">
+                    <div className="border-2 border-dashed rounded-xl p-10 text-center mt-2">
+                      <p className="text-gray-500">
+                        Drag & Drop your PDF, DOCX or PPT
+                      </p>
 
-              <div className="flex gap-8">
+                      <input
+                        type="file"
+                        className="mt-4"
+                      />
+                    </div>
+                  </div>
 
-                <button className="flex items-center gap-2">
-                  <FaHeart className="text-red-500" />
-                  {post.likes}
-                </button>
+                  {/* Category */}
+                  <div>
+                    <CustomSelect 
+                    label="Category"
+                    value=""
+                    onChange={() => ""}
+                    options={["General Discussion", "Education", "Technology", "Science", "Career"]}
+                    />
+                  </div>
 
-                <button className="flex items-center gap-2">
-                  <FaRegComment />
-                  {post.comments}
-                </button>
+                  {/* Buttons */}
+                  <div className="flex justify-end gap-3">
+                    <button className="px-5 py-3 rounded-xl border">
+                      Cancel
+                    </button>
 
-                <button className="flex items-center gap-2">
-                  <FaShare />
-                  {post.shares}
-                </button>
+                    <CoustomButton className="px-5 py-3 rounded-xl bg-blue-600 text-white">
+                      Publish Notes
+                    </CoustomButton>
+                  </div>
 
-              </div>
+                </div>
 
-              <FaBookmark className="cursor-pointer" />
+            </form>
+          }
 
-            </div>
+            {findUserSelectPostType && findUserSelectPostType.title === "Question" && 
+              <form action="">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+
+                      <h1 className="text-3xl font-bold text-gray-800">
+                          Ask a Question
+                      </h1>
+
+                      <p className="text-gray-500 mt-2">
+                          Ask your question and get help from the community.
+                      </p>
+
+                      <div className="space-y-6 mt-8">
+
+                          {/* Question Title */}
+                          <div>
+                              <label className="block font-medium text-gray-700 mb-2">
+                                  Question Title
+                              </label>
+
+                              <input
+                                  type="text"
+                                  placeholder="e.g. How do I use useEffect in React?"
+                                  className="w-full border rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                          </div>
+
+                          {/* Description */}
+                          <div>
+                              <label className="block font-medium text-gray-700 mb-2">
+                                  Describe Your Problem
+                              </label>
+
+                              <textarea
+                                  rows={6}
+                                  placeholder="Explain your problem in detail..."
+                                  className="w-full border rounded-xl p-3 resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                          </div>
+
+                          {/* Category */}
+                          <div>
+                              <label className="block font-medium text-gray-700 mb-2">
+                                  Category
+                              </label>
+
+                              <select className="w-full border rounded-xl p-3">
+                                  <option>Select Category</option>
+                                  <option>Programming</option>
+                                  <option>Mathematics</option>
+                                  <option>Science</option>
+                              </select>
+                          </div>
+
+                          {/* Tags */}
+                          <div>
+                              <label className="block font-medium text-gray-700 mb-2">
+                                  Tags
+                              </label>
+
+                              <input
+                                  type="text"
+                                  placeholder="React, JavaScript, Next.js"
+                                  className="w-full border rounded-xl p-3"
+                              />
+                          </div>
+
+                          {/* Attachment */}
+                          <div>
+                              <label className="block font-medium text-gray-700 mb-2">
+                                  Attachment (Optional)
+                              </label>
+
+                              <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="w-full border rounded-xl p-3"
+                              />
+                          </div>
+
+                          {/* Buttons */}
+                          <div className="flex justify-end gap-4">
+
+                              <button className="px-6 py-3 rounded-xl border">
+                                  Cancel
+                              </button>
+
+                              <button className="px-6 py-3 rounded-xl bg-blue-600 text-white">
+                                  Post Question
+                              </button>
+
+                          </div>
+
+                      </div>
+
+                  </div>
+              </form>
+            }
 
           </div>
-        ))}
+
+        </div>
+
 
       </div>
-
     </div>
   );
 }
+

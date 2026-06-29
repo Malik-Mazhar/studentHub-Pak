@@ -136,7 +136,7 @@ const page = () => {
 
 
     useEffect(() => {
-        const profileImgurl = userData?.userProfile?.profileImgUrl;
+        const profileImgurl = userData?.data?.userProfile?.profileImgUrl;
         setPreview(profileImgurl? profileImgurl : null);
     }, [userData]);
 
@@ -227,7 +227,7 @@ const page = () => {
                                             </div>
                                     </div>
                                     <div>
-                                        <ImageUpload onFileSelect={handleUserFile} />
+                                        {/* <ImageUpload onFileSelect={handleUserFile} /> */}
                                     </div>
                                
                                 <Field orientation="horizontal" className="pt-2">
