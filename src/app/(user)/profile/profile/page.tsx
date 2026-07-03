@@ -1,36 +1,19 @@
 'use client'
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea";
-import { Controller, useForm } from "react-hook-form";
-import z, { object } from "zod";
+import { useForm } from "react-hook-form";
+import z from "zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter, useSelectedLayoutSegments  } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { profileSchema } from "@/src/zod-Schemas/profileSchema";
-import Image from 'next/image'
 import ImageUpload from "@/src/components/ImageUpload";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { ApiResponse } from "@/src/types/dataTaype";
 import { profileData } from "@/src/store/userDataSlice";
-import { usePathname } from "next/navigation";
-import { Camera, Loader2, User } from "lucide-react";
+import {  Loader2, User } from "lucide-react";
 import CustomButton from '@/src/components/shared/CustomButton'
 import { FaHand } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
@@ -44,9 +27,6 @@ import "react-photo-view/dist/react-photo-view.css";
 
 
 const page = () => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const segments = useSelectedLayoutSegments();
     const [selectProfileImg, setSelectProfileImg] = useState<File | null>(null);
     const [selectCoverImg, setSelectCoverImg] = useState<File | null>(null);
     const [profilePreview, setProfilePreview] = useState<string | null>(null);
@@ -59,8 +39,6 @@ const page = () => {
     type FormData = z.infer<typeof profileSchema>;   // 👈 string
     const userData = useAppSelector((state) => state.userData.profileData);
     const userProfileData = userData?.data?.userProfile;
-    const checkUserDetaLength = userData && Object.keys(userData).length > 0;
-   console.log("userData:", coverPreview);
 
     const {
         register,
@@ -76,7 +54,8 @@ const page = () => {
             bio: userProfileData?.bio || "",
             location: userProfileData?.location || "",
             pinnedDetail: userProfileData?.pinnedDetail || "",
-            gender: userProfileData?.gender || ""
+            gender: userProfileData?.gender || "",
+            birthday: userProfileData?.birthday || ""
         }
     });
 
@@ -154,6 +133,7 @@ const page = () => {
         location: userProfileData?.location ?? "",
         pinnedDetail: userProfileData?.pinnedDetail ?? "",
         gender: userProfileData?.gender ?? "",
+        birthday: userProfileData?.birthday ?? "",
         });
 
     }
@@ -162,16 +142,16 @@ const page = () => {
     const ProfileInformation = {
         Info: {
             Bio: { label: "Bio", value: "bio", type: "textarea", placeholder: "introduce yourself...", showButtonText: "About you", icon: FaHand },
-            pinnedDetails: { label: "Pinned details", value: "pinnedDetail", type: "pinnedDetails", placeholder: "introduce yourself...", showButtonText: "Pinned details", icon: TbPinnedFilled },
+            pinnedDetails: { label: "Pinned details", value: "pinnedDetail", type: "pinnedDetails", placeholder: "introduce ...", showButtonText: "Pinned details", icon: TbPinnedFilled },
         },
         PersnalDetails: {
             fullName: { label: "Full Name", value: "profileName", type: "pinnedDetails", placeholder: "change your name",  showButtonText: "change your profile name", icon: User },
             Location: { label: "Location", value: "location", type: "textarea", placeholder: "Current city or town", showButtonText: "current city or town", icon: IoLocationOutline },
-            Birthday: { label: "Birthday", value: "Developer", type: "textarea", placeholder: "introduce yourself...", showButtonText: "Bathday", icon: LiaBirthdayCakeSolid },
-            Gender: { label: "Gender", value: "gender", type: "gender", placeholder: "introduce yourself...", showButtonText: "Gender", icon: TbGenderTransgender }
+            Birthday: { label: "Birthday", value: "birthday", type: "Birthday", placeholder: "introduce yourself...", showButtonText: "Bathday", icon: LiaBirthdayCakeSolid },
+            Gender: { label: "Gender", value: "gender", type: "gender", placeholder: "introduce yourself...", showButtonText: "Gender", icon: TbGenderTransgender },
         },
         Work: {
-            Company: { label: "Work", value: "Work experiance", type: "textarea", placeholder: "introduce yourself...", showButtonText: "Work experiance", icon: BsPersonWorkspace },
+            Company: { label: "Work", value: "Workexperiance", type: "textarea", placeholder: "introduce yourself...", showButtonText: "Work experiance", icon: BsPersonWorkspace },
         },
     };
 
@@ -180,11 +160,10 @@ const page = () => {
     const [editSection, setEditSection] = useState<string | null>(null);
     const [selectedTabs, setSelectedTabs] = useState("Info");
 
-        //  console.log("result :", )
-
     const tabData = ProfileInformation[selectedTabs as keyof typeof ProfileInformation];
-    const currentObj = Object.values(tabData).find((type) => type.type === editSection);
-
+    const currentObj = Object.values(tabData).find((type) => type.label === editSection);
+    const fieldError = errors[currentObj?.value as keyof typeof errors];
+    
 
     return (
         <div className="p-5 bg-[#FBFCFE] min-h-screen">
@@ -279,7 +258,7 @@ const page = () => {
                                 </h1>
 
                                 <CustomButton
-                                    onClick={() => setEditSection(item.type)}
+                                    onClick={() => setEditSection(item.label)}
                                     type="button"
                                    className={`flex items-center gap-3 rounded-lg border-2 border-gray-100 bg-none px-4 py-2 mb-5 text-black shadow-sm hover:bg-gray-50 
                                     ${ currentObj?.value === item.value && "hidden"}`}
@@ -305,7 +284,7 @@ const page = () => {
                                                     />
 
                                                     
-                                                        <div className="flex items-center justify-between border-b pb-2">
+                                                        <div className="flex items-center justify-between border-b-2">
                                                             <span className="text-xs text-gray-500">
                                                             {watch(currentObj.value as keyof UserProfile)?.length || 0}/100
                                                             </span>
@@ -314,7 +293,7 @@ const page = () => {
                                             )}
 
                                                 
-                                            {currentObj.type === "pinnedDetails" && (
+                                            {["pinnedDetails", "Birthday"].includes(currentObj.type) && (
                                                 
                                                 <Input
                                                     id="fieldgroup-email"
@@ -348,14 +327,12 @@ const page = () => {
 
                                                 <div className="flex items-center justify-between pb-5">
 
-                                                    {errors[currentObj.value as keyof UserProfile] && (
+                                                    {fieldError && (
                                                     <p className="text-sm text-red-500">
-                                                        {
-                                                        errors[currentObj.label as keyof UserProfile]
-                                                            ?.message as string
-                                                        }
+                                                        {fieldError.message}
                                                     </p>
                                                     )}
+                                                    
                                                 </div>
 
                                                 {currentObj.type === item.type && (
@@ -373,7 +350,14 @@ const page = () => {
                                                         disabled={currentObj.type === "textarea" && !watch(currentObj.value as keyof UserProfile)?.length}
                                                         className="rounded-lg border border-gray-300 bg-gray-100 px-5 py-2 text-sm"
                                                         >
-                                                        Save Changes
+                                                            {isLoading ? (
+                                                                <div className="flex gap-2">
+                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                Please wait
+                                                                </div>
+                                                            ):(
+                                                                "Save Changes"
+                                                            )}
                                                         </CustomButton>
                                                     </div>
                                                     )}
@@ -396,173 +380,3 @@ const page = () => {
 };
 
 export default page;
-
-
-
-
-        // <div className="flex justify-center items-center min-h-screen"> 
-        //     <div className="w-full max-w-5xl max-h-screen px-8 bg-gray-100 pb-8 space-y-8 rounded-lg shadow-md">
-        //         <div className="text-3xl text-info-emphasis font-bold mb-0 pt-8 px-12">
-        //             <h1 className="tracking-tight font-mono">
-        //                 Edit Profile
-        //             </h1>
-        //         </div>
-                
-        //             <form onSubmit={handleSubmit(onSubmit)}>
-        //                 <div className="flex justify-center gap-x-12  bg-white rounded-lg shadow-lg p-8">
-        //                     <div className="w-full max-w-3/12 shadow-[4px_0_15px_rgba(0,0,0,0.1)]">
-                                
-        //                         <Image
-        //                         src={imageSrc || "/img/defaultProfile.JFIF"}
-        //                         width={170}
-        //                         height={170}
-        //                         alt="Picture of the author"
-        //                         className="p-3 rounded-full m-auto"
-        //                         />
-        //                         <ImageUpload onFileSelect={handleFile}/>
-        //                     </div>
-        //                     <div className="w-full max-w-3xl">
-        //                         <FieldGroup>
-        //                         <Field>
-        //                             <FieldLabel htmlFor="fieldgroup-email" className="font-bold text-gray-500">Full Name</FieldLabel>
-        //                             <Input
-        //                             id="fieldgroup-email"
-        //                             type="profileName"
-        //                             placeholder="name@example.com"
-        //                             disabled= {!isEdit}
-        //                             {...register("profileName")}
-        //                             />
-        //                             {/* //dobara anna he error handling k liye */}
-        //                             <div className="relative">
-        //                             <p className="absolute text-red-500 text-sm top-full left-0">
-        //                                 {errors.profileName && errors.profileName.message || error && "Invalid email or password"}
-        //                             </p>
-        //                             </div>
-
-        //                         </Field>
-        //                         <Field>
-        //                             <FieldLabel htmlFor="textarea-disabled" className="font-bold text-gray-500">Bio</FieldLabel>
-                                        
-        //                             <Textarea 
-        //                             id="textarea-disabled"
-        //                             placeholder="Type your message here." 
-        //                             disabled= {!isEdit}
-        //                             {...register("Bio")}
-        //                             />
-        //                             <div className="relative">
-        //                             <p className="absolute text-red-500 text-sm top-full left-0">
-        //                                 {errors.Bio && errors.Bio.message || error && "Invalid email or password"}
-        //                             </p>
-        //                             </div>
-        //                         </Field>
-        //                                                         <Field>
-        //                             <FieldLabel htmlFor="fieldgroup-email" className="font-bold text-gray-500">pinnedDetail</FieldLabel>
-        //                             <Input
-        //                             id="fieldgroup-email"
-        //                             type="pinnedDetail"
-        //                             placeholder="name@example.com"
-        //                             disabled= {!isEdit}
-        //                             {...register("pinnedDetail")}
-        //                             />
-        //                             {/* //dobara anna he error handling k liye */}
-        //                             <div className="relative">
-        //                             <p className="absolute text-red-500 text-sm top-full left-0">
-        //                                 {errors.profileName && errors.profileName.message || error && "Invalid email or password"}
-        //                             </p>
-        //                             </div>
-
-        //                         </Field>
-        //                         <Field>
-        //                             <FieldLabel htmlFor="fieldgroup-email" className="font-bold text-gray-500">location</FieldLabel>
-        //                             <Input
-        //                             id="fieldgroup-email"
-        //                             type="location"
-        //                             placeholder="nlocationm"
-        //                             disabled= {!isEdit}
-        //                             {...register("location")}
-        //                             />
-        //                             {/* //dobara anna he error handling k liye */}
-        //                             <div className="relative">
-        //                             <p className="absolute text-red-500 text-sm top-full left-0">
-        //                                 {errors.profileName && errors.profileName.message || error && "Invalid email or password"}
-        //                             </p>
-        //                             </div>
-
-        //                         </Field>
-                                
-                                
-        //                         {/* <Controller 
-        //                         name="class"
-        //                         control={control}
-        //                         render={({field}) => (
-
-        //                         <div className="flex flex-col w-full">
-        //                         <label htmlFor="class-select" className="mb-1 text-sm font-bold text-gray-500">
-        //                             Select Class
-        //                         </label>
-        //                         <Select
-        //                         onValueChange={field.onChange}
-        //                         value={field.value}
-        //                         disabled= {!isEdit}                              
-        //                         >
-        //                             <SelectTrigger id="class-select" className="w-full">
-        //                             <SelectValue placeholder="Select class" />
-        //                             </SelectTrigger>
-        //                             <SelectContent>
-        //                             <SelectGroup>
-        //                                 <SelectLabel>1st into 12th</SelectLabel>
-        //                                 <SelectItem value="one">1st Grade</SelectItem>
-        //                                 <SelectItem value="two">2nd Grade</SelectItem>
-        //                                 <SelectItem value="three">3rd Grade</SelectItem>
-        //                                 <SelectItem value="four">4th Grade</SelectItem>
-        //                                 <SelectItem value="five">5th Grade</SelectItem>
-        //                                 <SelectItem value="six">6th Grade</SelectItem>
-        //                                 <SelectItem value="seven">7th Grade</SelectItem>
-        //                                 <SelectItem value="eight">8th Grade</SelectItem>
-        //                                 <SelectItem value="nine">9th Grade</SelectItem>
-        //                                 <SelectItem value="ten">10th Grade</SelectItem>
-        //                                 <SelectItem value="eleven">11th Grade</SelectItem>
-        //                                 <SelectItem value="twelve">12th Grade</SelectItem>
-        //                             </SelectGroup>
-        //                             </SelectContent>
-        //                         </Select>
-        //                         </div>
-        //                         )}
-        //                         /> */}
-
-                                
-                               
-        //                         <Field orientation="horizontal" className="pt-5">
-        //                         {isEdit ?
-                                
-        //                         <>
-        //                             <Button disabled={isLoading} className="relative w-1/3 py-4 bg-blue-500 text-lg font-bold cursor-pointer disabled:cursor-not-allowed">
-        //                             {isLoading && (
-        //                                 <Loader2 className="animate-spin w-4 h-4 absolute left-4" />
-        //                             )}
-        //                             <span className={isLoading ? "opacity-70" : ""}>
-        //                                 {isLoading ? "Saving..." : "Save Data"}
-        //                             </span>
-        //                             </Button>
-        //                             <Button type="button" className="w-1/3 py-4 bg-blue-500 text-lg font-bold cursor-pointer" onClick={(e) => {
-        //                                 e.preventDefault();
-        //                                 setIsEdit(false);
-        //                             }}>Cencel</Button>
-        //                         </>
-        //                         :
-                                
-        //                         (<Button type="button" className="py-4 cursor-pointer ml-auto w-fit bg-blue-500 text-lg font-bold" onClick={(e) => {
-        //                             e.preventDefault()
-        //                             setIsEdit(true)
-        //                         }}>Edit</Button>)
-        //                         }
-
-        //                         </Field>
-        //                         </FieldGroup>
-        //                     </div>
-        //             </div>
-        //             </form>
-
-        //     </div>
-        // </div>
-        

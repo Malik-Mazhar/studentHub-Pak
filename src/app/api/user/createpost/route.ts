@@ -14,7 +14,7 @@ export const POST = asyncHandler( async (req:Request) => {
     const formData = await req.formData();
     
     const data = Object.fromEntries(formData.entries()) as any;
-
+    console.log("Form Deta", formData)
     const files = (formData.getAll("postImage") as File[]) || [];
     const videoFile = formData.get("postVideo") as File | null;
 
@@ -78,7 +78,7 @@ export const POST = asyncHandler( async (req:Request) => {
 
     return Response
     .json(
-        new ApiResponse(201, "Post created successfully")
+        new ApiResponse(201, userPost, "Post created successfully")
     );
 
 } );

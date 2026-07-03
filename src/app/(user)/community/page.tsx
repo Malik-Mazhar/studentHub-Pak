@@ -86,7 +86,7 @@ export default function CommunityCenter() {
             <option>Latest</option>
             <option>Popular</option>
           </select>
-           <Link href="/username">
+           <Link href="/createPost">
            
           <CustomButton className="flex py-2 px-5 gap-x-3"><FaEdit size={18} /> post</CustomButton>
            </Link>          

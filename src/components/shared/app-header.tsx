@@ -151,7 +151,7 @@ function AppHeader() {
                           <p className='text-xs  text-gray-800 px-4 pb-2 font-bold'>My Account</p>
                           <li>
                             <Link
-                              href="/profile"
+                              href="/profile/profile"
                               className="block px-4 py-2 hover:bg-gray-100"
                             >
                               Profile

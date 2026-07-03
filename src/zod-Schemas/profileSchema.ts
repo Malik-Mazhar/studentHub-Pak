@@ -6,6 +6,7 @@ export const profileSchema  = z.object({
     location: z.string().optional(),
     pinnedDetail: z.string().optional(),
     gender: z.string().optional(),
+    birthday: z.string().optional(),
     profileImgUrl: z.string().url().optional(),
     coverImageUrl: z.string().url().optional(),
     coverImgPublicId: z.string().url().optional(), 

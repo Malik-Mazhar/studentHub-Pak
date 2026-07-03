@@ -17,7 +17,7 @@ export default function TagInput({
   const addTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value.trim();
 
-    if (e.key === "Enter" && value !== "") {
+    if (e.key === " " && value !== "") {
       e.preventDefault();
 
       if (tags.length >= max) return;

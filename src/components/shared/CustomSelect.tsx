@@ -1,26 +1,21 @@
-interface SelectProps {
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   options: string[];
-  value: string;
-  onChange: (value: string) => void;
 }
 
 export default function CustomSelect({
   label,
-  options = [],
-  value,
-  onChange,
+  options,
+  ...props
 }: SelectProps) {
   return (
     <div>
-      <label className="block mb-1 text-sm font-medium text-gray-700">
-        {label}
-      </label>
+      <label  className="block mb-1 text-sm font-medium text-gray-700">{label}</label>
 
-      <select
+      <select 
         className="border rounded-xl h-12 px-4 w-full"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        {...props}
+      
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>

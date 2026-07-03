@@ -120,6 +120,7 @@ function page() {
             type='text' 
             placeholder='Enter Your Full name' 
             {...register("username")}
+            optional= {false}
             />
 
             {errors.username && <p className="text-red-900">{errors.username.message}</p>}
@@ -132,6 +133,7 @@ function page() {
             type='email' 
             placeholder='Enter Your email' 
             {...register("email")}
+            optional= {false}
             />
               {errors.email && <p className="text-red-500">{errors.email.message}</p>}
           </div>
@@ -143,6 +145,7 @@ function page() {
           type='password' 
           placeholder='Enter Your password'
           {...register("password")}
+            optional= {false}
           />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
           </div>

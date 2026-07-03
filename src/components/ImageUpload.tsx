@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { Camera } from "lucide-react";
-import { ImageUploadProps } from "../types/dataTaype";
+import { ImageUploadProps, UploadType } from "../types/dataTaype";
 
-function ImageUpload({ onFileSelect, type }: ImageUploadProps ) {
+function ImageUpload<T extends UploadType>({ onFileSelect, type, content }: ImageUploadProps<T> ) {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,13 +23,18 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       />
 
       {/* Custom button */}
-      <button
-        onClick={() => fileRef.current?.click()}
-        type="button" 
-        className="absolute bottom-1 right-1 p-2 rounded-full cursor-pointer bg-white border shadow-md hover:bg-gray-100"
-      >
-        <Camera  size={20}/>
-      </button>
+      {content ? 
+          <h3 className="cursor-pointer" onClick={() => fileRef.current?.click()}>{content}</h3>
+        :
+        <button
+          onClick={() => fileRef.current?.click()}
+          type="button" 
+          className="absolute bottom-0 right-1 p-2 rounded-full cursor-pointer bg-white border shadow-md hover:bg-gray-100"
+        >
+          <Camera size={19} />
+        </button>
+    }
+
     </div>
   )
 }

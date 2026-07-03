@@ -6,10 +6,11 @@ export interface userDataType {
   subjects: string,
 };
 
-
-export type ImageUploadProps = {
-  onFileSelect: (file: File,  type?: "profile" | "cover") => void;
-  type: "profile" | "cover";
+export type UploadType = "profile" | "cover" | "image" | "video";
+export type ImageUploadProps<T extends UploadType> = {
+  onFileSelect: (file: File,  type?: T) => void;
+  type?: T;
+  content?: React.ReactNode
 };
 
 export interface UserProfile {
@@ -18,6 +19,7 @@ export interface UserProfile {
   pinnedDetail: string;
   location: string;
   gender: string;
+  birthday: string;
   profileImgUrl: string;
   coverImageUrl: string;
   coverImgPublicId: string
@@ -42,10 +44,27 @@ export interface User {
 };
 
 export interface userPostType {
-  title?: string,
-  content: string,
-  featuredImage?: string,
-  userId: string,
+    postType: string;
+
+    title: string;
+    content?: string;
+
+    category?: string;
+
+    tags?: string[];
+
+    resourceLink?: string;
+
+    postImageUrl?: string[];
+    postImgPublicId?: string;
+
+    videoLink?: string;
+
+    pollQuestion?: string;
+    pollOptions?: string[];
+    pollDuration?: number;
+
+    visibility: string;
 };
 
 export interface ApiResponse {
