@@ -45,6 +45,7 @@ export default function CreatePostPage() {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors }
   } = useForm<z.infer <typeof userPostSchema>>({
     resolver: zodResolver(userPostSchema),

@@ -14,11 +14,14 @@ export const POST = asyncHandler( async (req:Request) => {
     const formData = await req.formData();
     
     const data = Object.fromEntries(formData.entries()) as any;
-    console.log("Form Deta", formData)
+    
+
+    const tags = (formData.get("tags") as string).split(",").map(tag => tag.trim());
+
     const files = (formData.getAll("postImage") as File[]) || [];
     const videoFile = formData.get("postVideo") as File | null;
 
-    const { postType, title, content, category, tags, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
 
     
     const session = await getServerSession(authOptions);

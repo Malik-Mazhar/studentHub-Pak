@@ -1,13 +1,11 @@
-import Sidebar from "@/src/components/shared/app-sidebar";
+"use client"
 import CustomButton from "@/src/components/shared/CustomButton"
+import CustomInput from "@/src/components/shared/CustomInput";
+import axios from "axios";
+import { X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
-  FaImage,
-  FaVideo,
-  FaPoll,
-  FaFileAlt,
-  FaGlobeAsia,
-  FaRegHeart,
   FaHeart,
   FaRegComment,
   FaShare,
@@ -16,6 +14,9 @@ import {
   FaPlayCircle,
   FaEdit
 } from "react-icons/fa";
+import { Image, Smile, SendHorizonal } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
+import Comment from "@/src/components/sections/Comment";
 
 const posts = [
   {
@@ -56,6 +57,31 @@ const posts = [
 ];
 
 export default function CommunityCenter() {
+  const [allPostsData, setAllPostsData] = useState([]);
+  const [showComment, setShowComment] = useState(false);
+  const [comment, setComment] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+
+  const getAllPosts = async () => {
+    try {
+      const response = await axios.get("/api/user/getallposts");
+      setAllPostsData(response?.data?.data)
+    } catch (error) {
+      console.log("getAllPosts api Error please check the community page api :", error);
+
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  const allData = (allPostsData as any[]).map((item, index) => ({
+    ...item,
+    ...posts[index],
+  }));
+
+
   return (
     <div className="flex bg-[#FBFCFE]">
 
@@ -98,7 +124,7 @@ export default function CommunityCenter() {
 
       <div className="space-y-6">
 
-        {posts.map((post) => (
+        {allData.map((post) => (
           <div
             key={post.id}
             className="bg-white rounded-2xl shadow-sm border p-6"
@@ -110,7 +136,7 @@ export default function CommunityCenter() {
               <div className="flex gap-3">
 
                 <img
-                  src={`https://i.pravatar.cc/150?img=${post.id + 10}`}
+                  src={`https://i.pravatar.cc/150?img=${post.id + 10}` }
                   className="w-12 h-12 rounded-full"
                 />
 
@@ -140,32 +166,29 @@ export default function CommunityCenter() {
 
             {/* Content */}
 
-            <p className="my-4 text-gray-700 leading-7">{post.text}</p>
+            <p className="my-4 text-gray-700 leading-7">{post.content ?? post.text}</p>
 
             {/* Image */}
 
             <div className="relative">
 
               <img
-                src={post.image}
+                src={ post.postImageUrl?.[0] ?? post.image}
                 className="rounded-xl w-full h-95 object-cover"
               />
 
-              {post.video && (
+              {/* {post.video && (
                 <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-              )}
+              )} */}  
 
             </div>
 
             {/* Tags */}
 
             <div className="flex gap-3 text-blue-600 text-sm mt-4">
-
-              <span>#Physics</span>
-
-              <span>#Notes</span>
-
-              <span>#Study</span>
+              {post.tags.map((tag: string, index: number) => (
+                <span key={index}> #{tag} </span>
+              ))}
 
             </div>
 
@@ -180,7 +203,7 @@ export default function CommunityCenter() {
                   {post.likes}
                 </button>
 
-                <button className="flex items-center gap-2">
+                <button onClick={() => setShowComment(true)} className="flex items-center gap-2 cursor-pointer">
                   <FaRegComment />
                   {post.comments}
                 </button>
@@ -201,6 +224,10 @@ export default function CommunityCenter() {
 
       </div>
       </div>
+
+        {showComment && 
+          <Comment setShowComment={setShowComment} />
+        }
     </div>
   );
 }

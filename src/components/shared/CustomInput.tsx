@@ -31,7 +31,8 @@ export default function CustomInput({
             type={type}
             placeholder={placeholder}
             autoComplete="new-password"
-            className= {twMerge(`
+            className= {twMerge(
+                `
                 w-full
                 rounded-xl 
                 border 
@@ -41,7 +42,9 @@ export default function CustomInput({
                 outline-none 
                 focus:border-gray-300
                 focus:border-2
-                `)
+                `,
+                className
+            )
             }
             {...props}
         />
