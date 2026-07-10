@@ -59,8 +59,7 @@ const posts = [
 export default function CommunityCenter() {
   const [allPostsData, setAllPostsData] = useState([]);
   const [showComment, setShowComment] = useState(false);
-  const [comment, setComment] = useState("");
-  const [showEmoji, setShowEmoji] = useState(false);
+  const [postId, setPostId] = useState<string | null>(null);
 
   const getAllPosts = async () => {
     try {
@@ -203,7 +202,10 @@ export default function CommunityCenter() {
                   {post.likes}
                 </button>
 
-                <button onClick={() => setShowComment(true)} className="flex items-center gap-2 cursor-pointer">
+                <button onClick={() => {
+                  setShowComment((prev) => !prev);
+                  setPostId(post._id)
+                }} className="flex items-center gap-2 cursor-pointer">
                   <FaRegComment />
                   {post.comments}
                 </button>
@@ -225,8 +227,8 @@ export default function CommunityCenter() {
       </div>
       </div>
 
-        {showComment && 
-          <Comment setShowComment={setShowComment} />
+        {showComment && postId && 
+          <Comment setShowComment={setShowComment} postId= {postId} />
         }
     </div>
   );

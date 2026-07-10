@@ -60,7 +60,6 @@ export default function CreatePostPage() {
       ...data,
       postType: selectPostType.toLowerCase()
     }
-    console.log("deta", payload)
 
     try {
       const formData = new FormData();

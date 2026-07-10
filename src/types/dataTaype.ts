@@ -67,6 +67,15 @@ export interface userPostType {
     visibility: string;
 };
 
+export interface UserComment {
+  _id: string;
+  author: User;
+  post: string;
+  content: string;
+  parentComment: string | null;
+  likes: string[];
+}
+
 export interface ApiResponse {
   success: boolean;
   message: string;

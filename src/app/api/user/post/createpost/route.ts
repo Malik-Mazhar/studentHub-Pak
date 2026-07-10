@@ -1,7 +1,7 @@
 import dbConnect from "@/src/lib/dbConnect";
 import UserPostModel from "@/src/models/post";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+import { authOptions } from "../../../auth/[...nextauth]/options";
 import { NextResponse } from "next/server";
 import { asyncHandler } from "@/src/lib/asyncandler";
 import { ApiError } from "next/dist/server/api-utils";
