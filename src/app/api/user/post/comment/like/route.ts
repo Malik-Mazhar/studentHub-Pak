@@ -13,6 +13,7 @@ export const POST = asyncHandler( async (req:Request) => {
 
     const formData = await req.formData();
     const commentId = formData.get("commentId");
+    const PostId = formData.get("postId");
 
     
     const session = await getServerSession(authOptions);
@@ -23,22 +24,51 @@ export const POST = asyncHandler( async (req:Request) => {
     };
 
     const getComment = await Comment.findById(commentId);
+    const getPostById = await UserPostModel.findById(PostId);
+    console.log("alreadyLikedPost",getPostById)
 
-    if (!getComment) {
+    if (!getComment && !getPostById) {
         throw new ApiError(404, "Comment not found");
     };
 
-    const alreadyLiked = getComment.likes.some(
-        (_id: Types.ObjectId) => _id.toString() === userId.toString()
-    );
+    if(getPostById){
+        const alreadyLikedPost = getPostById.likes.some((_id: Types.ObjectId) => _id.toString() === userId.toString());
+          
+        if(alreadyLikedPost){
+            getPostById.likes = getPostById.likes.filter((id) => id.toString() !== userId)
+        }else {
+            // Like
+            getPostById.likes.push(new Types.ObjectId(userId))   
+        };
 
-    if (alreadyLiked) {
-        // Unlike
-        getComment.likes.pull(userId);
-    } else {
-        // Like
-         getComment.likes.push(userId)   
-    };
+        await getPostById.save();
+
+            return Response
+                .json(
+                    new ApiResponse(
+                    201,
+                    {
+                        isLiked: true,
+                        likesCount: getPostById && getPostById.likes.length
+                    },
+                    "Post created successfully")
+                );
+
+    }else {
+        const alreadyLiked = getComment.likes.some(
+            (_id: Types.ObjectId) => _id.toString() === userId.toString()
+        );
+
+        if (alreadyLiked) {
+            // Unlike
+            getComment.likes.pull(userId);
+        } else {
+            // Like
+            getComment.likes.push(userId)   
+        };
+     await getComment.save();
+
+    }
 
     const updatedComment = await Comment.findById(commentId)
     .populate({
@@ -50,11 +80,10 @@ export const POST = asyncHandler( async (req:Request) => {
     }
     });
 
-     await getComment.save();
-
     return Response
     .json(
-        new ApiResponse(201, updatedComment, "Post created successfully")
+        new ApiResponse(
+            201, updatedComment, "Post created successfully")
     );
 
 } );

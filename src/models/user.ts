@@ -95,12 +95,12 @@ const userSchema: Schema<User> = new Schema({
         // required: [ true, "Password is required"],
     },
 
-    profileImgUrl: {
-        type: String // Cloudinary 3rd party
-    },
-    coverImage: {
-        type: String
-    },
+    // profileImgUrl: {
+    //     type: String // Cloudinary 3rd party
+    // },
+    // coverImage: {
+    //     type: String
+    // },
 
     verifyCode: {
         type: String,

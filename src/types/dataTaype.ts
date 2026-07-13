@@ -44,6 +44,7 @@ export interface User {
 };
 
 export interface userPostType {
+    _id: string;
     postType: string;
 
     title: string;
@@ -65,6 +66,9 @@ export interface userPostType {
     pollDuration?: number;
 
     visibility: string;
+    postLikesCount: number
+
+    likes: string[];
 };
 
 export interface UserComment {

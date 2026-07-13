@@ -76,7 +76,7 @@ export default function CreatePostPage() {
           formData.append("coverImg", postVideoSelect);
       };
 
-      const response = await axios.post("/api/user/createpost", formData);
+      const response = await axios.post("/api/user/post/createpost", formData);
 
       dispatch(addPost(response.data.userPost));
 

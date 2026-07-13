@@ -1,8 +1,6 @@
 "use client"
 import CustomButton from "@/src/components/shared/CustomButton"
-import CustomInput from "@/src/components/shared/CustomInput";
 import axios from "axios";
-import { X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -14,9 +12,13 @@ import {
   FaPlayCircle,
   FaEdit
 } from "react-icons/fa";
-import { Image, Smile, SendHorizonal } from "lucide-react";
-import EmojiPicker from "emoji-picker-react";
 import Comment from "@/src/components/sections/Comment";
+import { useAppSelector } from "@/src/store/useSelecterhook";
+import { useDispatch } from "react-redux";
+import { toggleLike } from "@/src/store/commmentSlice";
+import { userPostType } from "@/src/types/dataTaype";
+import { useSession } from "next-auth/react";
+import { ThumbsUp } from "lucide-react";
 
 const posts = [
   {
@@ -27,7 +29,7 @@ const posts = [
     text: "Just completed my Physics practical 💡 Here's a short video explaining how to find resistance using Ohm's Law.",
     image:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000",
-    likes: 124,
+    // likes: 124,
     comments: 23,
     shares: 12,
     video: true,
@@ -39,7 +41,7 @@ const posts = [
     text: "Made these Biology notes for Chapter 5. Hope it helps everyone 🌿",
     image:
       "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1000",
-    likes: 89,
+    // likes: 89,
     comments: 16,
     shares: 8,
   },
@@ -50,21 +52,27 @@ const posts = [
     text: "Sunset at my university today 🌅",
     image:
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1000",
-    likes: 76,
+    // likes: 76,
     comments: 10,
     shares: 3,
   },
 ];
 
 export default function CommunityCenter() {
-  const [allPostsData, setAllPostsData] = useState([]);
+  const [allPostsData, setAllPostsData] = useState<userPostType[]>([]);
   const [showComment, setShowComment] = useState(false);
   const [postId, setPostId] = useState<string | null>(null);
+  const [postLikeId, setPostLikeId] = useState<string | null>(null)
+  const dispatch = useDispatch();
+    const { data: session, status } = useSession();
+  const commentsData = useAppSelector((state) => state.commentsData.comments);
+    console.log("commentsData", commentsData)
 
   const getAllPosts = async () => {
     try {
-      const response = await axios.get("/api/user/getallposts");
+      const response = await axios.get("/api/user/get/getallposts");
       setAllPostsData(response?.data?.data)
+
     } catch (error) {
       console.log("getAllPosts api Error please check the community page api :", error);
 
@@ -75,11 +83,40 @@ export default function CommunityCenter() {
     getAllPosts();
   }, []);
 
+
+      const handleLike = async (postId: string) => {
+        try {
+            const formData = new FormData();
+
+              formData.append("postId", postId);
+                  
+              const response = await axios.post("/api/user/post/comment/like", formData);
+
+              const { isLiked, likesCount } = response.data.data;
+
+              setAllPostsData((prev) =>
+                prev.map((post) =>
+                  post._id === postId
+                    ? {
+                        ...post,
+                        isLiked,
+                        postLikesCount: likesCount,
+                      }
+                    : post
+                )
+              );
+              dispatch(toggleLike(response.data.data))
+    
+        } catch (error) {
+            console.log(error);
+        }
+      };
+
   const allData = (allPostsData as any[]).map((item, index) => ({
     ...item,
     ...posts[index],
   }));
-
+   console.log("allData", allData)
 
   return (
     <div className="flex bg-[#FBFCFE]">
@@ -107,14 +144,16 @@ export default function CommunityCenter() {
         </div>
         
         <div className="flex items-center gap-3">
-          <select className="border rounded-lg px-4 py-2">
+
+          <select className="border rounded-lg px-4 py-2 cursor-pointer">
             <option>Latest</option>
             <option>Popular</option>
           </select>
-           <Link href="/createPost">
-           
-          <CustomButton className="flex py-2 px-5 gap-x-3"><FaEdit size={18} /> post</CustomButton>
-           </Link>          
+
+           <Link href="/createPost">        
+              <CustomButton className="flex py-2 px-5 gap-x-3"><FaEdit size={18} /> post</CustomButton>
+           </Link> 
+
         </div>
 
       </div>
@@ -135,7 +174,7 @@ export default function CommunityCenter() {
               <div className="flex gap-3">
 
                 <img
-                  src={`https://i.pravatar.cc/150?img=${post.id + 10}` }
+                  src={ post.author.userProfile.profileImgUrl || "/img/defaultProfile.jfif" }
                   className="w-12 h-12 rounded-full"
                 />
 
@@ -143,7 +182,7 @@ export default function CommunityCenter() {
 
                   <div className="flex items-center gap-2">
 
-                    <h3 className="font-semibold">{post.name}</h3>
+                    <h3 className="font-semibold">{post.author.userProfile.profileName}</h3>
 
                     {post.badge && (
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
@@ -197,17 +236,25 @@ export default function CommunityCenter() {
 
               <div className="flex gap-8">
 
-                <button className="flex items-center gap-2">
-                  <FaHeart className="text-red-500" />
-                  {post.likes}
+                <button
+                    onClick={() => {
+                      setPostLikeId(post._id)
+                      handleLike(post._id)
+                    }}
+                    className="flex items-center gap-2 cursor-pointer">
+                  <ThumbsUp size={18} className={`${post.postLikesCount? "text-blue-500" : ""}`} />
+                  {post.postLikesCount}
                 </button>
 
-                <button onClick={() => {
-                  setShowComment((prev) => !prev);
-                  setPostId(post._id)
-                }} className="flex items-center gap-2 cursor-pointer">
+                <button 
+                    onClick={() => {
+                      setShowComment((prev) => !prev);
+                      setPostId(post._id)
+                    }} 
+                    className="flex items-center gap-2 cursor-pointer"
+                >
                   <FaRegComment />
-                  {post.comments}
+                   {post.commentsCount}
                 </button>
 
                 <button className="flex items-center gap-2">

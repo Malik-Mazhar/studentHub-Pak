@@ -23,6 +23,8 @@ export interface UserPost extends Document {
     pollDuration?: number;
 
     visibility: string;
+
+    likes: Types.ObjectId[];
 };
 
 const userPostSchema: Schema<UserPost> = new Schema({
@@ -84,7 +86,15 @@ const userPostSchema: Schema<UserPost> = new Schema({
         type: String,
         enum: ["Everyone", "Only Members", "Private"],
         default: "Everyone",
-    }
+    },
+
+    likes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ]
+
 }, { timestamps: true });
 
 export const UserPostModel = (mongoose.models.UserPost as mongoose.Model<UserPost>) || mongoose.model<UserPost>("UserPost", userPostSchema);
