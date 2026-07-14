@@ -21,7 +21,7 @@ import { useSession } from "next-auth/react";
 import { ThumbsUp } from "lucide-react";
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { toast } from "sonner";
-import { setPosts, toggleBookmark } from "@/src/store/postSlice";
+import { setPosts, toggleLikePost, toggleBookmark } from "@/src/store/postSlice";
 
 const posts = [
   {
@@ -97,21 +97,7 @@ export default function CommunityCenter() {
               
           const response = await axios.post("/api/user/post/comment/like", formData);
 
-          const { isLiked, likesCount } = response.data.data;
-
-          setAllPostsData((prev) =>
-            prev.map((post) =>
-              post._id === postId
-                ? {
-                    ...post,
-                    isLiked,
-                    postLikesCount: likesCount,
-                  }
-                : post
-            )
-          );
-
-          dispatch(toggleLike(response.data.data))
+          dispatch(toggleLikePost({postId, ...response.data.data}))
 
     } catch (error) {
         console.log(error);

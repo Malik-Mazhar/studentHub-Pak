@@ -25,6 +25,20 @@ export const postSlice = createSlice({
       state.posts.unshift(action.payload);
     },
 
+    
+    toggleLikePost: (state, action) => {
+      const { postId, isLiked, likesCount } = action.payload;
+
+      const post = state.posts.find(
+        (post) => post._id === postId
+      );
+        
+      if (post) {
+        post.isLiked = isLiked;
+        post.postLikesCount = likesCount;
+      };
+    },
+
     toggleBookmark: (state, action) => {
       const { postId, isBookmarked } = action.payload;
       console.log("action paylaod", action)
@@ -45,5 +59,5 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPosts, addPost, toggleBookmark, deletePost } = postSlice.actions;
+export const { setPosts, addPost, toggleLikePost, toggleBookmark, deletePost } = postSlice.actions;
 export default postSlice.reducer;
