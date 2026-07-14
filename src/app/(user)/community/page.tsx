@@ -67,14 +67,26 @@ export default function CommunityCenter() {
   const [postId, setPostId] = useState<string | null>(null);
   const [postLikeId, setPostLikeId] = useState<string | null>(null)
   const dispatch = useDispatch();
-    const { data: session, status } = useSession();
+  const { data: session, status } = useSession();
   const commentsData = useAppSelector((state) => state.commentsData.comments);
   const PostData = useAppSelector((state) => state.postData.posts);
   console.log("PostData", PostData)
 
   const getAllPosts = async () => {
     try {
-      const response = await axios.get("/api/user/get/getallposts");
+      const response = await axios.get("/api/user/get/getallposts?sort=latest");
+      setAllPostsData(response?.data?.data)
+      dispatch(setPosts(response.data.data))
+
+    } catch (error) {
+      console.log("getAllPosts api Error please check the community page api :", error);
+
+    }
+  };
+
+    const getPopularPosts = async () => {
+    try {
+      const response = await axios.get("/api/user/get/getallposts?sort=popular");
       setAllPostsData(response?.data?.data)
       dispatch(setPosts(response.data.data))
 
@@ -90,6 +102,7 @@ export default function CommunityCenter() {
 
 
   const handleLike = async (postId: string) => {
+    console.log("how are you fun")
     try {
         const formData = new FormData();
 
@@ -144,7 +157,7 @@ export default function CommunityCenter() {
 
         <div className="flex gap-3">
 
-          <button className="px-5 py-2 rounded-full bg-blue-600 text-white">
+          <button onClick={() => getAllPosts()} className="px-5 py-2 rounded-full bg-blue-600 cursor-pointer text-white">
             All
           </button>
 
@@ -152,7 +165,7 @@ export default function CommunityCenter() {
             Following
           </button>
 
-          <button className="px-5 py-2 rounded-full bg-gray-100">
+          <button onClick={() => getPopularPosts()} className="px-5 py-2 rounded-full cursor-pointer bg-gray-100">
             Popular
           </button>
 
@@ -160,9 +173,15 @@ export default function CommunityCenter() {
         
         <div className="flex items-center gap-3">
 
-          <select className="border rounded-lg px-4 py-2 cursor-pointer">
-            <option>Latest</option>
-            <option>Popular</option>
+          <select 
+              onChange={(e) =>
+                e.target.value === "popular"
+                  ? getPopularPosts()
+                  : getAllPosts()
+              }
+            className="border rounded-lg px-4 py-2 cursor-pointer">
+            <option value="latest">Latest</option>
+            <option value="popular">Popular</option>
           </select>
 
            <Link href="/createPost">        
