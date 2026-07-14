@@ -1,4 +1,4 @@
-import { postAggregation } from './../../../../../lib/postAggregation';
+import { postAggregation } from './../../../../../lib/aggregations/postAggregation';
 import { asyncHandler } from "@/src/lib/asyncandler";
 import dbConnect from "@/src/lib/dbConnect";
 import { getServerSession } from "next-auth";
@@ -25,7 +25,7 @@ export const GET = asyncHandler( async (req:Request) => {
 
     const user = await UserModel.findById(userId).select("bookmarks");      //if first latest post .sort({ createdAt: -1 });
     const bookmarkIds = user?.bookmarks || [];
-    
+
     const getAllPosts = await UserPostModel.aggregate(postAggregation(userId, sort, bookmarkIds))
 
 
