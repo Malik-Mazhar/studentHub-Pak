@@ -1,6 +1,6 @@
 import dbConnect from "@/src/lib/dbConnect";
 import UserModel from "@/src/models/user";
-import { authOptions } from "../../auth/[...nextauth]/options";
+import { authOptions } from "../../../auth/[...nextauth]/options";
 import { useSession } from 'next-auth/react';
 import { getServerSession } from "next-auth";
 import { uploadImageHandler } from "@/src/middlewares/uploads";

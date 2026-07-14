@@ -77,7 +77,7 @@ const page = () => {
                 formData.append("coverImg", selectCoverImg);
             }
 
-            const response = await axios.post("/api/user/profile", formData);
+            const response = await axios.post("/api/user/post/profile", formData);
 
             dispatch(profileData(response?.data?.updatedUser));
             setError("");

@@ -13,7 +13,7 @@ export default function AuthProvider({ children }: Readonly<{children: React.Rea
       const init = async () => {
 
         try {
-            const response = await axios.get("/api/user/profile");
+            const response = await axios.get("/api/user/post/profile");
             console.log("chacking response...", response.data)
 
             if (response?.data) {

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface userProfileType extends Document {
     profileName: string,
@@ -56,7 +56,8 @@ const userProfileSchema: Schema<userProfileType> = new Schema({
     coverImgPublicId: {
         type: String,
         default: ""
-    }
+    },
+    
 });
 
 export interface User extends Document {
@@ -70,6 +71,7 @@ export interface User extends Document {
    isverifyed: boolean,
    isAcceptMessage: boolean,
    watchHistory: mongoose.Types.ObjectId[],
+   bookmarks: Types.ObjectId[],
    userProfile: userProfileType
 };
 
@@ -125,7 +127,18 @@ const userSchema: Schema<User> = new Schema({
             ref: "Post"
         }
     ],
-    userProfile: userProfileSchema
+    userProfile: userProfileSchema,
+
+
+    bookmarks: {
+        type: [
+            {
+            type: Schema.Types.ObjectId,
+            ref: "UserPost",
+            },
+        ],
+        default: [],
+    },
 }, {timestamps: true});
 
 const UserModel = (mongoose.models.User as mongoose.Model <User> || mongoose.model<User>("User", userSchema));

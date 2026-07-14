@@ -1,6 +1,6 @@
 "use client"
 import CustomButton from "@/src/components/shared/CustomButton"
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -19,6 +19,9 @@ import { toggleLike } from "@/src/store/commmentSlice";
 import { userPostType } from "@/src/types/dataTaype";
 import { useSession } from "next-auth/react";
 import { ThumbsUp } from "lucide-react";
+import { ApiResponse } from "@/src/lib/apiResponse";
+import { toast } from "sonner";
+import { setPosts, toggleBookmark } from "@/src/store/postSlice";
 
 const posts = [
   {
@@ -66,12 +69,14 @@ export default function CommunityCenter() {
   const dispatch = useDispatch();
     const { data: session, status } = useSession();
   const commentsData = useAppSelector((state) => state.commentsData.comments);
-    console.log("commentsData", commentsData)
+  const PostData = useAppSelector((state) => state.postData.posts);
+  console.log("PostData", PostData)
 
   const getAllPosts = async () => {
     try {
       const response = await axios.get("/api/user/get/getallposts");
       setAllPostsData(response?.data?.data)
+      dispatch(setPosts(response.data.data))
 
     } catch (error) {
       console.log("getAllPosts api Error please check the community page api :", error);
@@ -84,39 +89,63 @@ export default function CommunityCenter() {
   }, []);
 
 
-      const handleLike = async (postId: string) => {
-        try {
-            const formData = new FormData();
+  const handleLike = async (postId: string) => {
+    try {
+        const formData = new FormData();
 
-              formData.append("postId", postId);
-                  
-              const response = await axios.post("/api/user/post/comment/like", formData);
+          formData.append("postId", postId);
+              
+          const response = await axios.post("/api/user/post/comment/like", formData);
 
-              const { isLiked, likesCount } = response.data.data;
+          const { isLiked, likesCount } = response.data.data;
 
-              setAllPostsData((prev) =>
-                prev.map((post) =>
-                  post._id === postId
-                    ? {
-                        ...post,
-                        isLiked,
-                        postLikesCount: likesCount,
-                      }
-                    : post
-                )
-              );
-              dispatch(toggleLike(response.data.data))
-    
-        } catch (error) {
-            console.log(error);
-        }
-      };
+          setAllPostsData((prev) =>
+            prev.map((post) =>
+              post._id === postId
+                ? {
+                    ...post,
+                    isLiked,
+                    postLikesCount: likesCount,
+                  }
+                : post
+            )
+          );
 
-  const allData = (allPostsData as any[]).map((item, index) => ({
+          dispatch(toggleLike(response.data.data))
+
+    } catch (error) {
+        console.log(error);
+    }
+  };
+
+  const allData = (PostData as any[]).map((item, index) => ({
     ...item,
     ...posts[index],
   }));
-   console.log("allData", allData)
+
+  const handleBookMarksPost = async (postId: string) => {
+     try {
+
+      const response = await axios.post(`/api/user/post/bookmark?postId=${postId}`);
+      dispatch(toggleBookmark(response.data.data))
+
+      toast("post saved successfully!", {
+          position: "top-right",        
+          description: <span className="text-black">{ response.data?.message }</span>,
+      });
+
+     } catch (error) {
+      console.log("Bookmarks Error check community page", error);
+
+      const AxiosError = error as AxiosError<ApiResponse>;
+      const message = AxiosError.response?.data?.message || "Something went wrong";
+
+      toast("Video not found!", {
+          position: "bottom-right",
+          description: <span className="text-black">{ message }</span>,
+      });
+     };
+  };
 
   return (
     <div className="flex bg-[#FBFCFE]">
@@ -264,8 +293,10 @@ export default function CommunityCenter() {
 
               </div>
 
-              <FaBookmark className="cursor-pointer" />
-
+                <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
+                  <FaBookmark />
+                  {post.bookmarkCount}
+                </button>
             </div>
 
           </div>

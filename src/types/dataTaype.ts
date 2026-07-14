@@ -69,6 +69,7 @@ export interface userPostType {
     postLikesCount: number
 
     likes: string[];
+  isBookmarked: boolean;
 };
 
 export interface UserComment {

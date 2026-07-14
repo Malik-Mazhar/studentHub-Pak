@@ -6,6 +6,7 @@ import { ApiError } from "@/src/lib/apiError";
 import UserPostModel from "@/src/models/post";
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { Types } from "mongoose";
+import UserModel from "@/src/models/user";
 
 export const GET = asyncHandler( async (req:Request) => {
     await dbConnect();
@@ -17,8 +18,9 @@ export const GET = asyncHandler( async (req:Request) => {
         throw new ApiError(401, "user Unauthorized" )
     };
 
-    // const posts = await UserPostModel.find();       //if first latest post .sort({ createdAt: -1 });
-
+    const user = await UserModel.findById(userId).select("bookmarks");      //if first latest post .sort({ createdAt: -1 });
+    const bookmarkIds = user?.bookmarks || [];
+    
     const getAllPosts = await UserPostModel.aggregate([
         {
             $sort: {
@@ -59,6 +61,10 @@ export const GET = asyncHandler( async (req:Request) => {
                             $ifNull: ["$likes", []]
                         }
                     ]
+                },
+
+                isBookmarked: {
+                    $in: ["$_id", bookmarkIds]
                 }
             }
         },
@@ -73,6 +79,7 @@ export const GET = asyncHandler( async (req:Request) => {
                 commentsCount: 1,
                 postLikesCount: 1,
                 isLiked: 1,
+                isBookmarked: 1,
 
                 _id: 1,
                 title: 1,
