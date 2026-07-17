@@ -70,6 +70,8 @@ export const postAggregation = (
                 tags: 1,
                 resourceLink: 1,
                 postImageUrl: 1,
+                postDocumentUrl: 1,
+                postDocumentPublicId: 1,
                 postImgPublicId: 1,
                 videoLink: 1,
                 pollQuestion: 1,

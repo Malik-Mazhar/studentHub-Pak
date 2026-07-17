@@ -27,6 +27,7 @@ import { addPost } from "@/src/store/postSlice";
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 import ImageUpload from "@/src/components/ImageUpload";
 import { Loader2 } from "lucide-react";
+import ReusableCreatePostForm from "@/src/components/shared/ReusableCreatePostForm";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -41,13 +42,20 @@ export default function CreatePostPage() {
   const [duration, setDuration] = useState("");
   const dispatch = useAppDispatch();
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors }
-  } = useForm<z.infer <typeof userPostSchema>>({
+  // const {
+  //   control,
+  //   register,
+  //   handleSubmit,
+  //   watch,
+  //   formState: { errors }
+  // } = useForm<z.infer <typeof userPostSchema>>({
+  //   resolver: zodResolver(userPostSchema),
+  //   defaultValues: {
+  //   tags: [],
+  // },
+  // });
+
+    const form = useForm<z.infer <typeof userPostSchema>>({
     resolver: zodResolver(userPostSchema),
     defaultValues: {
     tags: [],
@@ -300,160 +308,165 @@ export default function CreatePostPage() {
             
         {/* Title */}
           {findUserSelectPostType && findUserSelectPostType.title === "Discussion" && 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            // <form onSubmit={handleSubmit(onSubmit)}>
 
-                <div className="mt-8">
+                // <div className="mt-8">
 
-                  <CustomInput
-                    label={`Post Title`}
-                    type="text"
-                    placeholder="Give your post a short title..."
-                    optional = {true}
-                    {...register("title")}
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
-                  />
+                //   <CustomInput
+                //     label={`Post Title`}
+                //     type="text"
+                //     placeholder="Give your post a short title..."
+                //     optional = {true}
+                //     {...register("title")}
+                //     className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
+                //   />
 
-                </div>
-                 <input type="hidden" value={selectPostType} {...register("postType")} />
-                {/* Description */}
+                // </div>
+                //  <input type="hidden" value={selectPostType} {...register("postType")} />
+            //     {/* Description */}
 
-                <div className="mt-6">
+            //     <div className="mt-6">
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Write Something
-                    <span className="text-red-500">*</span>
-                  </label>
+            //       <label className="block text-sm font-semibold text-gray-700 mb-2">
+            //         Write Something
+            //         <span className="text-red-500">*</span>
+            //       </label>
 
-                  <textarea
-                    rows={8}
-                    placeholder="Write your post content here..."
-                    {...register("content")}
-                    className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
-                  />
+            //       <textarea
+            //         rows={8}
+            //         placeholder="Write your post content here..."
+            //         {...register("content")}
+            //         className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
+            //       />
 
-                </div>
+            //     </div>
 
-                {/* Category */}
+            //     {/* Category */}
 
-                <div className="mt-6">
+            //     <div className="mt-6">
 
-                  <CustomSelect 
-                    label="Category"
-                    options={["General Discussion", "Education", "Technology", "Science", "Career"]}
-                    {...register("category")}
-                  />
+            //       <CustomSelect 
+            //         label="Category"
+            //         options={["General Discussion", "Education", "Technology", "Science", "Career"]}
+            //         {...register("category")}
+            //       />
 
-                </div>
+            //     </div>
 
-                {/* Upload */}
+            //     {/* Upload */}
 
-                <div className="mt-6">
+            //     <div className="mt-6">
 
-                  <label className="block text-sm font-semibold mb-2">
+            //       <label className="block text-sm font-semibold mb-2">
 
-                    Attach File
+            //         Attach File
 
-                    <span className="text-gray-400">
-                      {" "} (Optional)
-                    </span>
+            //         <span className="text-gray-400">
+            //           {" "} (Optional)
+            //         </span>
 
-                  </label>
+            //       </label>
 
-                  <div className="border-2 border-dashed rounded-2xl py-12 flex flex-col items-center">
+            //       <div className="border-2 border-dashed rounded-2xl py-12 flex flex-col items-center">
                     
-                   { postImagePerview &&
-                      <div>
-                        <img
-                          src={postImagePerview}
-                          alt="" 
-                          className="w-full"
-                        />
-                      </div>
-                   }
+            //        { postImagePerview &&
+            //           <div>
+            //             <img
+            //               src={postImagePerview}
+            //               alt="" 
+            //               className="w-full"
+            //             />
+            //           </div>
+            //        }
 
 
-                  { postVideoPerview && (
-                    <video
-                      src={postVideoPerview}
-                      controls
-                      className="w-full h-100 rounded-lg"
-                    />
-                  )}
+            //       { postVideoPerview && (
+            //         <video
+            //           src={postVideoPerview}
+            //           controls
+            //           className="w-full h-100 rounded-lg"
+            //         />
+            //       )}
 
-                   { !postImagePerview && !postVideoPerview && 
-                      <div>
+            //        { !postImagePerview && !postVideoPerview && 
+            //           <div>
 
-                      <div className="text-5xl">
-                        ☁️
-                      </div>
+            //           <div className="text-5xl">
+            //             ☁️
+            //           </div>
 
-                      <h3 className=" relative font-semibold mt-4">
+            //           <h3 className=" relative font-semibold mt-4">
 
-                      <ImageUpload content="Drag & Drop files here" onFileSelect={handleFile} />
+            //           <ImageUpload content="Drag & Drop files here" onFileSelect={handleFile} />
 
-                      </h3>
+            //           </h3>
 
-                      <p className="text-gray-500 mt-2">
+            //           <p className="text-gray-500 mt-2">
 
-                        here to pick Image or video
+            //             here to pick Image or video
 
-                      </p>
+            //           </p>
 
-                    </div>
-                   }
+            //         </div>
+            //        }
 
 
-                  </div>
+            //       </div>
 
-                </div>
+            //     </div>
 
-                {/* Tags */}
+            //     {/* Tags */}
 
-                <div className="mt-6">
-                  <Controller 
-                    name="tags"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomTagInput 
-                        label="Tags"
-                        tags={field.value ?? []}
-                        setTags={field.onChange}
-                        max={5}
-                      />
-                    )}
-                  />
+            //     <div className="mt-6">
+            //       <Controller 
+            //         name="tags"
+            //         control={control}
+            //         render={({ field }) => (
+            //           <CustomTagInput 
+            //             label="Tags"
+            //             tags={field.value ?? []}
+            //             setTags={field.onChange}
+            //             max={5}
+            //           />
+            //         )}
+            //       />
 
-                </div>
+            //     </div>
 
-                {/* Bottom */}
+            //     {/* Bottom */}
 
-                <div className="flex justify-between items-center mt-10">
+            //     <div className="flex justify-between items-center mt-10">
 
-                  <CustomSelect
-                    label="Visibility"
-                    options={["Everyone", "Only Members", "Private"]}
-                    {...register("visibility")}
-                  />
+            //       <CustomSelect
+            //         label="Visibility"
+            //         options={["Everyone", "Only Members", "Private"]}
+            //         {...register("visibility")}
+            //       />
 
-                  <CoustomButton type="submit"
-                    className="px-10 h-10 rounded-xl"
-                  >
-                    {isSubmitting ? (
-                        <div className="flex gap-2">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Please wait
-                        </div>
-                    ):(
-                      "Publish Post"
-                    )}
+            //       <CoustomButton type="submit"
+            //         className="px-10 h-10 rounded-xl"
+            //       >
+            //         {isSubmitting ? (
+            //             <div className="flex gap-2">
+            //               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            //               Please wait
+            //             </div>
+            //         ):(
+            //           "Publish Post"
+            //         )}
 
                     
 
-                  </CoustomButton>
+            //       </CoustomButton>
 
-                </div>
+            //     </div>
 
-            </form>
+            // </form>
+
+            <ReusableCreatePostForm
+                form={form}
+                postType="Discussion"
+            />
           }
           {findUserSelectPostType && findUserSelectPostType.title === "Video" && 
           <form>
@@ -543,72 +556,89 @@ export default function CreatePostPage() {
           }
 
           {findUserSelectPostType && findUserSelectPostType.title === "Notes" && 
-            <form action="">
+            // <form>
 
-                <div className="mt-8 space-y-6">
+            //     <div className="mt-8 space-y-6">
 
-                  <CustomInput
-                    label="Notes Title"
-                    type="text"
-                    placeholder="Enter your notes title"
-                    optional = {true}
-                  />
+            //       <CustomInput
+            //         label="Notes Title"
+            //         type="text"
+            //         placeholder="Enter your notes title"
+            //         optional = {true}
+            //         // {...register("title")}
+            //       />
 
-                  {/* Description */}
-                  <div>
-                    <label className="font-medium text-gray-700">
-                      Description
-                    </label>
+            //       {/* Description */}
+            //       <div>
+            //         <label className="font-medium text-gray-700">
+            //           Description
+            //         </label>
 
-                    <textarea
-                      rows={5}
-                      placeholder="Write a short description..."
-                      className="w-full mt-2 border rounded-xl p-3 resize-none"
-                    />
-                  </div>
+            //         <textarea
+            //           rows={5}
+            //           placeholder="Write a short description..."
+            //           className="w-full mt-2 border rounded-xl p-3 resize-none"
+            //           // {...register("content")}
+            //         />
+            //       </div>
 
-                  {/* Upload */}
-                  <div>
-                    <label className="font-medium text-gray-700">
-                      Upload Notes
-                    </label>
+            //       {/* Upload */}
+            //       <div>
+            //         <label className="font-medium text-gray-700">
+            //           Upload Notes
+            //         </label>
 
-                    <div className="border-2 border-dashed rounded-xl p-10 text-center mt-2">
-                      <p className="text-gray-500">
-                        Drag & Drop your PDF, DOCX or PPT
-                      </p>
+            //         <div className="border-2 border-dashed rounded-xl p-10 text-center mt-2">
+            //           <p className="text-gray-500">
+            //             Drag & Drop your PDF, DOCX or PPT
+            //           </p>
 
-                      <input
-                        type="file"
-                        className="mt-4"
-                      />
-                    </div>
-                  </div>
+            //           <input
+            //             type="file"
+            //             className="mt-4"
+            //           />
+            //         </div>
+            //       </div>
 
-                  {/* Category */}
-                  <div>
-                    <CustomSelect 
-                    label="Category"
-                    value=""
-                    onChange={() => ""}
-                    options={["General Discussion", "Education", "Technology", "Science", "Career"]}
-                    />
-                  </div>
+            //       {/* Category */}
+            //       <div>
+            //           <CustomSelect 
+            //           label="Notes Category"
+            //           value=""
+            //           onChange={() => ""}
+            //           options={["Math", "English", "Bio", "Science"]}
+            //           />
+            //       </div>
 
-                  {/* Buttons */}
-                  <div className="flex justify-end gap-3">
-                    <button className="px-5 py-3 rounded-xl border">
-                      Cancel
-                    </button>
+            //       {/* Category */}
+            //       <div>
+            //           <CustomSelect 
+            //           label="Category"
+            //           value=""
+            //           onChange={() => ""}
+            //           options={["General Discussion", "Education", "Technology", "Science", "Career"]}
+            //           />
+            //       </div>
 
-                    <CoustomButton className="px-5 py-3 rounded-xl bg-blue-600 text-white">
-                      Publish Notes
-                    </CoustomButton>
-                  </div>
+            //       {/* Buttons */}
+            //       <div className="flex justify-end gap-3">
+            //         <button className="px-5 py-3 rounded-xl border">
+            //           Cancel
+            //         </button>
 
-                </div>
+            //         <CoustomButton className="px-5 py-3 rounded-xl bg-blue-600 text-white">
+            //           Publish Notes
+            //         </CoustomButton>
+            //       </div>
 
-            </form>
+            //     </div>
+
+            // </form>
+
+            <ReusableCreatePostForm
+                form={form}
+                postType="Notes"
+            />
           }
 
             {findUserSelectPostType && findUserSelectPostType.title === "Question" && 

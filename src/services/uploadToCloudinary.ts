@@ -26,8 +26,14 @@ export const uploadMediaHandler = async (
   // Allowed types
   const isImage = file.type.startsWith("image/");
   const isVideo = file.type.startsWith("video/");
+  const isPdf = file.type === "application/pdf";
+  const isDoc =
+  file.type === "application/msword" ||
+  file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-  if (!isImage && !isVideo) {
+  const isDocument = isPdf || isDoc;
+
+  if (!isImage && !isVideo && !isDocument) {
     throw new Error("Only image and video files are allowed");
   }
 
@@ -38,6 +44,10 @@ export const uploadMediaHandler = async (
 
   if (isVideo && file.size > 100 * 1024 * 1024) {
     throw new Error("Video size must be less than 100MB");
+  }
+
+  if (isDocument && file.size > 20 * 1024 * 1024) {
+    throw new Error("Document size must be less than 20MB");
   }
 
   const bytes = await file.arrayBuffer();

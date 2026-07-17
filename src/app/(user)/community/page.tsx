@@ -23,44 +23,6 @@ import { ApiResponse } from "@/src/lib/apiResponse";
 import { toast } from "sonner";
 import { setPosts, toggleLikePost, toggleBookmark } from "@/src/store/postSlice";
 
-const posts = [
-  {
-    id: 1,
-    name: "Fatima Noor",
-    badge: "Top Contributor",
-    time: "2 hours ago",
-    text: "Just completed my Physics practical 💡 Here's a short video explaining how to find resistance using Ohm's Law.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000",
-    // likes: 124,
-    comments: 23,
-    shares: 12,
-    video: true,
-  },
-  {
-    id: 2,
-    name: "Usman Ali",
-    time: "3 hours ago",
-    text: "Made these Biology notes for Chapter 5. Hope it helps everyone 🌿",
-    image:
-      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1000",
-    // likes: 89,
-    comments: 16,
-    shares: 8,
-  },
-  {
-    id: 3,
-    name: "Ayesha Khan",
-    time: "5 hours ago",
-    text: "Sunset at my university today 🌅",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1000",
-    // likes: 76,
-    comments: 10,
-    shares: 3,
-  },
-];
-
 export default function CommunityCenter() {
   const [allPostsData, setAllPostsData] = useState<userPostType[]>([]);
   const [showComment, setShowComment] = useState(false);
@@ -69,13 +31,13 @@ export default function CommunityCenter() {
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
   const commentsData = useAppSelector((state) => state.commentsData.comments);
-  const PostData = useAppSelector((state) => state.postData.posts);
-  console.log("PostData", PostData)
+  const PostData = useAppSelector((state) => state.postData.posts)
 
   const getAllPosts = async () => {
     try {
       const response = await axios.get("/api/user/get/getallposts?sort=latest");
       setAllPostsData(response?.data?.data)
+      console.log("PostData",response?.data?.data)
       dispatch(setPosts(response.data.data))
 
     } catch (error) {
@@ -116,11 +78,6 @@ export default function CommunityCenter() {
         console.log(error);
     }
   };
-
-  const allData = (PostData as any[]).map((item, index) => ({
-    ...item,
-    ...posts[index],
-  }));
 
   const handleBookMarksPost = async (postId: string) => {
      try {
@@ -196,9 +153,9 @@ export default function CommunityCenter() {
 
       <div className="space-y-6">
 
-        {allData.map((post) => (
+        {PostData && PostData.filter((post) => !post.postDocumentUrl).map((post) => (
           <div
-            key={post.id}
+            key={post?._id}
             className="bg-white rounded-2xl shadow-sm border p-6"
           >
             {/* Header */}
@@ -208,7 +165,7 @@ export default function CommunityCenter() {
               <div className="flex gap-3">
 
                 <img
-                  src={ post.author.userProfile.profileImgUrl || "/img/defaultProfile.jfif" }
+                  src={ post?.author?.userProfile?.profileImgUrl || "/img/defaultProfile.jfif" }
                   className="w-12 h-12 rounded-full"
                 />
 
@@ -216,17 +173,15 @@ export default function CommunityCenter() {
 
                   <div className="flex items-center gap-2">
 
-                    <h3 className="font-semibold">{post.author.userProfile.profileName}</h3>
+                    <h3 className="font-semibold">{post?.author?.userProfile?.profileName}</h3>
 
-                    {post.badge && (
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                        {post.badge}
+                        Top Contributor
                       </span>
-                    )}
 
                   </div>
 
-                  <p className="text-sm text-gray-500">{post.time}</p>
+                  <p className="text-sm text-gray-500">2 hours ago</p>
 
                 </div>
 
@@ -238,14 +193,14 @@ export default function CommunityCenter() {
 
             {/* Content */}
 
-            <p className="my-4 text-gray-700 leading-7">{post.content ?? post.text}</p>
+            <p className="my-4 text-gray-700 leading-7">{post?.content}</p>
 
             {/* Image */}
 
             <div className="relative">
 
               <img
-                src={ post.postImageUrl?.[0] ?? post.image}
+                src={ post?.postImageUrl?.[0]}
                 className="rounded-xl w-full h-95 object-cover"
               />
 
@@ -258,7 +213,7 @@ export default function CommunityCenter() {
             {/* Tags */}
 
             <div className="flex gap-3 text-blue-600 text-sm mt-4">
-              {post.tags.map((tag: string, index: number) => (
+              {post?.tags && post?.tags.map((tag: string, index: number) => (
                 <span key={index}> #{tag} </span>
               ))}
 
@@ -272,12 +227,12 @@ export default function CommunityCenter() {
 
                 <button
                     onClick={() => {
-                      setPostLikeId(post._id)
-                      handleLike(post._id)
+                      setPostLikeId(post?._id)
+                      handleLike(post?._id)
                     }}
                     className="flex items-center gap-2 cursor-pointer">
-                  <ThumbsUp size={18} className={`${post.postLikesCount? "text-blue-500" : ""}`} />
-                  {post.postLikesCount}
+                  <ThumbsUp size={18} className={`${post?.postLikesCount? "text-blue-500" : ""}`} />
+                  {post?.postLikesCount}
                 </button>
 
                 <button 
@@ -288,19 +243,18 @@ export default function CommunityCenter() {
                     className="flex items-center gap-2 cursor-pointer"
                 >
                   <FaRegComment />
-                   {post.commentsCount}
+                   {post?.commentsCount}
                 </button>
 
                 <button className="flex items-center gap-2">
                   <FaShare />
-                  {post.shares}
                 </button>
 
               </div>
 
-                <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
+                <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
                   <FaBookmark />
-                  {post.bookmarkCount}
+                  {post?.bookmarkCount}
                 </button>
             </div>
 

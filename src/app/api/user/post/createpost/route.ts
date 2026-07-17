@@ -20,14 +20,16 @@ export const POST = asyncHandler( async (req:Request) => {
 
     const files = (formData.getAll("postImage") as File[]) || [];
     const videoFile = formData.get("postVideo") as File | null;
+    const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, notesCategory, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
 
     
     const session = await getServerSession(authOptions);
 
     let userImageFileDeta: any[] = [];
     let userVideoFileDeta = null;
+    let userdocumentFileDeta = null;
 
     if (files && files.length > 0) {
 
@@ -43,16 +45,25 @@ export const POST = asyncHandler( async (req:Request) => {
     };
 
     if(videoFile instanceof File){
-       userVideoFileDeta = uploadImageHandler( videoFile, `users/${session?.user._id}/posts`)
+       userVideoFileDeta = await uploadImageHandler( videoFile, `users/${session?.user._id}/posts`)
 
         if (!userVideoFileDeta) {
+        throw new ApiError(500, "Service problem");
+        }
+    };
+
+    if(documentFile instanceof File){
+       userdocumentFileDeta = await uploadImageHandler( documentFile, `users/${session?.user._id}/posts`)
+    console.log("userdocumentFileDeta", userdocumentFileDeta)
+
+        if (!userdocumentFileDeta) {
         throw new ApiError(500, "Service problem");
         }
     }
 
     const postImageUrlDetect = userImageFileDeta.map(file => file.secure_url);
 
-    if (!title || !postType) {
+    if (!title || !postType || (postType === "Notes" && !notesCategory)) {
         throw new ApiError(400, "Title and postType are required");
     }
 
@@ -65,6 +76,7 @@ export const POST = asyncHandler( async (req:Request) => {
         title,
         content,
         category,
+        notesCategory,
         tags,
         resourceLink,
         videoLink,
@@ -72,6 +84,8 @@ export const POST = asyncHandler( async (req:Request) => {
         pollOptions,
         pollDuration,
         postImageUrl: postImageUrlDetect,
+        postDocumentUrl: userdocumentFileDeta?.secure_url,
+        postDocumentPublicId: userdocumentFileDeta?.publicId,
         visibility,
 
         author: session.user._id

@@ -27,6 +27,7 @@ export const GET = asyncHandler( async (req:Request) => {
     const bookmarkIds = user?.bookmarks || [];
 
     const getAllPosts = await UserPostModel.aggregate(postAggregation(userId, sort, bookmarkIds))
+    console.log("getAllPosts", getAllPosts)
 
 
     if(!getAllPosts){

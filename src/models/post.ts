@@ -8,13 +8,16 @@ export interface UserPost extends Document {
     content?: string;
 
     category?: string;
+    notesCategory?: string;
 
     tags?: string[];
 
     resourceLink?: string;
 
     postImageUrl?: string[];
+    postDocumentUrl: string;
     postImgPublicId?: string;
+    postDocumentPublicId: string;
 
     videoLink?: string;
 
@@ -58,6 +61,10 @@ const userPostSchema: Schema<UserPost> = new Schema({
         type: String,
         enum: ["General Discussion", "Education", "Technology", "Science", "Career"]
     },
+    notesCategory: {
+        type: String,
+        enum: ["Math", "English", "Bio", "Science"]
+    },
 
     tags: {
         type: [String],
@@ -73,6 +80,13 @@ const userPostSchema: Schema<UserPost> = new Schema({
     postImgPublicId: {
         type: String,
     },
+    postDocumentUrl: {
+        type: String,
+    },
+    postDocumentPublicId: {
+        type: String,
+    },
+
      videoLink: String,
 
     pollQuestion: String,
