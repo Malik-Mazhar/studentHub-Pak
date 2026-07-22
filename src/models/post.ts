@@ -9,6 +9,7 @@ export interface UserPost extends Document {
 
     category?: string;
     notesCategory?: string;
+    className?: string
 
     tags?: string[];
 
@@ -16,7 +17,7 @@ export interface UserPost extends Document {
 
     postImageUrl?: string[];
     postDocumentUrl: string;
-    postImgPublicId?: string;
+    postImgPublicId?: string[];
     postDocumentPublicId: string;
 
     videoLink?: string;
@@ -63,8 +64,14 @@ const userPostSchema: Schema<UserPost> = new Schema({
     },
     notesCategory: {
         type: String,
-        enum: ["Math", "English", "Bio", "Science"]
+        enum: ["Mathematics", "English", "Bio", "Science"],
     },
+    className: {
+        type: String,
+        enum: ["5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"],
+        default: "10th",
+    },
+
 
     tags: {
         type: [String],
@@ -78,7 +85,7 @@ const userPostSchema: Schema<UserPost> = new Schema({
         type: [String],
     },
     postImgPublicId: {
-        type: String,
+        type: [String],
     },
     postDocumentUrl: {
         type: String,

@@ -5,10 +5,10 @@ import CustomInput from "./CustomInput";
 import { userPostSchema } from "@/src/zod-Schemas/userPostSchema";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import { addPost } from "@/src/store/postSlice";
+import { addPost, deletePost } from "@/src/store/postSlice";
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 import { toast } from "sonner";
 import { ApiResponse } from "@/src/lib/apiResponse";
@@ -17,16 +17,24 @@ import ImageUpload from "../ImageUpload";
 import CustomTagInput from "./CustomTagInput"
 import CoustomButton from "./CustomButton"
 import { Loader2 } from "lucide-react";
+import { userPostType } from "@/src/types/dataTaype";
+import Link from "next/link";
 
 
 interface ReusableCreatePostFormProps {
   form: UseFormReturn<z.infer<typeof userPostSchema>>;
   postType: string;
+  mode?: string;
+  postId?: string;
+  postDeta?: userPostType | null
 }
 
 function ReusableCreatePostForm({
   form,
   postType,
+  mode,
+  postId,
+  postDeta
 }: ReusableCreatePostFormProps) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +43,7 @@ function ReusableCreatePostForm({
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [postImagePerview, setPostImagePreview] = useState<string | null>(null);
   const [postVideoPerview, setPostVideoPreview] = useState<string | null>(null);
+  const [documentUrl, setDocumentUrl] = useState<string | null>(null);
   const [documentName, setDocumentName] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -48,8 +57,25 @@ function ReusableCreatePostForm({
     formState: { errors },
   } = form;
 
+  useEffect(() => {
+    if (postDeta) {
+      setDocumentUrl(postDeta.postDocumentUrl);
+
+
+      form.reset({
+        title: postDeta.title,
+        content: postDeta.content,
+        category: postDeta.category,
+        tags: postDeta.tags,
+        notesCategory: postDeta.notesCategory ,
+        className: postDeta.className
+        // baki fields...
+      });
+    }
+  }, [postDeta]);
 
  const onSubmit = async (data: z.infer<typeof userPostSchema>) => {
+
     setIsSubmitting(true);
     const payload = {
       ...data,
@@ -75,14 +101,22 @@ function ReusableCreatePostForm({
           formData.append("coverImg", postVideoSelect);
       };
 
-      const response = await axios.post("/api/user/post/createpost", formData);
+      let response;
 
-      dispatch(addPost(response.data.userPost));
+      if(!mode){
+          response = await axios.post("/api/user/post/createpost", formData);
+             console.log("response create post", response)
+            dispatch(addPost(response.data.userPost));
+      }else{
+          response = await axios.patch(`/api/user/post/createpost?postId=${postId}`, formData);
+           console.log("response update post", response)
+      };
 
-      toast("post created successfully!", {
+      toast(mode? "post updated successfully!" : "post created successfully!", {
           position: "top-right",        
           description: <span className="text-black">{ response.data?.message }</span>,
       });
+
 
       setIsSubmitting(false);
       router.push("/community")
@@ -130,6 +164,7 @@ function ReusableCreatePostForm({
     }
   };
 
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -175,12 +210,12 @@ function ReusableCreatePostForm({
 
         <>
 
-         {!documentFile && (
+         {!documentFile && !documentUrl && (
             <div className="mt-6">
             
                 <label className="block text-sm font-semibold mb-2">
 
-                Attach File
+                  Attach File
 
                 <span className="text-gray-400">
                     {" "} (Optional)
@@ -249,6 +284,29 @@ function ReusableCreatePostForm({
             </div>
           </div>
         )}
+
+        {documentUrl && (
+          <div className="border rounded-lg p-4 flex items-center justify-between">
+            <div>
+              <p className="font-medium">Current Document</p>
+
+              <Link
+                href={documentUrl}
+                target="_blank"
+                className="text-blue-600 underline"
+              >
+                View PDF
+              </Link>
+            </div>
+
+            <button
+              onClick={() => setDocumentUrl(null)}
+              className="text-red-500"
+            >
+              Remove
+            </button>
+          </div>
+        )}
         </>
         // <ImageUpload
         //   content="Upload Image"
@@ -284,14 +342,24 @@ function ReusableCreatePostForm({
 
         {/* Notes Category */}
         {postType === "Notes" &&
+        <>
 
           <div className="mt-6">
               <CustomSelect 
                 label="Notes Category"
-                options={["Math", "English", "Bio", "Science"]}
+                options={["Mathematics", "English", "Bio", "Science"]}
                 {...register("notesCategory")}
                 />
           </div>
+
+          <div className="mt-6">
+              <CustomSelect 
+                label="Class Name"
+                options={["5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"]}
+                {...register("className")}
+                />
+          </div>
+          </>
 
         }
 

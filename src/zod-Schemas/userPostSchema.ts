@@ -6,6 +6,7 @@ export const userPostSchema  = z.object({
     content: z.string().optional(),
     category: z.string(),
     notesCategory: z.string().optional(),
+    className: z.string().optional(),
     tags: z.array(z.string()).optional(),
     postImageUrl: z.array(z.string()).optional(),
     visibility: z.string()

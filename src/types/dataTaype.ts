@@ -51,6 +51,9 @@ export interface userPostType {
     content?: string;
 
     category?: string;
+    notesCategory: string;
+    className?: string;
+    subject?: string;
 
     tags?: string[];
 

@@ -1,4 +1,10 @@
+import { userPostType } from "@/src/types/dataTaype";
 import RecentNoteCard from "./RecentNoteCard";
+import Link from "next/link";
+
+interface RecentAddNotesProps {
+  notesData: userPostType[]
+}
 
 const notes = [
   {
@@ -40,7 +46,7 @@ const notes = [
   
 ];
 
-export default function RecentNotes() {
+export default function RecentNotes({notesData}: RecentAddNotesProps) {
   return (
     <section className="mt-10">
 
@@ -50,15 +56,15 @@ export default function RecentNotes() {
           Recently Added Notes
         </h2>
 
-        <button className="text-blue-600 hover:underline">
+        <Link href="/notes/viewAllnotes" className="text-blue-600 hover:underline">
           View All
-        </button>
+        </Link>
 
       </div>
 
       <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-hide">
 
-        {notes.map((note) => (
+        {notesData.slice(0, 4).map((note) => (
           <RecentNoteCard
             key={note.title}
             {...note}

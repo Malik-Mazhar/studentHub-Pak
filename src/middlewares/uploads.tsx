@@ -38,4 +38,4 @@ export async function uploadImageHandler(file: File, folder: string) {
       message: "Upload image failed"
     };
   }
-}
+};

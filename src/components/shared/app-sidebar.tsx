@@ -21,7 +21,7 @@ type SidebarItemProps = {
 
 export default function Sidebar() {
   return (
-    <div className="w-64 min-h-screen bg-linear-to-b from-[#003178] to-[#004B91] text-white p-5 pt-18 flex flex-col justify-between">
+    <div className="w-64 shrink-0 min-h-screen bg-linear-to-b from-[#003178] to-[#004B91] text-white p-5 pt-18 flex flex-col justify-between">
 
       {/* Top Section */}
       <div>

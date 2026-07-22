@@ -23,9 +23,12 @@ export const POST = asyncHandler( async (req:Request) => {
         throw new ApiError(401, "user Unauthorized" )
     };
 
+    // if(!PostId && !commentId){       
+    //     throw new ApiError(402, "Post or comment Id is required");
+    // }
+
     const getComment = await Comment.findById(commentId);
     const getPostById = await UserPostModel.findById(PostId);
-    console.log("alreadyLikedPost",getPostById)
 
     if (!getComment && !getPostById) {
         throw new ApiError(404, "Comment not found");
@@ -46,9 +49,9 @@ export const POST = asyncHandler( async (req:Request) => {
             return Response
                 .json(
                     new ApiResponse(
-                    201,
+                    200,
                     {
-                        isLiked: true,
+                        isLiked: !alreadyLikedPost,
                         likesCount: getPostById && getPostById.likes.length
                     },
                     "Post created successfully")

@@ -4,40 +4,31 @@ import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
-  FaHeart,
   FaRegComment,
   FaShare,
   FaBookmark,
   FaEllipsisH,
-  FaPlayCircle,
   FaEdit
 } from "react-icons/fa";
 import Comment from "@/src/components/sections/Comment";
 import { useAppSelector } from "@/src/store/useSelecterhook";
 import { useDispatch } from "react-redux";
-import { toggleLike } from "@/src/store/commmentSlice";
-import { userPostType } from "@/src/types/dataTaype";
-import { useSession } from "next-auth/react";
 import { ThumbsUp } from "lucide-react";
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { toast } from "sonner";
 import { setPosts, toggleLikePost, toggleBookmark } from "@/src/store/postSlice";
 
 export default function CommunityCenter() {
-  const [allPostsData, setAllPostsData] = useState<userPostType[]>([]);
   const [showComment, setShowComment] = useState(false);
   const [postId, setPostId] = useState<string | null>(null);
-  const [postLikeId, setPostLikeId] = useState<string | null>(null)
   const dispatch = useDispatch();
-  const { data: session, status } = useSession();
-  const commentsData = useAppSelector((state) => state.commentsData.comments);
   const PostData = useAppSelector((state) => state.postData.posts)
+  console.log("PostData", PostData)
 
   const getAllPosts = async () => {
     try {
       const response = await axios.get("/api/user/get/getallposts?sort=latest");
-      setAllPostsData(response?.data?.data)
-      console.log("PostData",response?.data?.data)
+
       dispatch(setPosts(response.data.data))
 
     } catch (error) {
@@ -49,7 +40,6 @@ export default function CommunityCenter() {
     const getPopularPosts = async () => {
     try {
       const response = await axios.get("/api/user/get/getallposts?sort=popular");
-      setAllPostsData(response?.data?.data)
       dispatch(setPosts(response.data.data))
 
     } catch (error) {
@@ -58,13 +48,15 @@ export default function CommunityCenter() {
     }
   };
 
+
+
   useEffect(() => {
     getAllPosts();
   }, []);
 
 
   const handleLike = async (postId: string) => {
-    console.log("how are you fun")
+
     try {
         const formData = new FormData();
 
@@ -153,7 +145,7 @@ export default function CommunityCenter() {
 
       <div className="space-y-6">
 
-        {PostData && PostData.filter((post) => !post.postDocumentUrl).map((post) => (
+        {PostData && PostData.filter((post) => post && !post.postDocumentUrl).map((post) => (
           <div
             key={post?._id}
             className="bg-white rounded-2xl shadow-sm border p-6"
@@ -199,10 +191,12 @@ export default function CommunityCenter() {
 
             <div className="relative">
 
-              <img
-                src={ post?.postImageUrl?.[0]}
-                className="rounded-xl w-full h-95 object-cover"
-              />
+              {Array.isArray(post.postImageUrl) && post.postImageUrl.length > 0  &&
+                <img
+                  src={ post?.postImageUrl?.[0]}
+                  className="rounded-xl w-full h-95 object-cover"
+                />
+              }
 
               {/* {post.video && (
                 <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -227,7 +221,6 @@ export default function CommunityCenter() {
 
                 <button
                     onClick={() => {
-                      setPostLikeId(post?._id)
                       handleLike(post?._id)
                     }}
                     className="flex items-center gap-2 cursor-pointer">
