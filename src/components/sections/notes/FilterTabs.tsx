@@ -1,5 +1,10 @@
 "use client";
 
+interface FilterTabsProps {
+  selectedNotes: string | null;
+  setSelectedNotes: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
 const filters = [
   "All Notes",
   "Class 9",
@@ -10,29 +15,28 @@ const filters = [
   "Medical",
 ];
 
-export default function FilterTabs() {
+export default function FilterTabs({selectedNotes, setSelectedNotes}:FilterTabsProps) {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-5">
+                <div className="flex gap-3 overflow-x-auto pb-5">
 
-      {filters.map((item, index) => (
+              {filters.map((item, index) => (
 
-        <button
-          key={index}
-          className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm transition
+                <button
+                  onClick={() => setSelectedNotes(item)}
+                  key={index}
+                  className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm transition cursor-pointer
 
-          ${
-            index === 0
-              ? "bg-blue-600 text-white"
-              : "bg-white hover:bg-blue-50"
-          }
-          
-          `}
-        >
-          {item}
-        </button>
+                  ${
+                    (selectedNotes === item) || (selectedNotes === null && index === 0) ?"bg-blue-600 text-white"  : ""
+                  }
+                  
+                  `}
+                >
+                  {item}
+                </button>
 
-      ))}
+              ))}
 
-    </div>
+            </div>
   );
 }

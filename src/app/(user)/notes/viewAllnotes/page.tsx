@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Download, Eye, File, Star } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import { setPosts } from "@/src/store/postSlice";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 import Image from "next/image";
 import axios from 'axios';
+import { handleLikesAndComments } from '@/src/services/ApiServices/handleLikesAndComments';
 
 const notes = [
   {
@@ -66,7 +68,7 @@ const notes = [
 ];
 
 function page() {
-  
+      const [selectedImage, setSelectedImage] = useState<string | null>(null);
       const dispatch = useAppDispatch();
       const notesData = useAppSelector((state) => state.postData.posts)
       console.log("notesData", notesData)
@@ -90,26 +92,43 @@ function page() {
     return (
         <section className="mt-10 mx-6">
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 space-y-5">
-            
-            {notes.map((note) => (
-                <div key={note.subject} className="min-w-60 bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-lg duration-300">
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 space-y-5"> 
+            {/* //onClick={() => window.open(note.postDocumentUrl, "_blank")} */}
+            {notesData.map((note) => (
+                <div key={note._id} className="min-w-60 bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-lg duration-300">
               
                   <div>
                       <div className="relative h-36 w-full">
 
                         <Image
-                        src={note.image}
+                        src={note.postImageUrl?.length? note.postImageUrl[0]: "/img/FileImg.png"}
                         alt={note.title}
+                        title='click and open notes'
                         fill
-                        className="object-cover"
+                        className="object-cover cursor-pointer"
+                        onClick={() => setSelectedImage(note.postImageUrl? note.postImageUrl[0] : "")}
                         /> 
 
                         <span className="absolute top-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                          {note.subject}
+                          {note.notesCategory}
                         </span>
 
                     </div>
+
+                    {selectedImage && (
+                        <div
+                          className="fixed inset-0 z-50 bg-transparent backdrop-blur-xs flex items-center justify-center"
+                          onClick={() => setSelectedImage(null)}
+                        >
+                          <Image
+                            src={selectedImage}
+                            alt="Preview"
+                            width={1200}
+                            height={800}
+                            className="max-w-[95vw] max-h-[95vh] object-contain"
+                          />
+                        </div>
+                      )}
 
                     <div className="p-4">
 
@@ -118,7 +137,7 @@ function page() {
                         </h3>
 
                         <p className="text-sm text-gray-500 mt-2">
-                        {note.author}
+                        {note.author.userProfile?.profileName}
                         </p>
 
                         <div className="flex items-center justify-between mt-4 text-gray-500 text-sm">
@@ -133,10 +152,10 @@ function page() {
                             100
                         </div>
 
-                        <div  className={`flex items-center gap-1 cursor-pointer "text-yellow-500"`}>
+                        <button onClick={() => handleLikesAndComments(note._id, dispatch)}  className={`flex items-center gap-1 cursor-pointer ${note.isLiked && "text-yellow-500"}`}>
                             <Star size={15} fill="currentColor" />
                             ii
-                        </div>
+                        </button>
 
                         </div>
 

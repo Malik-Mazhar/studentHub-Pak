@@ -11,12 +11,17 @@ import Footer from "@/src/components/sections/notes/Footer";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function NotesPage() {
   const dispatch = useAppDispatch();
   const notesData = useAppSelector((state) => state.postData.posts)
+  const [selectedNotes, setSelectedNotes] = useState<string | null>(null);
+  
+  const getClassNotes = notesData.filter((note) => note.className === selectedNotes?.split(" ")[1] + "th");
+
   console.log("notesData", notesData)
+  console.log("selectedNotes", selectedNotes)
   
   const getAllNotes = async () => {
     try {
@@ -34,7 +39,6 @@ export default function NotesPage() {
   useEffect(() => {
     getAllNotes();
   }, []);
-
   
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -52,10 +56,9 @@ export default function NotesPage() {
 
         <SearchBar />
 
-        <FilterTabs />
-
+        <FilterTabs selectedNotes={selectedNotes} setSelectedNotes= {setSelectedNotes} />
         <HeroBanner />
-        <RecentNotes notesData= {notesData} />
+        <RecentNotes notesData= {selectedNotes === null || selectedNotes === "All Notes" ? notesData: getClassNotes} className= {selectedNotes? selectedNotes : null} />
         <SubjectsSection notesData= {notesData} />
         <TopNotesSection />
         <Newsletter />

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   FaFacebookF,
   FaInstagram,
@@ -32,10 +33,10 @@ export default function Footer() {
 
           <ul className="mt-4 space-y-2 text-sm text-gray-500">
 
-            <li>Home</li>
-            <li>Notes</li>
-            <li>Subjects</li>
-            <li>About</li>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/notes">Notes</Link></li>
+            <li><Link href="/community">Community</Link></li>
+            <li><Link href="">Jobs</Link></li>
 
           </ul>
 
@@ -44,15 +45,14 @@ export default function Footer() {
         <div>
 
           <h3 className="font-semibold">
-            Resources
+            Support
           </h3>
 
           <ul className="mt-4 space-y-2 text-sm text-gray-500">
 
-            <li>Past Papers</li>
-            <li>Guess Papers</li>
-            <li>MCQs</li>
-            <li>Books</li>
+            <li>Contact Us</li>
+            <li>Report a Problem</li>
+            <li>Feedback</li>
 
           </ul>
 

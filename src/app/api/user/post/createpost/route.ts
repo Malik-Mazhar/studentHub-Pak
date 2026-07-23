@@ -24,7 +24,7 @@ export const POST = asyncHandler( async (req:Request) => {
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, notesCategory, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
 
     
     const session = await getServerSession(authOptions);
@@ -80,6 +80,7 @@ export const POST = asyncHandler( async (req:Request) => {
         content,
         category,
         notesCategory,
+        className,
         tags,
         resourceLink,
         videoLink,

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroBanner() {
   return (
@@ -7,7 +8,7 @@ export default function HeroBanner() {
       <div className="w-full relative">
 
         <img src="/img/NotesPageBanner.png" alt="" />
-        <button className=' absolute bottom-18 left-14 bg-transparent px-5 py-3 w-46 h-13 rounded-xl b cursor-pointer'></button>
+        <Link href="/notes/viewAllnotes" className=' absolute bottom-18 left-14 bg-transparent px-5 py-3 w-46 h-13 rounded-xl b cursor-pointer'></Link>
       </div>
 
     </section>

@@ -311,7 +311,7 @@ export default function NotesCard({
           </div>
 
           <span className="rounded-lg border border-red-400 px-3 py-2 font-semibold hover:bg-red-500 hover:text-white cursor-pointer text-red-500">
-            {fileUrl.split(".").pop()?.toUpperCase()}
+            {fileUrl?.split(".").pop()?.toUpperCase()}
           </span>
 
         </div>

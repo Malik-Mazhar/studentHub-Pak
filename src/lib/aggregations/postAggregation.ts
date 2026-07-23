@@ -167,6 +167,7 @@ export const postAggregation = (
         postType: 1,
         content: 1,
         category: 1,
+        className: 1,
         tags: 1,
         resourceLink: 1,
         postImageUrl: 1,

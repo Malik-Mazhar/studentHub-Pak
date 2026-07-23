@@ -4,6 +4,7 @@ import Link from "next/link";
 
 interface RecentAddNotesProps {
   notesData: userPostType[]
+  className: string | null
 }
 
 const notes = [
@@ -46,14 +47,17 @@ const notes = [
   
 ];
 
-export default function RecentNotes({notesData}: RecentAddNotesProps) {
+export default function RecentNotes({
+  notesData,
+   className
+  }: RecentAddNotesProps) {
   return (
     <section className="mt-10">
 
       <div className="flex justify-between items-center mb-5">
 
         <h2 className="text-2xl font-bold">
-          Recently Added Notes
+          {className?  notesData?.length ?`Notes for ${className}th` : `No Notes Found Class ${className}` : "Recently Added Notes"}
         </h2>
 
         <Link href="/notes/viewAllnotes" className="text-blue-600 hover:underline">
