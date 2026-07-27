@@ -13,6 +13,17 @@ import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
 import { useEffect, useState } from "react";
 
+const categoriesClasses = [
+  "All Notes",
+  "Class 9",
+  "Class 10",
+  "1st Year",
+  "2nd Year",
+  "ICS",
+  "Medical",
+];
+
+
 export default function NotesPage() {
   const dispatch = useAppDispatch();
   const notesData = useAppSelector((state) => state.postData.posts)
@@ -39,6 +50,8 @@ export default function NotesPage() {
   useEffect(() => {
     getAllNotes();
   }, []);
+
+  const notesCategories = [ "All Classes", "Class 9", "Class 10", "1st Year", "2nd Year" ]
   
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -54,10 +67,10 @@ export default function NotesPage() {
           </p>
         </div>
 
-        <SearchBar />
+        <SearchBar categories={notesCategories} />
 
-        <FilterTabs selectedNotes={selectedNotes} setSelectedNotes= {setSelectedNotes} />
-        <HeroBanner />
+        <FilterTabs categories={categoriesClasses} selectedNotes={selectedNotes} setSelectedNotes= {setSelectedNotes} />
+        <HeroBanner img="/img/NotesPageBanner.png" someClasses="left-14" />
         <RecentNotes notesData= {selectedNotes === null || selectedNotes === "All Notes" ? notesData: getClassNotes} className= {selectedNotes? selectedNotes : null} />
         <SubjectsSection notesData= {notesData} />
         <TopNotesSection />

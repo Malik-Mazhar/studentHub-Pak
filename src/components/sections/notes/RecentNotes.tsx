@@ -3,8 +3,9 @@ import RecentNoteCard from "./RecentNoteCard";
 import Link from "next/link";
 
 interface RecentAddNotesProps {
-  notesData: userPostType[]
-  className: string | null
+  notesData?: userPostType[]
+  className: string | null;
+  popularField?: any[]
 }
 
 const notes = [
@@ -49,7 +50,8 @@ const notes = [
 
 export default function RecentNotes({
   notesData,
-   className
+   className,
+   popularField
   }: RecentAddNotesProps) {
   return (
     <section className="mt-10">
@@ -66,11 +68,17 @@ export default function RecentNotes({
 
       </div>
 
-      <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-hide">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3">
 
-        {notesData.slice(0, 4).map((note) => (
+        {notesData && notesData.slice(0, 4).map((note) => (
           <RecentNoteCard
             key={note.title}
+            {...note}
+          />
+        ))}
+          {popularField && popularField.slice(0,4).map((note) => (
+          <RecentNoteCard
+            key={note.subject}
             {...note}
           />
         ))}

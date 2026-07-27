@@ -2,7 +2,11 @@
 
 import { Search } from "lucide-react";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  categories: string[]
+};
+
+export default function SearchBar({ categories }:SearchBarProps ) {
   return (
     <div className="flex gap-4 mb-6">
 
@@ -22,10 +26,10 @@ export default function SearchBar() {
 
       <select className="rounded-xl border bg-white px-5">
         <option>All Classes</option>
-        <option>Class 9</option>
-        <option>Class 10</option>
-        <option>1st Year</option>
-        <option>2nd Year</option>
+        {categories.map((categories) => (
+          <option key={categories}>{categories}</option>
+        ))}
+        
       </select>
 
     </div>

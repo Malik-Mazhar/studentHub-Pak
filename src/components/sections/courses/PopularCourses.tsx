@@ -5,8 +5,7 @@ import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAn
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 
 type RecentNoteCardProps = userPostType & {
-  image?: string;
-  subject?: string;
+    
 };
 
 export default function RecentNoteCard({
@@ -17,20 +16,17 @@ export default function RecentNoteCard({
     notesCategory,
     author,
     _id,
-    isLiked,
-    image,
-    subject,
-
+    isLiked
 }: RecentNoteCardProps) {
   const dispatch = useAppDispatch()
 
   return (
-    <div className="w-56 bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-lg duration-300">
+    <div className="min-w-60 bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-lg duration-300">
 
       <div className="relative h-36 w-full">
         {/* {postImageUrl?.[0]? */}
         <Image
-          src={postImageUrl?.[0] || image  || "/img/FileImg.png"}
+          src={postImageUrl?.[0] || "/img/FileImg.png"}
           alt={title}
           fill
           className="object-cover"
