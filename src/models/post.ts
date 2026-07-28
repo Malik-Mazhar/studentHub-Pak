@@ -4,7 +4,7 @@ export interface UserPost extends Document {
     author: Types.ObjectId;
     postType: string;
 
-    title: string;
+    title?: string;
     content?: string;
 
     category?: string;
@@ -19,7 +19,8 @@ export interface UserPost extends Document {
     postDocumentUrl: string;
     postImgPublicId?: string[];
     postDocumentPublicId: string;
-
+    
+    youtubePlaylistId?: string;
     videoLink?: string;
 
     pollQuestion?: string;
@@ -46,13 +47,13 @@ const userPostSchema: Schema<UserPost> = new Schema({
             "poll",
             "resource",
             "video",
+            "playlist",
             "simple",
         ],
         default: "simple",
     },
     title: {
         type: String,
-        required: [true, "Title is required"],
     },
     content: {
         type: String,
@@ -94,7 +95,10 @@ const userPostSchema: Schema<UserPost> = new Schema({
         type: String,
     },
 
-     videoLink: String,
+    videoLink: String,
+    youtubePlaylistId: {
+        type: String
+    },
 
     pollQuestion: String,
     pollOptions: {

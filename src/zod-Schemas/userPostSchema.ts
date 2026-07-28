@@ -2,13 +2,14 @@ import * as z from "zod";
 
 export const userPostSchema  = z.object({
     postType: z.string(),
-    title: z.string().min(2, "Too short!"),
+    title: z.string().optional(),
     content: z.string().optional(),
     category: z.string(),
     notesCategory: z.string().optional(),
     className: z.string().optional(),
     tags: z.array(z.string()).optional(),
     postImageUrl: z.array(z.string()).optional(),
+    youtubePlaylistId: z.string().optional(),
     visibility: z.string()
 });
  

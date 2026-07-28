@@ -1,5 +1,5 @@
 import dbConnect from "@/src/lib/dbConnect";
-import UserPostModel from "@/src/models/post";
+import UserPostModel, { UserPost } from "@/src/models/post";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/options";
 import { NextResponse } from "next/server";
@@ -9,6 +9,7 @@ import { ApiResponse } from "@/src/lib/apiResponse";
 import { uploadImageHandler } from "@/src/middlewares/uploads";
 import { Types } from "mongoose";
 import { deleteImageHandler } from "@/src/services/uploadToCloudinary";
+import { userPostType } from "@/src/types/dataTaype";
 
 export const POST = asyncHandler( async (req:Request) => {
     await dbConnect();
@@ -24,7 +25,7 @@ export const POST = asyncHandler( async (req:Request) => {
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, notesCategory, className, category, youtubePlaylistId, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
 
     
     const session = await getServerSession(authOptions);
@@ -32,6 +33,12 @@ export const POST = asyncHandler( async (req:Request) => {
     let userImageFileDeta: any[] = [];
     let userVideoFileDeta = null;
     let userdocumentFileDeta = null;
+    let playlist = null;
+
+    if(postType === "playlist"){
+        playlist = new URL(youtubePlaylistId).searchParams.get("list");
+
+    }
 
     if (files && files.length > 0) {
 
@@ -66,7 +73,7 @@ export const POST = asyncHandler( async (req:Request) => {
     const postImageUrlDetect = userImageFileDeta.map(file => file.secure_url);
     const postImagePublicId = userImageFileDeta.map(file => file.publicId);
 
-    if (!title || !postType || (postType === "Notes" && !notesCategory)) {
+    if ((postType === "playlist" && !playlist)  || (postType !== "playlist" && ( !title || !postType || (postType === "Notes" && !notesCategory)))) {
         throw new ApiError(400, "Title and postType are required");
     }
 
@@ -74,28 +81,34 @@ export const POST = asyncHandler( async (req:Request) => {
         throw new ApiError(401, "user Unauthorized" )
     };
 
-     const userPost = new UserPostModel({
+    const postData: Partial<UserPost> = {
         postType,
-        title,
-        content,
-        category,
-        notesCategory,
-        className,
-        tags,
-        resourceLink,
-        videoLink,
-        pollQuestion,
-        pollOptions,
-        pollDuration,
-        postImageUrl: postImageUrlDetect,
-        postDocumentUrl: userdocumentFileDeta?.secure_url,
-        postImgPublicId: postImagePublicId,
-        postDocumentPublicId: userdocumentFileDeta?.publicId,
         visibility,
+        author: new Types.ObjectId(session.user._id),
+    };
 
-        author: session.user._id
-    });
+    if (postType === "playlist" && playlist) {
+        postData.youtubePlaylistId = playlist;
+        
+    } else {
+        postData.title = title;
+        postData.content = content;
+        postData.category = category;
+        postData.notesCategory = notesCategory;
+        postData.className = className;
+        postData.tags = tags;
+        postData.resourceLink = resourceLink;
+        postData.videoLink = videoLink;
+        postData.pollQuestion = pollQuestion;
+        postData.pollOptions = pollOptions;
+        postData.pollDuration = pollDuration;
+        postData.postImageUrl = postImageUrlDetect;
+        postData.postDocumentUrl = userdocumentFileDeta?.secure_url;
+        postData.postImgPublicId = postImagePublicId;
+        postData.postDocumentPublicId = userdocumentFileDeta?.publicId;
+    }
 
+    const userPost = new UserPostModel(postData);
     await userPost.save();
 
     return Response
@@ -164,7 +177,7 @@ export const PATCH = asyncHandler( async (req:Request) => {
     const Post = await UserPostModel.findById(PostId);
 
     if (!Post) {
-    throw new ApiError(404, "Post not found");
+        throw new ApiError(404, "Post not found");
     }
 
     let userImageFileDeta: any[] = [];
@@ -194,7 +207,6 @@ export const PATCH = asyncHandler( async (req:Request) => {
 
     if(documentFile instanceof File){
        userdocumentFileDeta = await uploadImageHandler( documentFile, `users/${session?.user._id}/posts`)
-    console.log("userdocumentFileDeta", userdocumentFileDeta)
 
         if (!userdocumentFileDeta) {
         throw new ApiError(500, "Service problem");
@@ -237,27 +249,27 @@ export const PATCH = asyncHandler( async (req:Request) => {
         Post.postDocumentPublicId = userdocumentFileDeta.publicId!;
     }
 
-        Post.postType = postType;
-        Post.title = title;
-        Post.content = content;
-        Post.category = category;
-        Post.notesCategory = notesCategory;
-        Post.tags = tags;
-        Post.resourceLink = resourceLink;
-        Post.videoLink = videoLink;
-        Post.pollQuestion = pollQuestion;
-        Post.pollOptions = pollOptions;
-        Post.pollDuration = pollDuration;
-        Post.visibility = visibility;
+    Post.postType = postType;
+    Post.title = title;
+    Post.content = content;
+    Post.category = category;
+    Post.notesCategory = notesCategory;
+    Post.tags = tags;
+    Post.resourceLink = resourceLink;
+    Post.videoLink = videoLink;
+    Post.pollQuestion = pollQuestion;
+    Post.pollOptions = pollOptions;
+    Post.pollDuration = pollDuration;
+    Post.visibility = visibility;
 
-        Post.author = new Types.ObjectId(userId) 
+    Post.author = new Types.ObjectId(userId) 
 
-        if (userdocumentFileDeta) {
-            Post.postDocumentUrl = userdocumentFileDeta.secure_url!;
-            Post.postDocumentPublicId = userdocumentFileDeta.publicId!;
-        }
+    if (userdocumentFileDeta) {
+        Post.postDocumentUrl = userdocumentFileDeta.secure_url!;
+        Post.postDocumentPublicId = userdocumentFileDeta.publicId!;
+    }
 
-        await Post.save();
+    await Post.save();
 
         return Response.json(
             new ApiResponse(
@@ -314,12 +326,27 @@ export const DELETE = asyncHandler(async (req: Request) => {
 
 
 
-    // if (userVideoFileDeta) {
+    //  const userPost = new UserPostModel({
+    //     postType,
+    //     title,
+    //     content,
+    //     category,
+    //     notesCategory,
+    //     className,
+    //     tags,
+    //     resourceLink,
+    //     youtubePlaylistId: playlist,
+    //     videoLink,
+    //     pollQuestion,
+    //     pollOptions,
+    //     pollDuration,
+    //     postImageUrl: postImageUrlDetect,
+    //     postDocumentUrl: userdocumentFileDeta?.secure_url,
+    //     postImgPublicId: postImagePublicId,
+    //     postDocumentPublicId: userdocumentFileDeta?.publicId,
+    //     visibility, 
 
-    //     if (Post.postVideoPublicId) {
-    //         await deleteImageHandler(Post.postVideoPublicId);
-    //     }
+    //     author: session.user._id
+    // });
 
-    //     Post.postVideoUrl = userVideoFileDeta.secure_url;
-    //     Post.postVideoPublicId = userVideoFileDeta.publicId;
-    // }
+    // await userPost.save();

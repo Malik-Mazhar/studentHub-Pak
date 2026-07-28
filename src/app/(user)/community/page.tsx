@@ -145,7 +145,7 @@ export default function CommunityCenter() {
 
       <div className="space-y-6">
 
-        {PostData && PostData.filter((post) => post && !post.postDocumentUrl).map((post) => (
+        {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
           <div
             key={post?._id}
             className="bg-white rounded-2xl shadow-sm border p-6"

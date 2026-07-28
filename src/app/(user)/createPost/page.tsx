@@ -40,6 +40,7 @@ export default function CreatePostPage() {
   const [postMode, setPostMode] = useState("simple");
   const [question, setQuestion] = useState("");
   const [duration, setDuration] = useState("");
+  const [videoType, setVideoType] = useState("video");
   const dispatch = useAppDispatch();
 
   // const {
@@ -59,6 +60,7 @@ export default function CreatePostPage() {
     resolver: zodResolver(userPostSchema),
     defaultValues: {
     tags: [],
+    
   },
   });
 
@@ -308,332 +310,127 @@ export default function CreatePostPage() {
             
         {/* Title */}
           {findUserSelectPostType && findUserSelectPostType.title === "Discussion" && 
-            // <form onSubmit={handleSubmit(onSubmit)}>
-
-                // <div className="mt-8">
-
-                //   <CustomInput
-                //     label={`Post Title`}
-                //     type="text"
-                //     placeholder="Give your post a short title..."
-                //     optional = {true}
-                //     {...register("title")}
-                //     className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
-                //   />
-
-                // </div>
-                //  <input type="hidden" value={selectPostType} {...register("postType")} />
-            //     {/* Description */}
-
-            //     <div className="mt-6">
-
-            //       <label className="block text-sm font-semibold text-gray-700 mb-2">
-            //         Write Something
-            //         <span className="text-red-500">*</span>
-            //       </label>
-
-            //       <textarea
-            //         rows={8}
-            //         placeholder="Write your post content here..."
-            //         {...register("content")}
-            //         className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
-            //       />
-
-            //     </div>
-
-            //     {/* Category */}
-
-            //     <div className="mt-6">
-
-            //       <CustomSelect 
-            //         label="Category"
-            //         options={["General Discussion", "Education", "Technology", "Science", "Career"]}
-            //         {...register("category")}
-            //       />
-
-            //     </div>
-
-            //     {/* Upload */}
-
-            //     <div className="mt-6">
-
-            //       <label className="block text-sm font-semibold mb-2">
-
-            //         Attach File
-
-            //         <span className="text-gray-400">
-            //           {" "} (Optional)
-            //         </span>
-
-            //       </label>
-
-            //       <div className="border-2 border-dashed rounded-2xl py-12 flex flex-col items-center">
-                    
-            //        { postImagePerview &&
-            //           <div>
-            //             <img
-            //               src={postImagePerview}
-            //               alt="" 
-            //               className="w-full"
-            //             />
-            //           </div>
-            //        }
-
-
-            //       { postVideoPerview && (
-            //         <video
-            //           src={postVideoPerview}
-            //           controls
-            //           className="w-full h-100 rounded-lg"
-            //         />
-            //       )}
-
-            //        { !postImagePerview && !postVideoPerview && 
-            //           <div>
-
-            //           <div className="text-5xl">
-            //             ☁️
-            //           </div>
-
-            //           <h3 className=" relative font-semibold mt-4">
-
-            //           <ImageUpload content="Drag & Drop files here" onFileSelect={handleFile} />
-
-            //           </h3>
-
-            //           <p className="text-gray-500 mt-2">
-
-            //             here to pick Image or video
-
-            //           </p>
-
-            //         </div>
-            //        }
-
-
-            //       </div>
-
-            //     </div>
-
-            //     {/* Tags */}
-
-            //     <div className="mt-6">
-            //       <Controller 
-            //         name="tags"
-            //         control={control}
-            //         render={({ field }) => (
-            //           <CustomTagInput 
-            //             label="Tags"
-            //             tags={field.value ?? []}
-            //             setTags={field.onChange}
-            //             max={5}
-            //           />
-            //         )}
-            //       />
-
-            //     </div>
-
-            //     {/* Bottom */}
-
-            //     <div className="flex justify-between items-center mt-10">
-
-            //       <CustomSelect
-            //         label="Visibility"
-            //         options={["Everyone", "Only Members", "Private"]}
-            //         {...register("visibility")}
-            //       />
-
-            //       <CoustomButton type="submit"
-            //         className="px-10 h-10 rounded-xl"
-            //       >
-            //         {isSubmitting ? (
-            //             <div className="flex gap-2">
-            //               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            //               Please wait
-            //             </div>
-            //         ):(
-            //           "Publish Post"
-            //         )}
-
-                    
-
-            //       </CoustomButton>
-
-            //     </div>
-
-            // </form>
 
             <ReusableCreatePostForm
                 form={form}
                 postType="Discussion"
             />
+
           }
           {findUserSelectPostType && findUserSelectPostType.title === "Video" && 
-          <form>
+            // <form className="relative">
 
-            {/* TITLE (Required) */}
-            <div className="mt-8">
-              <CustomInput
-                label="Video Title"
-                type="text"
-                placeholder="Give your video a clear title..."
-                optional= {true}
-              />
-            </div>
+            //   {/* TITLE (Required) */}
+            //   <select
+            //           value={videoType}
+            //           onChange={(e) => setVideoType(e.target.value)} 
+            //           className="absolute right-0 -top-4 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2">
+            //     <option value="video">Single Video</option>
+            //     <option value="playlist">YouTube Playlist</option>
+            // </select>
+           
+            //    {videoType === "video" ? 
+            //     <>
+            //     <div className="mt-8">
+            //       <CustomInput
+            //         label="Video Title"
+            //         type="text"
+            //         placeholder="Give your video a clear title..."
+            //         optional= {false}
+            //       />
+            //     </div>
 
-            {/* VIDEO LINK (MOST IMPORTANT) */}
-            <div className="mt-6">
-              <CustomInput
-                label="Video Link"
-                type="text"
-                placeholder="Paste YouTube or video URL..."
-                optional= {true}
-              />
-            </div>
+            //     {/* VIDEO LINK (MOST IMPORTANT) */}
+            //     <div className="mt-6">
+            //       <CustomInput
+            //         label="Video Link"
+            //         type="text"
+            //         placeholder="Paste YouTube or video URL..."
+            //         optional= {true}
+            //       />
+            //     </div>
 
-            {/* DESCRIPTION */}
-            <div className="mt-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Description <span className="text-red-500">*</span>
-              </label>
+            //     {/* DESCRIPTION */}
+            //     <div className="mt-6">
+            //       <label className="block text-sm font-semibold text-gray-700 mb-2">
+            //         Description <span className="text-red-500">*</span>
+            //       </label>
 
-              <textarea
-                rows={6}
-                placeholder="Explain what this video is about..."
-                className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
-              />
-            </div>
+            //       <textarea
+            //         rows={6}
+            //         placeholder="Explain what this video is about..."
+            //         className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
+            //       />
+            //     </div>
 
-            {/* CATEGORY */}
-            <div className="mt-6">
-              <CustomSelect
-                label="Category"
-                value=""
-                onChange={() => ""}
-                options={["Education", "Tutorial", "Lecture", "Entertainment", "Other"]}
-              />
-            </div>
+            //     {/* CATEGORY */}
+            //     <div className="mt-6">
+            //       <CustomSelect
+            //         label="Category"
+            //         value=""
+            //         onChange={() => ""}
+            //         options={["Education", "Tutorial", "Lecture", "Entertainment", "Other"]}
+            //       />
+            //     </div>
 
-            {/* THUMBNAIL (OPTIONAL BUT IMPORTANT) */}
-            <div className="mt-6">
-              <label className="block text-sm font-semibold mb-2">
-                Thumbnail (Optional)
-              </label>
+            //     {/* THUMBNAIL (OPTIONAL BUT IMPORTANT) */}
+            //     <div className="mt-6">
+            //       <label className="block text-sm font-semibold mb-2">
+            //         Thumbnail (Optional)
+            //       </label>
 
-              <div className="border-2 border-dashed rounded-2xl py-10 flex flex-col items-center">
-                <div className="text-4xl">🎬</div>
-                <p className="text-gray-500 mt-2">Upload video thumbnail</p>
-              </div>
-            </div>
+            //       <div className="border-2 border-dashed rounded-2xl py-10 flex flex-col items-center">
+            //         <div className="text-4xl">🎬</div>
+            //         <p className="text-gray-500 mt-2">Upload video thumbnail</p>
+            //       </div>
+            //     </div>
 
-            {/* TAGS */}
-            <div className="mt-6">
-              <CustomTagInput
-                label="Tags"
-                tags={[]}
-                setTags={() => {}}
-                max={5}
-              />
-            </div>
+            //     {/* TAGS */}
+            //     <div className="mt-6">
+            //       <CustomTagInput
+            //         label="Tags"
+            //         tags={[]}
+            //         setTags={() => {}}
+            //         max={5}
+            //       />
+            //     </div>
 
-            {/* VISIBILITY + SUBMIT */}
-            <div className="flex justify-between items-center mt-10">
+            //     {/* VISIBILITY + SUBMIT */}
+            //     <div className="flex justify-between items-center mt-10">
 
-              <CustomSelect
-                label="Visibility"
-                value=""
-                onChange={() => ""}
-                options={["Everyone", "Only Members", "Private"]}
-              />
+            //       <CustomSelect
+            //         label="Visibility"
+            //         value=""
+            //         onChange={() => ""}
+            //         options={["Everyone", "Only Members", "Private"]}
+            //       />
 
-              <CoustomButton className="px-10 h-10 rounded-xl">
-                Publish Video
-              </CoustomButton>
+            //       <CoustomButton className="px-10 h-10 rounded-xl">
+            //         Publish Video
+            //       </CoustomButton>
 
-            </div>
+            //     </div>
+            //     </>
+            //   :
+            //     <div className="mt-8">
+            //       <CustomInput
+            //         label="Video Title"
+            //         type="text"
+            //         placeholder="Paste YouTube Playlist URL..."
+            //         optional= {false}
+            //       />
+            //     </div>
+            //    }
 
-          </form>
+            // </form>
+
+            <ReusableCreatePostForm
+                form={form}
+                postType="Video"
+            />
           }
 
           {findUserSelectPostType && findUserSelectPostType.title === "Notes" && 
-            // <form>
-
-            //     <div className="mt-8 space-y-6">
-
-            //       <CustomInput
-            //         label="Notes Title"
-            //         type="text"
-            //         placeholder="Enter your notes title"
-            //         optional = {true}
-            //         // {...register("title")}
-            //       />
-
-            //       {/* Description */}
-            //       <div>
-            //         <label className="font-medium text-gray-700">
-            //           Description
-            //         </label>
-
-            //         <textarea
-            //           rows={5}
-            //           placeholder="Write a short description..."
-            //           className="w-full mt-2 border rounded-xl p-3 resize-none"
-            //           // {...register("content")}
-            //         />
-            //       </div>
-
-            //       {/* Upload */}
-            //       <div>
-            //         <label className="font-medium text-gray-700">
-            //           Upload Notes
-            //         </label>
-
-            //         <div className="border-2 border-dashed rounded-xl p-10 text-center mt-2">
-            //           <p className="text-gray-500">
-            //             Drag & Drop your PDF, DOCX or PPT
-            //           </p>
-
-            //           <input
-            //             type="file"
-            //             className="mt-4"
-            //           />
-            //         </div>
-            //       </div>
-
-            //       {/* Category */}
-            //       <div>
-            //           <CustomSelect 
-            //           label="Notes Category"
-            //           value=""
-            //           onChange={() => ""}
-            //           options={["Math", "English", "Bio", "Science"]}
-            //           />
-            //       </div>
-
-            //       {/* Category */}
-            //       <div>
-            //           <CustomSelect 
-            //           label="Category"
-            //           value=""
-            //           onChange={() => ""}
-            //           options={["General Discussion", "Education", "Technology", "Science", "Career"]}
-            //           />
-            //       </div>
-
-            //       {/* Buttons */}
-            //       <div className="flex justify-end gap-3">
-            //         <button className="px-5 py-3 rounded-xl border">
-            //           Cancel
-            //         </button>
-
-            //         <CoustomButton className="px-5 py-3 rounded-xl bg-blue-600 text-white">
-            //           Publish Notes
-            //         </CoustomButton>
-            //       </div>
-
-            //     </div>
-
-            // </form>
 
             <ReusableCreatePostForm
                 form={form}

@@ -63,6 +63,7 @@ export interface userPostType {
     postImgPublicId?: string;
 
     videoLink?: string;
+    youtubePlaylistId?: string;
 
     pollQuestion?: string;
     pollOptions?: string[];
@@ -78,6 +79,13 @@ export interface userPostType {
     commentsCount: number;
     bookmarkCount: number;
     postDocumentUrl: string;
+};
+
+export interface YoutubeVideo {
+    videoId: string;
+    title: string;
+    thumbnail?: string;
+    duration: string;
 };
 
 export interface UserComment {
