@@ -80,7 +80,7 @@ function ReusableCreatePostForm({
     setIsSubmitting(true);
     const payload = {
       ...data,
-      postType: videoType === "video" ? postType.toLowerCase() : "playlist"
+      postType:  postType.toLowerCase()
     }
 
     try {
@@ -169,19 +169,7 @@ function ReusableCreatePostForm({
   return (
     <form className="relative" onSubmit={handleSubmit(onSubmit)}>
         <input type="hidden" {...register("postType")} />
-
-        {postType === "Video" && (
-
-          <select value={videoType} onChange={(e) => setVideoType(e.target.value)} className="absolute right-0 -top-4 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2">
-
-            <option value="video">Single Video</option>
-            <option value="playlist">YouTube Playlist</option>
-          </select>
-
-        )}
-
-        {videoType === "video" ?
-            <>
+        
               <div className="mt-8">
 
               {/* Title */}
@@ -420,46 +408,6 @@ function ReusableCreatePostForm({
                 </CoustomButton>
 
               </div>
-            </>
-        :
-          <>
-            <div className="mt-8">
-              <CustomInput
-                label="Video Title"
-                type="text"
-                placeholder="Paste YouTube Playlist URL..."
-                optional= {false}
-                {...register("youtubePlaylistId")}
-              />
-            </div>
-
-            <div className="flex justify-between items-center mt-10">
-
-              <CoustomButton type="button"
-                  className="px-10 h-10 rounded-xl"
-                >
-                  Cencel
-
-              </CoustomButton>
-
-              <CoustomButton type="submit"
-                  className="px-10 h-10 rounded-xl"
-                >
-                  {isSubmitting ? (
-                      <div className="flex gap-2">
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Please wait
-                      </div>
-                  ):(
-                    "Publish Post"
-                  )}
-
-              </CoustomButton>
-
-          
-            </div>
-          </>
-        }
         
 
    

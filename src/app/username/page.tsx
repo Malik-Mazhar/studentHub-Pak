@@ -1,5 +1,8 @@
 
 "use client"
+
+import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
+
 // import SearchBar from "@/src/components/sections/notes/SearchBar";
 // import FilterTabs from "@/src/components/sections/notes/FilterTabs";
 // import HeroBanner from "@/src/components/sections/notes/HeroBanner";

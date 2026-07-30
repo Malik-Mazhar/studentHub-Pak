@@ -28,6 +28,7 @@ import { useAppDispatch } from "@/src/store/useSelecterhook";
 import ImageUpload from "@/src/components/ImageUpload";
 import { Loader2 } from "lucide-react";
 import ReusableCreatePostForm from "@/src/components/shared/ReusableCreatePostForm";
+import SharePlaylist from "@/src/components/shared/playlist/SharePlaylistForm";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -423,11 +424,30 @@ export default function CreatePostPage() {
             //    }
 
             // </form>
+           <div className="relative">
 
-            <ReusableCreatePostForm
+                <select
+                  value={videoType}
+                  onChange={(e) => setVideoType(e.target.value)}
+                  className={`absolute right-0 ${videoType === "video"? "-top-6" : "top-29"} bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2 z-10`}
+                >
+                  <option value="video">Single Video</option>
+                  <option value="playlist">YouTube Playlist</option>
+                </select>
+
+            {videoType === "video" ? 
+              <ReusableCreatePostForm
                 form={form}
                 postType="Video"
-            />
+              />
+              :
+              <SharePlaylist/>
+          }
+
+           
+           </div>
+
+
           }
 
           {findUserSelectPostType && findUserSelectPostType.title === "Notes" && 

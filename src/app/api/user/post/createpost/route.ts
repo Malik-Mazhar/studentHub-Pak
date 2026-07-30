@@ -25,7 +25,7 @@ export const POST = asyncHandler( async (req:Request) => {
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, notesCategory, className, category, youtubePlaylistId, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
 
     
     const session = await getServerSession(authOptions);
@@ -33,12 +33,6 @@ export const POST = asyncHandler( async (req:Request) => {
     let userImageFileDeta: any[] = [];
     let userVideoFileDeta = null;
     let userdocumentFileDeta = null;
-    let playlist = null;
-
-    if(postType === "playlist"){
-        playlist = new URL(youtubePlaylistId).searchParams.get("list");
-
-    }
 
     if (files && files.length > 0) {
 
@@ -73,43 +67,38 @@ export const POST = asyncHandler( async (req:Request) => {
     const postImageUrlDetect = userImageFileDeta.map(file => file.secure_url);
     const postImagePublicId = userImageFileDeta.map(file => file.publicId);
 
-    if ((postType === "playlist" && !playlist)  || (postType !== "playlist" && ( !title || !postType || (postType === "Notes" && !notesCategory)))) {
+    if ( !title || !postType || (postType === "Notes" && !notesCategory)) {
         throw new ApiError(400, "Title and postType are required");
     }
 
     if (!session?.user?._id) {
         throw new ApiError(401, "user Unauthorized" )
     };
-
-    const postData: Partial<UserPost> = {
+    
+    const userPost = new UserPostModel({
         postType,
-        visibility,
-        author: new Types.ObjectId(session.user._id),
-    };
+        title,
+        content,
+        category,
+        notesCategory,
+        className,
+        tags,
+        resourceLink,
+        videoLink,
+        pollQuestion,
+        pollOptions,
+        pollDuration,
+        postImageUrl: postImageUrlDetect,
+        postDocumentUrl: userdocumentFileDeta?.secure_url,
+        postImgPublicId: postImagePublicId,
+        postDocumentPublicId: userdocumentFileDeta?.publicId,
+        visibility, 
 
-    if (postType === "playlist" && playlist) {
-        postData.youtubePlaylistId = playlist;
-        
-    } else {
-        postData.title = title;
-        postData.content = content;
-        postData.category = category;
-        postData.notesCategory = notesCategory;
-        postData.className = className;
-        postData.tags = tags;
-        postData.resourceLink = resourceLink;
-        postData.videoLink = videoLink;
-        postData.pollQuestion = pollQuestion;
-        postData.pollOptions = pollOptions;
-        postData.pollDuration = pollDuration;
-        postData.postImageUrl = postImageUrlDetect;
-        postData.postDocumentUrl = userdocumentFileDeta?.secure_url;
-        postData.postImgPublicId = postImagePublicId;
-        postData.postDocumentPublicId = userdocumentFileDeta?.publicId;
-    }
+        author: session.user._id
+    });
 
-    const userPost = new UserPostModel(postData);
     await userPost.save();
+
 
     return Response
     .json(
@@ -326,27 +315,33 @@ export const DELETE = asyncHandler(async (req: Request) => {
 
 
 
-    //  const userPost = new UserPostModel({
+  
+    
+    // const postData: Partial<UserPost> = {
     //     postType,
-    //     title,
-    //     content,
-    //     category,
-    //     notesCategory,
-    //     className,
-    //     tags,
-    //     resourceLink,
-    //     youtubePlaylistId: playlist,
-    //     videoLink,
-    //     pollQuestion,
-    //     pollOptions,
-    //     pollDuration,
-    //     postImageUrl: postImageUrlDetect,
-    //     postDocumentUrl: userdocumentFileDeta?.secure_url,
-    //     postImgPublicId: postImagePublicId,
-    //     postDocumentPublicId: userdocumentFileDeta?.publicId,
-    //     visibility, 
+    //     visibility,
+    //     author: new Types.ObjectId(session.user._id),
+    // };
 
-    //     author: session.user._id
-    // });
+    // if (postType === "playlist" && playlist) {
+    //     postData.youtubePlaylistId = playlist;
 
-    // await userPost.save();
+    // } else {
+    //     postData.title = title;
+    //     postData.content = content;
+    //     postData.category = category;
+    //     postData.notesCategory = notesCategory;
+    //     postData.className = className;
+    //     postData.tags = tags;
+    //     postData.resourceLink = resourceLink;
+    //     postData.videoLink = videoLink;
+    //     postData.pollQuestion = pollQuestion;
+    //     postData.pollOptions = pollOptions;
+    //     postData.pollDuration = pollDuration;
+    //     postData.postImageUrl = postImageUrlDetect;
+    //     postData.postDocumentUrl = userdocumentFileDeta?.secure_url;
+    //     postData.postImgPublicId = postImagePublicId;
+    //     postData.postDocumentPublicId = userdocumentFileDeta?.publicId;
+    // }
+
+    // const userPost = new UserPostModel(postData);
