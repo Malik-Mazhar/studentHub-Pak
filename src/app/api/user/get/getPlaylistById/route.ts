@@ -24,7 +24,7 @@ export const GET = asyncHandler( async (req:Request) => {
         throw new ApiError(400, "Playlist Id is required");
     }
 
-    const playlist = await PlaylistModel.findById(playlistId);
+    const playlist = await PlaylistModel.findById(playlistId).populate("author", "userProfile profileName profileImgUrl");;
 
     if (!playlist) {
         throw new ApiError(404, "Playlist not found");
@@ -80,7 +80,7 @@ export const GET = asyncHandler( async (req:Request) => {
             200, 
             {
                 post: playlist,
-                playlist: playlistData,
+                playlist: playlistData.items[0],
                 duration: durationRes,
                 videos
             }, 
@@ -92,6 +92,6 @@ export const GET = asyncHandler( async (req:Request) => {
 
             // {
             //     post: playlist,
-            //     playlist: playlistData.items[0],
+            //     playlist: playlistData,
             //     videos,
             // },

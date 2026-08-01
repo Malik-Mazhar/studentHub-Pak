@@ -142,7 +142,7 @@ function Comment({ setShowComment, postId }: CommentProps) {
                  
                  <div className='flex-1 overflow-y-auto p-7 pb-24'>
 
-                    {commentsData && commentsData.filter((comment) => !comment.parentComment).map((comment) => (
+                    {commentsData && commentsData.filter((comment) => comment && !comment.parentComment).map((comment) => (
 
                         <div key={comment._id}  className='mb-6'>
 

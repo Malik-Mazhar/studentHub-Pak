@@ -106,13 +106,13 @@ export const postAggregation = (
   }
 
   pipeline.push(
-    {
+    { 
       $sort: sort,
     },
     {
       $lookup: {
         from: "comments",
-        foreignField: "post",
+        foreignField: "targetId",
         localField: "_id",
         as: "comments",
       },

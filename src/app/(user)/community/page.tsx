@@ -96,165 +96,166 @@ export default function CommunityCenter() {
   };
 
   return (
-    <div className="flex bg-[#FBFCFE]">
+    <div className="flex bg-[#FBFCFE] dark:bg-[#0F172A] dark:text-[#FBFCFE]">
 
        <div className="flex-1 px-6 py-6">
 
-      {/* Tabs */}
+          {/* Tabs */}
 
-      <div className="flex justify-between items-center my-6">
+          <div className="flex justify-between items-center my-6">
 
-        <div className="flex gap-3">
+            <div className="flex gap-3">
 
-          <button onClick={() => getAllPosts()} className="px-5 py-2 rounded-full bg-blue-600 cursor-pointer text-white">
-            All
-          </button>
+                <button onClick={() => getAllPosts()} className="px-5 py-2 rounded-full bg-blue-600 cursor-pointer text-white">
+                  All
+                </button>
 
-          <button className="px-5 py-2 rounded-full bg-gray-100">
-            Following
-          </button>
+                <button className="px-5 py-2 rounded-full bg-gray-100">
+                  Following
+                </button>
 
-          <button onClick={() => getPopularPosts()} className="px-5 py-2 rounded-full cursor-pointer bg-gray-100">
-            Popular
-          </button>
-
-        </div>
-        
-        <div className="flex items-center gap-3">
-
-          <select 
-              onChange={(e) =>
-                e.target.value === "popular"
-                  ? getPopularPosts()
-                  : getAllPosts()
-              }
-            className="border rounded-lg px-4 py-2 cursor-pointer">
-            <option value="latest">Latest</option>
-            <option value="popular">Popular</option>
-          </select>
-
-           <Link href="/createPost">        
-              <CustomButton className="flex py-2 px-5 gap-x-3"><FaEdit size={18} /> post</CustomButton>
-           </Link> 
-
-        </div>
-
-      </div>
-
-      {/* Posts */}
-
-      <div className="space-y-6">
-
-        {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
-          <div
-            key={post?._id}
-            className="bg-white rounded-2xl shadow-sm border p-6"
-          >
-            {/* Header */}
-
-            <div className="flex justify-between">
-
-              <div className="flex gap-3">
-
-                <img
-                  src={ post?.author?.userProfile?.profileImgUrl || "/img/defaultProfile.jfif" }
-                  className="w-12 h-12 rounded-full"
-                />
-
-                <div>
-
-                  <div className="flex items-center gap-2">
-
-                    <h3 className="font-semibold">{post?.author?.userProfile?.profileName}</h3>
-
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                        Top Contributor
-                      </span>
-
-                  </div>
-
-                  <p className="text-sm text-gray-500">2 hours ago</p>
-
-                </div>
-
-              </div>
-
-              <FaEllipsisH />
+                <button onClick={() => getPopularPosts()} className="px-5 py-2 rounded-full cursor-pointer bg-gray-100">
+                  Popular
+                </button>
 
             </div>
+            
+            <div className="flex items-center gap-3">
 
-            {/* Content */}
+              <select 
+                  onChange={(e) =>
+                    e.target.value === "popular"
+                      ? getPopularPosts()
+                      : getAllPosts()
+                  }
+                className="border rounded-lg px-4 py-2 cursor-pointer">
+                <option value="latest">Latest</option>
+                <option value="popular">Popular</option>
+              </select>
 
-            <p className="my-4 text-gray-700 leading-7">{post?.content}</p>
+              <Link href="/createPost">        
+                  <CustomButton className="flex py-2 px-5 gap-x-3"><FaEdit size={18} /> post</CustomButton>
+              </Link> 
 
-            {/* Image */}
-
-            <div className="relative">
-
-              {Array.isArray(post.postImageUrl) && post.postImageUrl.length > 0  &&
-                <img
-                  src={ post?.postImageUrl?.[0]}
-                  className="rounded-xl w-full h-95 object-cover"
-                />
-              }
-
-              {/* {post.video && (
-                <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-              )} */}  
-
-            </div>
-
-            {/* Tags */}
-
-            <div className="flex gap-3 text-blue-600 text-sm mt-4">
-              {post?.tags && post?.tags.map((tag: string, index: number) => (
-                <span key={index}> #{tag} </span>
-              ))}
-
-            </div>
-
-            {/* Footer */}
-
-            <div className="flex justify-between mt-6 border-t pt-4">
-
-              <div className="flex gap-8">
-
-                <button
-                    onClick={() => {
-                      handleLike(post?._id)
-                    }}
-                    className="flex items-center gap-2 cursor-pointer">
-                  <ThumbsUp size={18} className={`${post?.postLikesCount? "text-blue-500" : ""}`} />
-                  {post?.postLikesCount}
-                </button>
-
-                <button 
-                    onClick={() => {
-                      setShowComment((prev) => !prev);
-                      setPostId(post._id)
-                    }} 
-                    className="flex items-center gap-2 cursor-pointer"
-                >
-                  <FaRegComment />
-                   {post?.commentsCount}
-                </button>
-
-                <button className="flex items-center gap-2">
-                  <FaShare />
-                </button>
-
-              </div>
-
-                <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
-                  <FaBookmark />
-                  {post?.bookmarkCount}
-                </button>
             </div>
 
           </div>
-        ))}
 
-      </div>
+          {/* Posts */}
+
+          <div className="space-y-6">
+
+            {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
+              <div
+                key={post?._id}
+                className="bg-white rounded-2xl shadow-sm border p-6"
+              >
+                {/* Header */}
+
+                <div className="flex justify-between">
+
+                  <div className="flex gap-3">
+
+                    <img
+                      src={ post?.author?.userProfile?.profileImgUrl || "/img/defaultProfile.jfif" }
+                      className="w-12 h-12 rounded-full"
+                    />
+
+                    <div>
+
+                      <div className="flex items-center gap-2">
+
+                        <h3 className="font-semibold">{post?.author?.userProfile?.profileName}</h3>
+
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            Top Contributor
+                          </span>
+
+                      </div>
+
+                      <p className="text-sm text-gray-500">2 hours ago</p>
+
+                    </div>
+
+                  </div>
+
+                  <FaEllipsisH />
+
+                </div>
+
+                {/* Content */}
+
+                <p className="my-4 text-gray-700 leading-7">{post?.content}</p>
+
+                {/* Image */}
+
+                <div className="relative">
+
+                  {Array.isArray(post.postImageUrl) && post.postImageUrl.length > 0  &&
+                    <img
+                      src={ post?.postImageUrl?.[0]}
+                      className="rounded-xl w-full h-95 object-cover"
+                    />
+                  }
+
+                  {/* {post.video && (
+                    <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  )} */}  
+
+                </div>
+
+                {/* Tags */}
+
+                <div className="flex gap-3 text-blue-600 text-sm mt-4">
+                  {post?.tags && post?.tags.map((tag: string, index: number) => (
+                    <span key={index}> #{tag} </span>
+                  ))}
+
+                </div>
+
+                {/* Footer */}
+
+                <div className="flex justify-between mt-6 border-t pt-4">
+
+                  <div className="flex gap-8">
+
+                    <button
+                        onClick={() => {
+                          handleLike(post?._id)
+                        }}
+                        className="flex items-center gap-2 cursor-pointer">
+                      <ThumbsUp size={18} className={`${post?.postLikesCount? "text-blue-500" : ""}`} />
+                      {post?.postLikesCount}
+                    </button>
+
+                    <button 
+                        onClick={() => {
+                          setShowComment((prev) => !prev);
+                          setPostId(post._id)
+                        }} 
+                        className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <FaRegComment />
+                      {post?.commentsCount}
+                    </button>
+
+                    <button className="flex items-center gap-2">
+                      <FaShare />
+                    </button>
+
+                  </div>
+
+                    <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
+                      <FaBookmark />
+                      {post?.bookmarkCount}
+                    </button>
+                </div>
+
+              </div>
+            ))}
+
+          </div>
+
       </div>
 
         {showComment && postId && 

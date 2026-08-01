@@ -152,7 +152,7 @@ function page() {
                             100
                         </div>
 
-                        <button onClick={() => handleLikesAndComments(note._id, dispatch)}  className={`flex items-center gap-1 cursor-pointer ${note.isLiked && "text-yellow-500"}`}>
+                        <button onClick={() => handleLikesAndComments({dispatch, postId: note._id})}  className={`flex items-center gap-1 cursor-pointer ${note.isLiked && "text-yellow-500"}`}>
                             <Star size={15} fill="currentColor" />
                             ii
                         </button>

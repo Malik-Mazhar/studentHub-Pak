@@ -9,6 +9,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { Loader2 } from 'lucide-react';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import ThemeToggle from './theme-toggle';
 import { IoMdNotifications } from "react-icons/io";
 
 function AppHeader() {
@@ -56,7 +57,7 @@ function AppHeader() {
 
   return (
     <>
-     <nav className='w-full rounded-lg bg-[#FFFFFF]'>
+     <nav className='w-full rounded-lg bg-[#FFFFFF] dark:bg-[#0F172A] dark:text-[#FBFCFE]'>
        <div className='flex justify-between items-center px-4 pt-1'>
          <div className='flex items-center gap-1'>
              <div className="w-12 h-12 relative">
@@ -68,8 +69,8 @@ function AppHeader() {
               />
             </div>
             <div className='leading-none font-medium'>
-                <h2 className='text-blue-900 font-bold'>Student Hub</h2>
-                <h3 className='text-green-600 font-bold'>Pakistan</h3>
+                <h2 className='text-blue-900 font-bold dark:text-[#FBFCFE]'>Student Hub</h2>
+                <h3 className='text-green-600 font-bold dark:text-green-200'>Pakistan</h3>
             </div>
         </div>
 
@@ -123,7 +124,7 @@ function AppHeader() {
             //  <CustomButton onClick={handleLogout}>{isLoading ? `please wait.. ${<Loader2 className='ml-2 h-4 w-4 animate-spin' />}` : "LogOut"}</CustomButton>
               <div className='flex items-center gap-1 relative'>
                 <div className='pr-5'>
-                <IoMdNotifications size={26} className='text-gray-800' />
+                <IoMdNotifications size={26} className='text-gray-800 dark:text-[#FBFCFE]' />
                 </div>
 
                 <div className="w-10 h-10 relative">
@@ -131,12 +132,12 @@ function AppHeader() {
                     src={ "/img/defaultProfile.JFIF"}
                     alt="Logo"
                     fill
-                    className='object-contain rounded-full'
+                    className='object-contain rounded-full '
                   />
                 </div>
                 <div className='text-[12px]'>
-                    <h2 className='text-gray-800 font-bold'>Ahmad Raza</h2>
-                    <h3 className='text-gray-600 font-bold'>student</h3>
+                    <h2 className='text-gray-800 font-bold dark:text-[#FBFCFE]'>Ahmad Raza</h2>
+                    <h3 className='text-gray-600 font-bold dark:text-[#FBFCFE]'>student</h3>
                 </div>
 
                   <div className="relative inline-block" ref={dropdownRef} >
@@ -146,13 +147,13 @@ function AppHeader() {
 
                     {/* Dropdown */}
                     {profileDropdownOpen && (
-                      <div className="absolute right-0 mt-4 w-40 rounded-md border bg-white shadow-lg">
+                      <div className="absolute right-0 mt-4 w-40 rounded-md border bg-white dark:bg-[#111827] dark:text-[#FFFFFF] shadow-lg">
                         <ul className="pb-2">
-                          <p className='text-xs  text-gray-800 px-4 pb-2 font-bold'>My Account</p>
+                          <p className='text-xs  text-gray-800 dark:text-[#FFFFFF] px-4 pb-2 font-bold'>My Account</p>
                           <li>
                             <Link
                               href="/profile/profile"
-                              className="block px-4 py-2 hover:bg-gray-100"
+                              className="block px-4 py-2 hover:bg-gray-100 hover:dark:bg-[#17223c]"
                             >
                               Profile
                             </Link>
@@ -161,16 +162,21 @@ function AppHeader() {
                           <li>
                             <Link
                               href="/settings"
-                              className="block px-4 py-2 hover:bg-gray-100"
+                              className="block px-4 py-2 hover:bg-gray-100 hover:dark:bg-[#17223c]"
                             >
                               Settings
                             </Link>
                           </li>
 
+                          <li className="block px-4 py-2 hover:bg-gray-100 hover:dark:bg-[#17223c]">
+                            
+                            <ThemeToggle />
+                          </li>
+
                           <li>
                             <button
                               onClick={() => handleLogout()}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                              className="w-full px-4 py-2 text-left hover:bg-gray-100 hover:dark:bg-[#17223c]"
                             >
                               Logout
                             </button>

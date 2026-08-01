@@ -1,512 +1,614 @@
 "use client"
-// import { Playlist } from "@/src/models/playlist.model";
-// import axios from "axios";
-// import { useParams } from "next/navigation";
-// import { useEffect, useState } from "react";
-
-// export default function PlaylistPage() {
-//   const[ playlistData, setPlaylistData ] = useState<Playlist | null>(null)
-//   const { playlistId } = useParams();
-// const [videos, setVideos] = useState<any[]>([]);
-//   const [selectedVideo, setSelectedVideo] = useState<any>(null);
-//   const [playlist, setPlaylist] = useState<any>(null);
-//   const [currentIndex, setCurrentIndex] = useState(0);
-
-
-
-//   const getYoutubeVideos = async () => {
-//     const res = await axios.get(`/api/user/get/getPlaylistById?playlistId=${playlistId}`);
-//     setPlaylistData(res.data.data)
-      
-//     const data = res.data.data;
-//     setPlaylist(data.playlist.items[0]);
-//     setVideos(data.videos);
-//     setSelectedVideo(data.videos[0]);
-//     console.log("youtube Deta",data)
-//   };
-  
-//           console.log("playlistData", playlistData?.youtubePlaylistId)
-
-//     useEffect(() => {
-  
-//     getYoutubeVideos();
-//   }, []);
-
-//     const formatDuration = (duration: string) => {
-//         const match = duration.match(
-//         /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
-//         );
-
-//         if (!match) return "0:00";
-
-//         const hours = parseInt(match[1] || "0");
-//         const minutes = parseInt(match[2] || "0");
-//         const seconds = parseInt(match[3] || "0");
-
-//         if (hours > 0) {
-//         return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
-//             .toString()
-//             .padStart(2, "0")}`;
-//         }
-
-//         return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-//   };
-
-
-//     return (
-
-//     <div className="flex gap-5 p-5 bg-[#0F0F0F]">
-
-//         {/* Left Video Player */}
-//         <div className="w-[70%]">
-
-//             {selectedVideo && (
-//             <>
-//                 <iframe
-//                 className="w-full h-125 rounded-lg"
-//                 src={`https://www.youtube.com/embed/${selectedVideo.snippet.resourceId.videoId}`}
-//                 title={selectedVideo.snippet.title}
-//                 allowFullScreen
-//                 />
-
-//                 <h1 className="text-xl text-[#FFFFFF] font-bold mt-4">
-//                 {selectedVideo.snippet.title}
-//                 </h1>
-
-//                 <p className="text-[#AAAAAA]">
-//                 {selectedVideo.snippet.channelTitle}
-//                 </p>
-//             </>
-//             )}
-
-//         </div>
-
-//         <div className="w-[30%] bg-[#212121] rounded-xl overflow-hidden border border-zinc-700">
-
-//         {/* Header */}
-//         <div className="p-4 border-b border-zinc-700">
-
-//             <div className="flex justify-between items-start">
-
-//             <div>
-//                 <h2 className="text-[#FFFFFF] text-xl font-bold ">
-//                 {
-//                     playlist?.snippet.title.length > 20
-//                     ? playlist.snippet.title.slice(0, 20) + "..."
-//                     : playlist?.snippet.title
-//                 }
-//                 </h2>
-
-//                 <p className="text-sm text-gray-100">
-//                 {playlist?.snippet.channelTitle} • {currentIndex + 1} / {videos.length}
-//                 </p>
-//             </div>
-
-//             <div className="flex gap-3 text-white text-xl">
-//                 ✕
-//             </div>
-
-//             </div>
-
-//         </div>
-
-//         {/* Videos */}
-//         <div className="max-h-120 overflow-y-auto">
-
-//             {videos.map((video, index) => (
-
-//             <div
-//                 key={video.snippet.resourceId.videoId}
-//                 onClick={()=>{
-//                 setSelectedVideo(video);
-//                 setCurrentIndex(index);
-//                 }}
-//                 className={`flex gap-2 p-2 cursor-pointer hover:bg-[#303030]
-//                 ${
-//                     selectedVideo?.snippet?.resourceId?.videoId ===
-//                     video.snippet.resourceId.videoId
-//                     ? "bg-[#3a3a3a]"
-//                     : ""
-//                 }`}
-//             >
-
-//                 <div className="w-3 text-gray-400 text-sm mt-8">
-//                 {index + 1}
-//                 </div>
-
-//                 <div className="relative">
-
-//                 <img
-//                     src={video.snippet.thumbnails.medium.url}
-//                     className="w-32 h-16 rounded object-cover"
-//                 />
-
-//                 <span className="absolute bottom-1 right-1 bg-black/90 text-white text-xs px-1 rounded">
-//                     {formatDuration(video.duration)}
-//                 </span>
-
-//                 </div>
-
-//                 <div className="flex-1">
-
-//                 <h3 className="text-white text-sm font-medium line-clamp-2">
-//                     {video.snippet.title}
-//                 </h3>
-
-//                 <p className="text-xs text-gray-400 mt-1">
-//                     {video.snippet.channelTitle}
-//                 </p>
-
-//                 </div>
-
-//             </div>
-
-//             ))}
-
-//         </div>
-
-//         </div>
-
-
-//     </div>
-//     );
-// }
-
-
-
-
-
-import { useState } from "react";
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  Bookmark,
-  MoreHorizontal,
-  CheckCircle,
-  Clock3,
-  Folder,
-  Globe,
-} from "lucide-react";
+import { Playlist } from "@/src/models/playlist.model";
+import axios, { AxiosError } from "axios";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ThumbsUp, ThumbsDown, Share2, Bookmark, MoreHorizontal, CheckCircle, Clock3, Folder, Globe, ChevronDown, ChevronUp, } from "lucide-react";
+import Comment from "@/src/components/sections/Comment";
+import EmojiPickerInput from "@/src/components/shared/EmojiPickerInput"
+import { PlaylistType } from "@/src/types/dataTaype";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { commentSchema } from "@/src/zod-Schemas/commentSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import EmojiPicker, { Theme }  from "emoji-picker-react";
+import { Smile } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
+import { addComment, setComments, setLoading, toggleLike } from "@/src/store/commmentSlice";
+import { ApiResponse } from "@/src/lib/apiResponse";
+import { toast } from "sonner";
+import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAndComments";
+import { useSession } from "next-auth/react";
 
 export default function PlaylistPage() {
-  const [selectedVideo, setSelectedVideo] = useState({
-    id: 1,
-    title: "01. Introduction to Python",
-    duration: "25:48",
-    thumbnail:
-      "https://i.ytimg.com/vi/rfscVS0vtbw/maxresdefault.jpg",
-    videoId: "rfscVS0vtbw",
-    description:
-      "Welcome to the Python for Beginners course! In this video we'll learn what Python is and why it is used.",
-  });
+    const[ playlistPostData, setPlaylistPostData ] = useState<PlaylistType | null>(null)
+    const { playlistId } = useParams();
+    const [videos, setVideos] = useState<any[]>([]);
+    const [selectedVideo, setSelectedVideo] = useState<any>(null);
+    const [playlist, setPlaylist] = useState<any>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [comment, setComment] = useState("");
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
+    const [replyCommentId, setReplyCommentId] = useState<string | null>(null);
+    const [isSubmiting, setIsSubmitting] = useState(false);
+    const dispatch = useAppDispatch();
+    const [viewReplyComments, setViewReplyComments] = useState(false);
+    const { data: session, status } = useSession();
+    const commentsData = useAppSelector((state) => state.commentsData.comments);
 
-  const playlist = [
-    {
-      id: 1,
-      title: "01. Introduction to Python",
-      duration: "25:48",
-      thumbnail:
-        "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg",
-      videoId: "rfscVS0vtbw",
-    description: "This is introduction video.",
-    },
-    {
-      id: 2,
-      title: "02. Installing Python",
-      duration: "18:12",
-      thumbnail:
-        "https://i.ytimg.com/vi/kqtD5dpn9C8/mqdefault.jpg",
-      videoId: "kqtD5dpn9C8",
-    description: "This is introduction video.",
-    },
-    {
-      id: 3,
-      title: "03. Variables",
-      duration: "22:36",
-      thumbnail:
-        "https://i.ytimg.com/vi/Z1Yd7upQsXY/mqdefault.jpg",
-      videoId: "Z1Yd7upQsXY",
-    description: "This is introduction video.",
-    },
-  ];
+      const {
+        register,
+        handleSubmit,
+        setValue,
+        watch
+      } = useForm<z.infer <typeof commentSchema>>({
+        resolver: zodResolver(commentSchema),
+        defaultValues: {    
+            commentContent: "",
+            replyContent: "",
+        },
+      });
+    const commentContent = watch("commentContent");
+    const replyContent = watch("replyContent");
+
+
+
+  const getYoutubeVideos = async () => {
+    const res = await axios.get(`/api/user/get/getPlaylistById?playlistId=${playlistId}`);
+      
+    const data = res.data.data;
+
+    setPlaylist(data.playlist);
+    setPlaylistPostData(data.post)
+    setVideos(data.videos);
+    setSelectedVideo(data.videos[0]);
+  };
+
+    useEffect(() => {
+  
+    getYoutubeVideos();
+  }, []);
+
+    const formatDuration = (duration: string) => {
+        const match = duration.match(
+        /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
+        );
+
+        if (!match) return "0:00";
+
+        const hours = parseInt(match[1] || "0");
+        const minutes = parseInt(match[2] || "0");
+        const seconds = parseInt(match[3] || "0");
+
+        if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+        }
+
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+    const onSubmit = async (data: z.infer<typeof commentSchema>) => {
+        setIsSubmitting(true);
+
+        try {
+            const formDeta = new FormData();
+            formDeta.append("commentContent", data.commentContent);
+            formDeta.append("replyContent", data.replyContent);
+            formDeta.append("postId", playlistId as string);
+
+            if(replyCommentId){
+                formDeta.append("parentComment", replyCommentId);
+            }
+
+            if(data.targetModel){
+                formDeta.append("targetModel", data.targetModel);
+            }
+
+            const result = await axios.post("/api/user/post/comment", formDeta);
+
+            dispatch(addComment(result.data.data))
+
+            
+            if (replyCommentId) {
+                setValue("replyContent", "");
+                setReplyCommentId(null);
+            } else {
+                setValue("commentContent", "");
+            };
+
+            setIsSubmitting(false);
+
+        } catch (err) {
+            console.log("Error creating post please checking comment page",err)
+            
+            const axiosError = err as AxiosError<ApiResponse>;
+
+            toast('post created Failed', {
+            position: "top-right",
+            description: <span className="text-black">{axiosError.response?.data?.message}</span>,
+            action: {
+                    label: "Undo",
+                    onClick: () => console.log("Undo"),
+                },
+            });
+
+            setIsSubmitting(false);
+        }
+        
+    };
+
+    const getPlaylistComments = async () => {
+        dispatch(setLoading(true));
+
+        try {
+        const response = await axios.get(`/api/user/post/comment?postId=${playlistId}`);
+
+        dispatch(setComments(response?.data?.data))
+        } catch (error) {
+            const axiosError = error as AxiosError<ApiResponse>;
+
+            console.error(
+                "Failed to fetch comments:",
+                axiosError.response?.data?.message || axiosError.message
+            );
+
+        } finally {
+            dispatch(setLoading(false));
+        }
+    };
+    
+    useEffect(() => {
+        getPlaylistComments();
+    }, [])
 
   return (
-    <div className="bg-[#0b1120] min-h-screen text-white">
+    <div className="bg-[#0b1120]  dark:bg-[#0F172A] dark:text-[#FBFCFE] min-h-600 text-white">
 
-      <div className="max-w-425 mx-auto px-8 py-8">
+        <div className="flex w-full px-5 gap-5 py-3 ">
 
-        <div className="grid lg:grid-cols-[1fr_420px] gap-8">
+            <div className="w-[68%]">
+                
+                <button className="text-gray-400 hover:text-white mb-6">
+                ← Back to Playlists
+                </button>
 
-          {/* LEFT */}
 
-          <div>
+                {selectedVideo && (
+                    <>
+                        <iframe
+                        className="w-full h-100 rounded-lg"
+                        src={`https://www.youtube.com/embed/${selectedVideo.snippet.resourceId.videoId}`}
+                        title={selectedVideo.snippet.title}
+                        allowFullScreen
+                        />
 
-            <button className="text-gray-400 hover:text-white mb-6">
-              ← Back to Playlists
-            </button>
+                        <h1 className="text-xl text-[#FFFFFF] font-bold mt-4">
+                        {selectedVideo.snippet.title}
+                        </h1>
 
-            <h1 className="text-4xl font-bold">
-              Python for Beginners — Full Course
-            </h1>
+                        <p className="text-[#AAAAAA]">
+                        {selectedVideo.snippet.channelTitle}
+                        </p>
 
-            <p className="text-gray-400 mt-3">
-              Learn Python from scratch. Perfect for beginners.
-            </p>
+                        <div className="mt-3">
 
-            {/* Video */}
+                        <h2 className="text-xl font-semibold">
+                            {selectedVideo.title}
+                        </h2>
 
-            <div className="mt-8 rounded-xl overflow-hidden border border-gray-800">
+                        </div>
+                    </>
+                )}
 
-              <iframe
-                src={`https://www.youtube.com/embed/${selectedVideo.videoId}`}
-                allowFullScreen
-                className="w-full aspect-video"
-              />
-
-            </div>
-
-            {/* Title */}
-
-            <div className="mt-6">
-
-              <h2 className="text-3xl font-semibold">
-                {selectedVideo.title}
-              </h2>
 
             </div>
 
-            {/* Channel */}
+            <div className="w-[32%] max-h-110 mt-[5%] bg-[#101827] rounded-xl border border-gray-800 overflow-hidden dark:border-[#374151] dark:bg-[#0F172A] dark:text-[#FBFCFE]">
 
-            <div className="flex items-center justify-between mt-5">
+                <div className="p-2 border-b border-gray-800">
 
-              <div className="flex items-center gap-4">
+                    <div className="p-2 border-b border-zinc-700">
 
-                <img
-                  src="https://i.pravatar.cc/100"
-                  className="w-14 h-14 rounded-full"
-                />
+                        <div className="flex justify-between items-start">
 
-                <div>
+                            <div>
+                                <h2 className="text-[#FFFFFF] text-xl font-bold ">
+                                    {
+                                        playlist?.snippet.title.length > 20
+                                        ? playlist.snippet.title.slice(0, 20) + "..."
+                                        : playlist?.snippet.title
+                                    }
+                                </h2>
 
-                  <div className="flex items-center gap-2">
+                                <p className="text-sm text-gray-100">
+                                    {playlist?.snippet.channelTitle} • {currentIndex + 1} / {videos.length}
+                                </p>
+                            </div>
 
-                    <p className="font-semibold text-lg">
-                      Sir Usman Ali
-                    </p>
+                            <div className="flex gap-3 text-white text-xl">
+                            ✕
+                            </div>
 
-                    <CheckCircle
-                      size={18}
-                      className="text-blue-500"
-                    />
+                        </div>
 
-                  </div>
-
-                  <p className="text-gray-400">
-                    Computer Science Instructor
-                  </p>
+                    </div>
 
                 </div>
 
-                <button className="bg-white text-black rounded-full px-6 py-2 font-semibold">
-                  Subscribe
-                </button>
+                <div className="max-h-120 overflow-y-auto">
 
-              </div>
+                    {videos.map((video, index) => (
 
-              {/* Actions */}
+                        <div
+                        key={video.snippet.resourceId.videoId}
+                        onClick={()=>{
+                            setSelectedVideo(video);
+                            setCurrentIndex(index);
+                        }}
+                        className={`flex gap-2 p-2 cursor-pointer hover:bg-[#303030]  hover:dark:bg-[#0F172A] hover:dark:text-[#FBFCFE]
+                            ${
+                            selectedVideo?.snippet?.resourceId?.videoId ===
+                            video.snippet.resourceId.videoId
+                                ? "bg-[#3a3a3a]  dark:bg-[#0F172A] dark:text-[#FBFCFE]"
+                                : ""
+                            }`}
+                        >
 
-              <div className="flex gap-3">
+                        <div className="w-3 text-gray-400 text-sm mt-8">
+                            {index + 1}
+                        </div>
 
-                <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2">
-                  <ThumbsUp size={18} />
-                  2.3K
-                </button>
+                        <div className="relative">
 
-                <button className="bg-[#182232] rounded-full p-3">
-                  <ThumbsDown size={18} />
-                </button>
+                            <img
+                            src={video.snippet.thumbnails.medium.url}
+                            className="w-32 h-16 rounded object-cover"
+                            />
 
-                <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2">
-                  <Share2 size={18} />
-                  Share
-                </button>
+                            <span className="absolute bottom-1 right-1 bg-black/90 text-white text-xs px-1 rounded">
+                            {formatDuration(video.duration)}
+                            </span>
 
-                <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2">
-                  <Bookmark size={18} />
-                  Save
-                </button>
+                        </div>
 
-                <button className="bg-[#182232] rounded-full p-3">
-                  <MoreHorizontal size={18} />
-                </button>
+                        <div className="flex-1">
 
-              </div>
+                            <h3 className="text-white text-sm font-medium line-clamp-2">
+                            {video.snippet.title}
+                            </h3>
 
-            </div>
+                            <p className="text-xs text-gray-400 mt-1">
+                            {video.snippet.channelTitle}
+                            </p>
 
-            {/* Description */}
+                        </div>
 
-            <div className="mt-8 bg-[#101827] rounded-xl p-6 border border-gray-800">
+                        </div>
 
-              <p className="leading-8 text-gray-300">
-                {selectedVideo.description}
-              </p>
-
-            </div>
-
-            {/* About */}
-
-            <div className="mt-8 bg-[#101827] rounded-xl p-6 border border-gray-800">
-
-              <h3 className="text-2xl font-semibold mb-8">
-                About this course
-              </h3>
-
-              <div className="grid md:grid-cols-4 gap-6">
-
-                <div className="flex items-center gap-4">
-
-                  <Clock3 className="text-orange-400" />
-
-                  <div>
-
-                    <p className="text-gray-400">
-                      Duration
-                    </p>
-
-                    <p>6h 12m</p>
-
-                  </div>
+                    ))}
 
                 </div>
 
-                <div className="flex items-center gap-4">
-
-                  <Folder className="text-purple-400" />
-
-                  <div>
-
-                    <p className="text-gray-400">
-                      Category
-                    </p>
-
-                    <p>Programming</p>
-
-                  </div>
-
-                </div>
-
-                <div className="flex items-center gap-4">
-
-                  <Globe className="text-blue-400" />
-
-                  <div>
-
-                    <p className="text-gray-400">
-                      Language
-                    </p>
-
-                    <p>English</p>
-
-                  </div>
-
-                </div>
-
-                <div className="flex items-center gap-4">
-
-                  <CheckCircle className="text-green-400" />
-
-                  <div>
-
-                    <p className="text-gray-400">
-                      Level
-                    </p>
-
-                    <p>Beginner</p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
             </div>
-
-          </div>
-
-          {/* RIGHT */}
-
-          <div className="bg-[#101827] rounded-xl border border-gray-800 overflow-hidden">
-
-            <div className="p-6 border-b border-gray-800">
-
-              <div className="flex justify-between">
-
-                <h2 className="text-2xl font-semibold">
-                  Playlist
-                </h2>
-
-                <span className="text-gray-400">
-                  {playlist.length} videos
-                </span>
-
-              </div>
-
-            </div>
-
-            <div className="h-225 overflow-y-auto">
-
-              {playlist.map((video, index) => (
-
-                <div
-                  key={video.id}
-                  onClick={() => setSelectedVideo(video)}
-                  className={`flex gap-4 p-4 cursor-pointer transition
-                  ${
-                    selectedVideo.id === video.id
-                      ? "bg-blue-600/20"
-                      : "hover:bg-[#1a2332]"
-                  }`}
-                >
-
-                  <div className="text-gray-400 mt-6">
-                    {index + 1}
-                  </div>
-
-                  <img
-                    src={video.thumbnail}
-                    className="w-40 rounded-lg"
-                  />
-
-                  <div>
-
-                    <h4 className="font-medium">
-                      {video.title}
-                    </h4>
-
-                    <p className="text-gray-400 text-sm mt-2">
-                      Sir Usman Ali
-                    </p>
-
-                    <p className="text-xs text-gray-500 mt-2">
-                      {video.duration}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              ))}
-
-            </div>
-
-          </div>
 
         </div>
 
-      </div>
+        <div className="w-[66%] flex items-center justify-between m-5">
+
+            <div className="flex items-center gap-2">
+
+            <img
+                src={playlistPostData?.author.userProfile?.profileImgUrl ||"/img/defaultProfile.jfif"}
+                className="w-11 h-11 rounded-full"
+            />
+
+            <div>
+
+                <div className="flex items-center gap-2">
+
+                <p className="font-semibold text-sm">
+                    {playlistPostData?.author.userProfile?.profileName}
+                </p>
+
+                <CheckCircle
+                    size={18}
+                    className="text-blue-500"
+                />
+
+                </div>
+
+                <p className="text-sm text-gray-400">
+                add this playList for learning perpase
+                </p>
+
+            </div>
+
+            </div>
+
+            {/* Actions */}
+
+            <div className="flex gap-3">
+
+            <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2  dark:bg-[#0F172A] dark:text-[#FBFCFE]">
+                <Share2 size={18} />
+                Share
+            </button>
+
+            <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2">
+                <Bookmark size={18} />
+                Save
+            </button>
+
+            </div>
+
+        </div>
+
+         <div className="px-5 w-[67%]">
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+
+                <h1 className="text-2xl font-bold pb-8">Comments</h1>
+                    <input type="hidden" value="Playlist" {...register("targetModel")} />
+
+                <div className="flex items-strat gap-5 ">
+
+                    <img
+                        src={playlistPostData?.author.userProfile?.profileImgUrl || "/img/defaultProfile.jfif"}
+                        className="w-9 h-9 m-2 rounded-full"
+                    />
+
+                    <div className="flex-1">
+
+                        <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            className="
+                            w-full
+                            bg-transparent
+                            border-b
+                            border-gray-100
+                            py-1
+                            outline-none
+                            text-white
+                            placeholder:text-gray-400
+                            "
+                            {...register("commentContent")}
+                        />
+                            <div className="mt-3 flex items-center justify-between">
+
+                                <div className="relative">
+
+                                    <button
+                                    type="button"
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    className="text-gray-400 hover:text-white cursor-pointer"
+                                    >
+                                    <Smile size={22} />
+                                    </button>
+
+                                    {showEmojiPicker && (
+                                    <div className="absolute top-10 left-0 z-50">
+                                        <EmojiPicker
+                                        width={400}
+                                        height={350}
+                                        theme={Theme.DARK}
+                                        onEmojiClick={(emojiData) =>
+                                            setValue(
+                                                "commentContent",
+                                                (commentContent || "")  + emojiData.emoji,
+                                                  { 
+                                                    shouldDirty: true,
+                                                    shouldTouch: true,
+                                                    shouldValidate: true,
+                                                   }
+                                            )
+                                        }
+                                        />
+                                    </div>
+                                    )}
+
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <button className="text-white cursor-pointer">
+                                        Cancel
+                                    </button>
+
+                                    <button className="px-3 py-1 rounded-2xl hover:bg-white hover:text-black cursor-pointer">
+                                        Comment
+                                    </button>
+                                </div>
+
+                            </div>
+                    </div>
+                </div>
+
+                
+                <div className='flex-1 overflow-y-auto p-7 pb-24'>
+
+                    {commentsData && commentsData.map((comment) => (
+
+                        <div key={comment._id}  className='mb-6'>
+
+                            <div className='flex gap-2'>
+
+                                <img
+                                    src={ comment.author.userProfile?.coverImageUrl||"/img/defaultProfile.jfif" }
+                                    className="w-7 h-7 rounded-full"
+                                />
+
+                                <div className="flex-1 min-w-0">
+
+                                    <h6 className="font-semibold text-gray-200 text-sm">{comment.author.userProfile?.profileName}</h6>
+
+                                    <p className='text-sm text-gray-100'>{comment?.content}</p>
+
+
+                                    <div className='flex items-center gap-x-8 pt-1 pb-4'>
+
+                                        <button type='button' onClick={() => handleLikesAndComments({ dispatch, commentId: comment._id })} className={`cursor-pointer ${session?.user._id && comment.likes.includes(session?.user._id  )? "text-blue-800" : ""}`}><ThumbsUp size={15} /></button>
+                                        <button 
+                                            type='button' 
+                                            onClick={() =>
+                                                session?.user?._id &&
+                                                comment.likes.includes(session.user._id) &&
+                                                handleLikesAndComments({ dispatch, commentId: comment._id })
+                                            }
+                                            className={`cursor-pointer`}
+                                            >
+                                            <ThumbsDown size={15} />
+                                        </button>
+
+                                        <p 
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                setReplyCommentId(comment._id)
+                                                }
+                                            }
+                                        className='text-sm text-blue-700 cursor-pointer'>reply</p>
+                                    </div>
+
+                                    {replyCommentId === comment._id && (
+                                        <div className="flex items-center gap-5 ">
+
+                                            <img
+                                                src={playlistPostData?.author.userProfile?.profileImgUrl || "/img/defaultProfile.jfif"}
+                                                className="w-11 h-11 rounded-full"
+                                            />
+
+                                            <div className="flex-1">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Add a comment..."
+                                                    className="
+                                                    w-full
+                                                    bg-transparent
+                                                    border-b
+                                                    border-gray-100
+                                                    py-1
+                                                    outline-none
+                                                    text-white
+                                                    placeholder:text-gray-400
+                                                    "
+                                                    {...register("replyContent")}
+                                                />
+                                                    <div className="mt-3 flex items-center justify-between">
+
+                                                        <div className="relative">
+
+                                                            <button
+                                                            type="button"
+                                                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                                            className="text-gray-400 hover:text-white cursor-pointer"
+                                                            >
+                                                            <Smile size={22} />
+                                                            </button>
+
+                                                            {showEmojiPicker && (
+                                                            <div className="absolute top-10 left-0 z-50">
+                                                                <EmojiPicker
+                                                                width={400}
+                                                                height={350}
+                                                                theme={Theme.DARK}
+                                                                onEmojiClick={(emojiData) =>
+                                                                    setValue(
+                                                                        "replyContent",
+                                                                        (replyContent || "")  + emojiData.emoji,
+                                                                        { 
+                                                                            shouldDirty: true,
+                                                                            shouldTouch: true,
+                                                                            shouldValidate: true,
+                                                                        }
+                                                                    )
+                                                                }
+                                                                />
+                                                            </div>
+                                                            )}
+
+                                                        </div>
+
+                                                        <div className="flex gap-3">
+                                                            <button className="text-white cursor-pointer">
+                                                                Cancel
+                                                            </button>
+
+                                                            <button className="px-3 py-1 rounded-2xl hover:bg-white hover:text-black cursor-pointer">
+                                                                Comment
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    )}
+
+                                </div> 
+
+                            </div>
+
+                            {/* Replies */}
+                            <div className="ml-10 mt-3 space-y-3">
+
+                                {commentsData.filter((reply) => reply.parentComment === comment._id).map((reply) => (
+
+                                    viewReplyComments ? 
+                                                                              
+                                        <div key={reply._id} className="gap-2">
+
+
+                                            <div className="flex gap-2 pb-3">
+
+                                                    <img
+                                                        src={reply.author.userProfile?.coverImageUrl || "/img/defaultProfile.jfif"}
+                                                        className="w-7 h-7 rounded-full"
+                                                    />
+
+                                                    <div>
+                                                        <h6 className="font-semibold text-sm text-gray-200"> {reply.author.userProfile?.profileName} </h6>
+
+                                                        <p className="text-sm text-gray-100"> {reply.content} </p>
+
+                                                        
+                                                    </div>
+                                            </div>
+
+                                        <div
+                                            onClick={() => setViewReplyComments(false)}
+                                            className="flex items-center gap-2 text-blue-500 cursor-pointer"
+                                        >
+                                            <ChevronUp size={16} />
+                                            <span>Hide replies</span>
+                                        </div>
+
+                                        </div>
+                                    : 
+                                    <div
+                                        key={reply._id}
+                                        onClick={() => setViewReplyComments(true)}
+                                        className="flex items-center gap-2 text-blue-500 cursor-pointer"
+                                        >
+                                        <ChevronDown size={16} />
+                                        <span>View replies</span>
+                                        </div>
+                                     ))}
+                            </div>
+
+                        </div>
+                    ))}
+
+                </div>
+
+
+            </form>
+
+         </div>
 
     </div>
   );
 }
+
+
+
+

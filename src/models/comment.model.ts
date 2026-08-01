@@ -2,20 +2,21 @@ import mongoose, { Schema, Types, Document } from "mongoose";
 
 export interface Comment extends Document {
   author: Types.ObjectId;
-  post: Types.ObjectId;
+
+  targetId: Types.ObjectId;
+  targetModel: "UserPost" | "Playlist";
 
   content: string;
 
-  parentComment?: Types.ObjectId; // Reply ke liye
+  parentComment?: Types.ObjectId;
 
-  likes: Types.ObjectId[]; // Jin users ne like kiya
+  likes: Types.ObjectId[];
 
   edited: boolean;
 
   createdAt: Date;
   updatedAt: Date;
 }
-
 const CommentSchema = new Schema<Comment>(
   {
     author: {
@@ -24,9 +25,14 @@ const CommentSchema = new Schema<Comment>(
       required: true,
     },
 
-    post: {
+    targetId: {
       type: Schema.Types.ObjectId,
-      ref: "UserPost",
+      required: true,
+       refPath: "targetModel",
+    },
+    targetModel: {
+      type: String,
+      enum: ["UserPost", "Playlist"],
       required: true,
     },
 

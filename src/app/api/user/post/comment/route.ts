@@ -16,9 +16,9 @@ export const POST = asyncHandler( async (req:Request) => {
     const postId = formData.get("postId") as string;
     const parentComment = formData.get("parentComment") as string | null;
 
-    const content = parentComment ? replyContent : commentContent;
-    console.log("content", content)
+    const targetModel = (formData.get("targetModel") as "Playlist" | null) ?? "UserPost";
 
+    const content = parentComment ? replyContent : commentContent;
 
     
     const session = await getServerSession(authOptions);
@@ -35,7 +35,8 @@ export const POST = asyncHandler( async (req:Request) => {
      const userPostComment = new Comment({
         content: content,
         author: userId,
-        post: postId,
+        targetId: postId,
+        targetModel,
         parentComment: parentComment || null,
     });
 
@@ -74,7 +75,7 @@ export const GET = asyncHandler( async (req:Request) => {
     };
 
     const getAllComments = await Comment.find({
-        post: postId
+        targetId: postId
     }).populate("author");               //if first latest post .sort({ createdAt: -1 });
 
     if(!getAllComments){

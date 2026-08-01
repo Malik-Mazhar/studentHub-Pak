@@ -81,11 +81,18 @@ export interface userPostType {
     postDocumentUrl: string;
 };
 
-export interface YoutubeVideo {
-    videoId: string;
+export interface PlaylistType {
+    author: User;
+
+    youtubePlaylistId: string;
+
     title: string;
-    thumbnail?: string;
-    duration: string;
+    thumbnail: string;
+
+    videoCount: number;
+    playlistDuration: string;
+
+    visibility: "Everyone" | "Only Me";
 };
 
 export interface UserComment {

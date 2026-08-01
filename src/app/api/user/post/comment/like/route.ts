@@ -7,6 +7,7 @@ import UserPostModel from "@/src/models/post";
 import { Comment } from "@/src/models/comment.model";
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { Types } from "mongoose";
+import PlaylistModel from "@/src/models/playlist.model";
 
 export const POST = asyncHandler( async (req:Request) => {
     await dbConnect();
@@ -14,6 +15,9 @@ export const POST = asyncHandler( async (req:Request) => {
     const formData = await req.formData();
     const commentId = formData.get("commentId");
     const PostId = formData.get("postId");
+    const targetModel = formData.get("targetModel")
+    console.log("commentId", commentId)
+    console.log("PostId", PostId)
 
     
     const session = await getServerSession(authOptions);
@@ -22,10 +26,6 @@ export const POST = asyncHandler( async (req:Request) => {
     if (!userId) {
         throw new ApiError(401, "user Unauthorized" )
     };
-
-    // if(!PostId && !commentId){       
-    //     throw new ApiError(402, "Post or comment Id is required");
-    // }
 
     const getComment = await Comment.findById(commentId);
     const getPostById = await UserPostModel.findById(PostId);
@@ -44,7 +44,7 @@ export const POST = asyncHandler( async (req:Request) => {
             getPostById.likes.push(new Types.ObjectId(userId))   
         };
 
-        await getPostById.save();
+        // await getPostById.save();
 
             return Response
                 .json(

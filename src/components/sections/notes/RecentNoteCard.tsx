@@ -65,7 +65,7 @@ export default function RecentNoteCard({
             100
           </div>
 
-          <button onClick={() => handleLikesAndComments(_id, dispatch)} className={`flex items-center gap-1 cursor-pointer ${isLiked && "text-yellow-500"}`}>
+          <button onClick={() => handleLikesAndComments({dispatch, postId: _id })} className={`flex items-center gap-1 cursor-pointer ${isLiked && "text-yellow-500"}`}>
             <Star size={15} fill="currentColor" />
             ii
           </button>
