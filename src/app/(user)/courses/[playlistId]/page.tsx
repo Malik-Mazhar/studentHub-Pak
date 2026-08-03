@@ -1,11 +1,8 @@
 "use client"
-import { Playlist } from "@/src/models/playlist.model";
 import axios, { AxiosError } from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ThumbsUp, ThumbsDown, Share2, Bookmark, MoreHorizontal, CheckCircle, Clock3, Folder, Globe, ChevronDown, ChevronUp, } from "lucide-react";
-import Comment from "@/src/components/sections/Comment";
-import EmojiPickerInput from "@/src/components/shared/EmojiPickerInput"
+import { ThumbsUp, ThumbsDown, Share2, Bookmark, CheckCircle, ChevronDown, ChevronUp, } from "lucide-react";
 import { PlaylistType } from "@/src/types/dataTaype";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -14,11 +11,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EmojiPicker, { Theme }  from "emoji-picker-react";
 import { Smile } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
-import { addComment, setComments, setLoading, toggleLike } from "@/src/store/commmentSlice";
+import { addComment, setComments, setLoading } from "@/src/store/commmentSlice";
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { toast } from "sonner";
 import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAndComments";
 import { useSession } from "next-auth/react";
+import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
+import { sharePost } from "@/src/services/ApiServices/Share";
 
 export default function PlaylistPage() {
     const[ playlistPostData, setPlaylistPostData ] = useState<PlaylistType | null>(null)
@@ -27,14 +26,15 @@ export default function PlaylistPage() {
     const [selectedVideo, setSelectedVideo] = useState<any>(null);
     const [playlist, setPlaylist] = useState<any>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [comment, setComment] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
     const [replyCommentId, setReplyCommentId] = useState<string | null>(null);
     const [isSubmiting, setIsSubmitting] = useState(false);
     const dispatch = useAppDispatch();
     const [viewReplyComments, setViewReplyComments] = useState(false);
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const commentsData = useAppSelector((state) => state.commentsData.comments);
+    const playlistReduxData = useAppSelector((state) => state.playlist)
+    console.log("playlistData", playlistReduxData)
 
       const {
         register,
@@ -158,6 +158,8 @@ export default function PlaylistPage() {
             dispatch(setLoading(false));
         }
     };
+
+    const savedPlaylist = playlistReduxData.playlists.find( (playlist) => playlist.youtubePlaylistId === playlistPostData?.youtubePlaylistId);
     
     useEffect(() => {
         getPlaylistComments();
@@ -331,15 +333,23 @@ export default function PlaylistPage() {
 
             <div className="flex gap-3">
 
-            <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2  dark:bg-[#0F172A] dark:text-[#FBFCFE]">
+            <button onClick={() => { sharePost({pagePath: "courses", postId: playlistId as string}) }} className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2  dark:bg-[#0F172A] cursor-pointer dark:text-[#FBFCFE]">
                 <Share2 size={18} />
                 Share
             </button>
 
-            <button className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2">
-                <Bookmark size={18} />
-                Save
-            </button>
+            {playlistPostData?._id &&
+                <button onClick={() => handleBookMark({dispatch, postId:playlistPostData._id})} className={`bg-[#182232] gap-2 rounded-full px-5 py-3 flex items-centergap-2 cursor-pointer `}>
+                    <Bookmark 
+                        size={18}
+                        fill={savedPlaylist?.isBookmarked? "currentColor": "none"}
+                        className={` ${savedPlaylist?.isBookmarked? "text-blue-800" : ""} mt-1`}
+                    />
+                    Save
+                </button>
+            }
+
+
 
             </div>
 

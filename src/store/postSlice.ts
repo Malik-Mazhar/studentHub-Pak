@@ -41,7 +41,6 @@ export const postSlice = createSlice({
 
     toggleBookmark: (state, action) => {
       const { postId, isBookmarked } = action.payload;
-      console.log("action paylaod", action)
       const post = state.posts.find(
         (post) => post._id === postId
       );

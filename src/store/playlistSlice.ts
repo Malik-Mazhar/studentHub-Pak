@@ -22,6 +22,18 @@ const playlistSlice = createSlice({
       state.playlists.unshift(action.payload);
     },
 
+    toggleBookmarkPlaylist: (state, action) => {
+      const { postId, isBookmarked } = action.payload;
+
+      const post = state.playlists.find(
+        (post) => post._id === postId
+      );
+
+      if (post) {
+        post.isBookmarked = isBookmarked;
+      }
+    },
+
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -31,6 +43,7 @@ const playlistSlice = createSlice({
 export const {
   setPlaylists,
   addPlaylist,
+  toggleBookmarkPlaylist,
   setLoading,
 } = playlistSlice.actions;
 

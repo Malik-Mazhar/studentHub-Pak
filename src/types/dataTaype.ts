@@ -82,6 +82,7 @@ export interface userPostType {
 };
 
 export interface PlaylistType {
+    _id: string;
     author: User;
 
     youtubePlaylistId: string;

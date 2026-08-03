@@ -3,20 +3,15 @@ import CustomButton from "@/src/components/shared/CustomButton"
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  FaRegComment,
-  FaShare,
-  FaBookmark,
-  FaEllipsisH,
-  FaEdit
-} from "react-icons/fa";
+import { FaRegComment, FaShare, FaBookmark, FaEllipsisH, FaEdit} from "react-icons/fa";
 import Comment from "@/src/components/sections/Comment";
 import { useAppSelector } from "@/src/store/useSelecterhook";
 import { useDispatch } from "react-redux";
 import { ThumbsUp } from "lucide-react";
-import { ApiResponse } from "@/src/lib/apiResponse";
-import { toast } from "sonner";
 import { setPosts, toggleLikePost, toggleBookmark } from "@/src/store/postSlice";
+import { toast } from "sonner";
+import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
+import { ApiResponse } from "@/src/lib/apiResponse";
 
 export default function CommunityCenter() {
   const [showComment, setShowComment] = useState(false);
@@ -246,7 +241,7 @@ export default function CommunityCenter() {
                   </div>
 
                     <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center ${post?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
-                      <FaBookmark />
+                      <FaBookmark /> 
                       {post?.bookmarkCount}
                     </button>
                 </div>
