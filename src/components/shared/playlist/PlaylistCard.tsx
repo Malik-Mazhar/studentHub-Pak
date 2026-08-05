@@ -5,11 +5,10 @@ import { formatDistanceToNow } from "date-fns";
 interface PlaylistCardProps {
   thumbnail: string;
   title: string;
-  category: string;
   videoCount: number;
   duration: string;
   description: string;
-  createdAt: Date;
+  createdAt: string;
   profileImage: string;
   fullname: string;
   onClick?: () => void;
@@ -18,7 +17,6 @@ interface PlaylistCardProps {
 export default function PlaylistCard({
   thumbnail,
   title,
-  category,
   videoCount,
   duration,
   description,

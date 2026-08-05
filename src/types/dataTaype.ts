@@ -60,6 +60,7 @@ export interface userPostType {
     resourceLink?: string;
 
     postImageUrl?: string[];
+    postVideoUrl?: string[]
     postImgPublicId?: string;
 
     videoLink?: string;
@@ -79,11 +80,14 @@ export interface userPostType {
     commentsCount: number;
     bookmarkCount: number;
     postDocumentUrl: string;
+    createdAt: string
 };
 
 export interface PlaylistType {
     _id: string;
     author: User;
+    duration: string;
+    description: string;
 
     youtubePlaylistId: string;
 

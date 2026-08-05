@@ -25,16 +25,7 @@ export default function FilterTabs({categories, categoriesCard, selectedNotes, s
   return (
     <div className="flex gap-3 flex-wrap pb-5 relative">
 
-      {/* <button
-        onClick={() => setStartIndex((prev) => Math.max(prev - 1, 0))}
-        disabled={startIndex === 0}
-        className="absolute top-10 -right-5 w-10 h-10 rounded-full border flex items-center justify-center"
-      >
-      <ChevronLeft size={20} />
-    </button> */}
-
-
-              {categories &&categories.map((item, index) => (
+              {categories && categories.map((item, index) => (
 
                     <button
                       onClick={() => setSelectedNotes(item)}
@@ -71,7 +62,8 @@ export default function FilterTabs({categories, categoriesCard, selectedNotes, s
                           const Icon = item.icon;
 
                           return (
-                            <div
+                            <Link 
+                              href="/courses/category/programing"
                               key={item.name}
                               className="flex w-56 items-center gap-4 bg-white border rounded-2xl p-2 hover:shadow-lg transition"
                             >
@@ -88,7 +80,7 @@ export default function FilterTabs({categories, categoriesCard, selectedNotes, s
                                   {item.courses} Courses
                                 </p>
                               </div>
-                            </div>
+                            </Link>
                           );
                         })}
                     </div>

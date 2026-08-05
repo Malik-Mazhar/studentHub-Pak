@@ -4,68 +4,10 @@ import { useEffect, useState } from 'react'
 import { Download, Eye, File, Star } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import { setPosts } from "@/src/store/postSlice";
-import { PhotoProvider, PhotoView } from "react-photo-view";
 import Image from "next/image";
 import axios from 'axios';
 import { handleLikesAndComments } from '@/src/services/ApiServices/handleLikesAndComments';
 
-const notes = [
-  {
-    image: "/img/math.jpg",
-    subject: "Math",
-    title: "Full Chapter Notes",
-    author: "Ali Khan",
-    downloads: "1.2k",
-    views: "5k",
-    rating: 4.8,
-  },
-    {
-    image: "/img/math.jpg",
-    subject: "Mathmm",
-    title: "Full Chapter Notes",
-    author: "Ali Khan",
-    downloads: "1.2k",
-    views: "5k",
-    rating: 4.8,
-  },
-    {
-    image: "/img/math.jpg",
-    subject: "Matmmh",
-    title: "Full Chapter Notes",
-    author: "Ali Khan",
-    downloads: "1.2k",
-    views: "5k",
-    rating: 4.8,
-  },
-  {
-    image: "/img/phisics.jpg",
-    subject: "Physics",
-    title: "Numerical Notes",
-    author: "Usman",
-    downloads: "980",
-    views: "4.2k",
-    rating: 4.9,
-  },
-  {
-    image: "/img/Biology.jfif",
-    subject: "Chemistry",
-    title: "Organic Chemistry",
-    author: "Ahmed",
-    downloads: "850",
-    views: "3.5k",
-    rating: 4.7,
-  },
-  {
-    image: "/img/math.jpg",
-    subject: "Biology",
-    title: "Complete Chapter",
-    author: "Fatima",
-    downloads: "730",
-    views: "2.9k",
-    rating: 4.8,
-  },
-  
-];
 
 function page() {
       const [selectedImage, setSelectedImage] = useState<string | null>(null);

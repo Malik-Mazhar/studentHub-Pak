@@ -11,6 +11,7 @@ import {
   Briefcase,
   MessageCircle,
 } from "lucide-react";
+import Link from "next/link";
 
 type SidebarItemProps = {
   icon: React.ReactNode;
@@ -30,10 +31,10 @@ export default function Sidebar() {
           <h2 className="text-lg font-semibold mb-4">Community</h2>
 
           <div className="space-y-3 text-sm">
-            <SidebarItem icon={<Home size={18} />} text="Feed" className='' />
+            <Link href=""><SidebarItem icon={<Home size={18} />} text="Feed" className='' /></Link>
             <SidebarItem icon={<Users size={18} />} text="My Groups" />
             <SidebarItem icon={<FileText size={18} />} text="My Posts" />
-            <SidebarItem icon={<Bookmark size={18} />} text="Saved Posts" />
+            <Link href="/save"><SidebarItem icon={<Bookmark size={18} />} text="Saved Posts" /></Link>
             <SidebarItem icon={<UserPlus size={18} />} text="Following" />
             <SidebarItem icon={<Compass size={18} />} text="Discover" />
           </div>

@@ -14,7 +14,7 @@ import Link from "next/link";
 export function AppSidebar() {
     const userData = useAppSelector((state) => state.userData.profileData);
 
-    const prifileImgId = userData?.userProfile?.profileImgUrl;
+    const prifileImgId = userData?.data?.userProfile?.profileImgUrl;
     const showProfileImg = prifileImgId
     ? 
     prifileImgId
@@ -34,7 +34,7 @@ export function AppSidebar() {
                 className="p-3 rounded-full"
                 />
             </div>
-            <h1 className="font-bold pt-3 text-gray-700">{userData?.userProfile?.profileName}</h1>
+            <h1 className="font-bold pt-3 text-gray-700">{userData?.data?.userProfile?.profileName}</h1>
         </div>
       </SidebarHeader>
 

@@ -16,6 +16,7 @@ import { Code2, Globe, Smartphone,  Brain, ShieldCheck, Database, Palette, PenTo
 import { setPlaylists } from "@/src/store/playlistSlice";
 import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const coursesCategories = [
   {
@@ -125,7 +126,6 @@ const coursesCategories = [
   },
 ];
 
-// const coursesCategories = ["class"]
 const notes = [
   {
     image: "/img/math.jpg",
@@ -182,15 +182,10 @@ export default function NotesPage() {
   const [selectedNotes, setSelectedNotes] = useState<string | null>(null);
   const router = useRouter();
   
-  const getClassNotes = notesData.filter((note) => note.className === selectedNotes?.split(" ")[1] + "th");
-
-  console.log("playlistData", playlistData)
-  
-  const getAllNotes = async () => {
+  const getAllPostData = async () => {
     try {
       const response = await axios.get("/api/user/get/getallposts?type=notes");
       const playlistResponse = await axios.get("/api/user/get/getPlaylistData");
-      console.log("playlistResponse", playlistResponse)
 
       dispatch(setPosts(response.data.data))
       dispatch(setPlaylists(playlistResponse.data.data));
@@ -201,48 +196,9 @@ export default function NotesPage() {
     };
   };
 
-  const playlists = [
-  {
-    _id: 1,
-    thumbnail: "/img/math.jpg",
-    title: "Complete JavaScript Course",
-    category: "Programming",
-    videoCount: 52,
-    duration: "8h 45m",
-    description: "Start your JavaScript journey from scratch.",
-  },
-  {
-    _id: 2,
-    thumbnail: "/img/math.jpg",
-    title: "Python for Beginners",
-    category: "Programming",
-    videoCount: 45,
-    duration: "7h 30m",
-    description: "Learn Python from basics to advanced.",
-  },
-  {
-    _id: 3,
-    thumbnail: "/img/math.jpg",
-    title: "Excel Complete Course",
-    category: "Productivity",
-    videoCount: 38,
-    duration: "6h 15m",
-    description: "Master Excel formulas and charts.",
-  },
-  {
-    _id: 4,
-    thumbnail: "/img/math.jpg",
-    title: "Web Development Bootcamp",
-    category: "Development",
-    videoCount: 60,
-    duration: "10h 20m",
-    description: "Learn HTML, CSS & JavaScript.",
-  },
-];
-
     
   useEffect(() => {
-    getAllNotes();
+    getAllPostData();
   }, []);
   
   return (
@@ -265,25 +221,30 @@ export default function NotesPage() {
         <HeroBanner img={"/img/BannerCourse.png"} someClasses="left-14" />
 
             <section className="pt-10">
+                
+              <div className="flex justify-between items-center">
+                  <div>
+                      <h1 className="text-2xl font-bold">
+                        Featured Courses
+                      </h1>
 
-              <h1 className="text-2xl font-bold">
-                  Featured Courses
-              </h1>
+                    <p className="text-gray-500">
+                        Explore community-shared YouTube playlists and start learning today.
+                    </p>
+                  </div>
 
-              <p className="text-gray-500">
-                  Explore community-shared YouTube playlists and start learning today.
-              </p>
+                  <Link href="/courses/viewAllPlaylist" className="text-blue-700 font-semibold underline hover:no-underline">View All</Link>
+              </div>
 
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 pt-5 gap-6">
 
                   {playlistData.map((playlist) => (
-                    <PlaylistCard
+                    <PlaylistCard 
                       key={playlist._id}
                       thumbnail={playlist.thumbnail}
                       createdAt={playlist.createdAt}
                       title={playlist.title}
-                      category={playlist.category}
                       videoCount={playlist.videoCount}
                       duration={playlist.duration}
                       fullname={playlist.author.userProfile.profileName}

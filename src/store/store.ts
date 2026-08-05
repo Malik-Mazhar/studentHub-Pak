@@ -4,6 +4,7 @@ import userDataReducer from './userDataSlice';
 import commentsReducer from './commmentSlice'
 import postsReducer from './postSlice'
 import playlistReducer from './playlistSlice'
+import bookmarksReducer from './bookmarkSlice'
 
 export const store = configureStore({
    reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     postData: postsReducer,
     commentsData: commentsReducer,
     playlist: playlistReducer,
+    bookmarksData: bookmarksReducer,
    },
    devTools: true
 });
