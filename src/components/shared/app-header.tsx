@@ -116,6 +116,15 @@ function AppHeader() {
                     Jobs
                   </Link>
                 </li>
+
+                <li>
+                  <Link
+                    href="/contact"
+                    className={pathname === "/jobs" ? "border-b-2 border-blue-500" : ""}
+                  >
+                    Contact
+                  </Link>
+                </li>
             </ul>
         </div>
 

@@ -10,12 +10,16 @@ import { ThumbsUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { useRouter } from "next/navigation";
+import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAndComments";
+import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
+import { setPosts, toggleLikePost } from "@/src/store/postSlice";
 
 export default function SavedPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [viewPost, setViewPost] = useState<null | string>(null);
   const allBookmarksData = useAppSelector((state) => state.bookmarksData);
+  const PostData = useAppSelector((state) => state.postData.posts)
   const [selectBookMarksPost, setSelectBookMarksPost] = useState<null | string>(null);
     
   const getAllBookmarks = async () => {
@@ -31,7 +35,8 @@ export default function SavedPage() {
   };
   
 
-  const findViewPostId = allBookmarksData.bookmarks.find((postId) => postId._id.toString() === viewPost)
+  const findViewPostId = PostData.find((postId) => postId._id.toString() === viewPost)
+  console.log("findViewPostId", findViewPostId)
 
 
   const bookMarksTypes = ["All", "Images", "Videos", "Notes", "File", "Playlists"];
@@ -60,12 +65,24 @@ export default function SavedPage() {
         default:
           return true; // All
     }
-  });
+  }); 
 
+  const getAllPosts = async () => {
+      try {
+        const response = await axios.get("/api/user/get/getallposts?sort=latest");
+
+        dispatch(setPosts(response.data.data))
+
+      } catch (error) {
+        console.log("getAllPosts api Error please check the community page api :", error);
+
+      }
+  };
 
 
   useEffect(() => {
     getAllBookmarks();
+    getAllPosts();
   }, []);
 
   return (
@@ -156,10 +173,6 @@ export default function SavedPage() {
                   <div className="flex gap-2 mt-4">
                     <button onClick={() => setViewPost(post._id)} className="border rounded-lg px-4 py-2 cursor-pointer">
                       View
-                    </button>
-
-                    <button className="border rounded-lg px-4 py-2 text-red-500">
-                      Remove
                     </button>
                   </div>
 
@@ -261,9 +274,9 @@ export default function SavedPage() {
                   <div className="flex gap-8">
 
                     <button
-                        // onClick={() => {
-                        //   handleLike(findViewPostId?._id)
-                        // }}
+                        onClick={() => {
+                          handleLikesAndComments({ dispatch, postId:findViewPostId?._id })
+                        }}
                         className="flex items-center gap-2 cursor-pointer">
                       <ThumbsUp size={18} className={`${findViewPostId?.postLikesCount? "text-blue-500" : ""}`} />
                       {findViewPostId?.postLikesCount}
@@ -286,7 +299,7 @@ export default function SavedPage() {
 
                   </div>
 
-                    <button className={`flex items-center ${findViewPostId?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
+                    <button onClick={() => handleBookMark({dispatch, postId: findViewPostId._id})} className={`flex items-center ${findViewPostId?.isBookmarked? "text-blue-800" : ""} cursor-pointer gap-2 `}>
                       <FaBookmark /> 
                       {findViewPostId?.bookmarkCount}
                     </button>

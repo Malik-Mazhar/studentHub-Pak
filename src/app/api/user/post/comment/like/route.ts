@@ -44,7 +44,7 @@ export const POST = asyncHandler( async (req:Request) => {
             getPostById.likes.push(new Types.ObjectId(userId))   
         };
 
-        // await getPostById.save();
+        await getPostById.save();
 
             return Response
                 .json(

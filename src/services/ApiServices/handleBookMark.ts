@@ -1,5 +1,6 @@
 import { ApiResponse } from "@/src/lib/apiResponse";
 import { toggleBookmarkPlaylist } from "@/src/store/playlistSlice";
+import { toggleBookmark } from "@/src/store/postSlice";
 import { AppDispatch } from "@/src/store/store";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -7,18 +8,26 @@ import { toast } from "sonner";
 type HandleBookMarkProp = {
     dispatch: AppDispatch;
     postId: string;
+    postType?: string;
 };
         
         
 export const handleBookMark = async ({
     dispatch,
     postId,
+    postType
 }: HandleBookMarkProp) => {
     
     try {
         const response = await axios.post(`/api/user/post/bookmark?postId=${postId}`);
 
-        dispatch(toggleBookmarkPlaylist(response.data.data))
+        if(postType){
+
+            dispatch(toggleBookmarkPlaylist(response.data.data))
+        }else {
+            dispatch(toggleBookmark(response.data.data))
+        }
+
 
         toast("post saved successfully!", {
             position: "top-right",        

@@ -28,6 +28,7 @@ export const postSlice = createSlice({
     
     toggleLikePost: (state, action) => {
       const { postId, isLiked, likesCount } = action.payload;
+      console.log("action.payload", action.payload)
 
       const post = state.posts.find(
         (post) => post._id === postId

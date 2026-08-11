@@ -51,13 +51,13 @@ export default function CommunityCenter() {
 
 
   const handleLike = async (postId: string) => {
-
     try {
         const formData = new FormData();
 
           formData.append("postId", postId);
               
           const response = await axios.post("/api/user/post/comment/like", formData);
+          console.log("response", response.data.data)
 
           dispatch(toggleLikePost({postId, ...response.data.data}))
 
