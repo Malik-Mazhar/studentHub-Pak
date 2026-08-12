@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { setBookmarks } from "@/src/store/bookmarkSlice";
 import { FaEllipsisH } from "react-icons/fa";
 import { FaBookmark, FaRegComment, FaShare } from "react-icons/fa6";
-import { ThumbsUp } from "lucide-react";
+import { ArrowBigLeft, ArrowBigLeftIcon, ThumbsUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,6 @@ export default function SavedPage() {
   
 
   const findViewPostId = PostData.find((postId) => postId._id.toString() === viewPost)
-  console.log("findViewPostId", findViewPostId)
 
 
   const bookMarksTypes = ["All", "Images", "Videos", "Notes", "File", "Playlists"];
@@ -52,7 +51,7 @@ export default function SavedPage() {
 
         case "Videos":
           return (
-            post.postType === "discussion" &&
+            post.postType === "video" &&
             !!post.postVideoUrl
           );
 
@@ -66,6 +65,7 @@ export default function SavedPage() {
           return true; // All
     }
   }); 
+  console.log("filteredBookmarks", filteredBookmarks)
 
   const getAllPosts = async () => {
       try {
@@ -79,11 +79,40 @@ export default function SavedPage() {
       }
   };
 
+    const getYoutubeVideoId = (url: string) => {
+      try {
+        const parsedUrl = new URL(url);
+
+        if (parsedUrl.hostname === "youtu.be") {
+          return parsedUrl.pathname.slice(1);
+        }
+
+        if (parsedUrl.hostname.includes("youtube.com")) {
+          return parsedUrl.searchParams.get("v");
+        }
+
+        return null;
+      } catch {
+        return null;
+      }
+  };
+
 
   useEffect(() => {
     getAllBookmarks();
     getAllPosts();
   }, []);
+
+  useEffect(() => {
+    if (viewPost) {
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+    }
+  }, [viewPost]);
 
   return (
    <main className="flex-1 p-6 bg-gray-50">
@@ -149,6 +178,32 @@ export default function SavedPage() {
                   />
                 }
 
+                {post.postType === "playlist" && (
+                  <img
+                    src={ post?.thumbnail}
+                    alt={post?.title || "Video thumbnail"}
+                    title=""
+                    className="rounded-xl w-60 h-40 object-cover"
+                  />
+                )}
+
+                {post.postVideoUrl && (
+                  <div className="relative w-60 h-40">
+                    <video
+                      src={post.postVideoUrl}
+                      className="rounded-xl w-full h-full object-cover"
+                      preload="metadata"
+                    />
+
+                    {/* Play Icon */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-black/60 rounded-full p-3">
+                        ▶
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex-1">
 
                   <span className="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">
@@ -171,7 +226,7 @@ export default function SavedPage() {
                   </p>
 
                   <div className="flex gap-2 mt-4">
-                    <button onClick={() => setViewPost(post._id)} className="border rounded-lg px-4 py-2 cursor-pointer">
+                    <button onClick={() =>  post.postType === "playlist"? router.push(`/courses/${post._id}`) : setViewPost(post._id)} className="border rounded-lg px-4 py-2 cursor-pointer">
                       View
                     </button>
                   </div>
@@ -197,8 +252,12 @@ export default function SavedPage() {
       }
 
       {viewPost && findViewPostId &&
+            <div className="mt-5">
+              <button onClick={() => setViewPost(null)} className="flex gap-x-5 border rounded-md hover:bg-gray-100 text-white font-semibold bg-linear-to-r from-[#017D63] to-[#0aa382]  cursor-pointer px-7 py-1">
+                   <ArrowBigLeft /> Beack to all save Post
+              </button>
 
-              <div key={findViewPostId?._id} className="bg-white rounded-2xl shadow-sm border p-6 mt-10" >
+              <div key={findViewPostId?._id} className="bg-white rounded-2xl shadow-sm border p-6 mt-5" >
 
                 <div className="flex justify-between">
 
@@ -252,9 +311,30 @@ export default function SavedPage() {
                     />
                   }
 
-                  {/* {post.video && (
-                    <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  )} */}  
+                                  
+                  {findViewPostId.postType === "video" && findViewPostId.videoLink && (
+                      <iframe
+                        className="w-full h-100 aspect-video rounded-xl"
+                        src={`https://www.youtube.com/embed/${getYoutubeVideoId(
+                          findViewPostId.videoLink
+                        )}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        title={findViewPostId.title}
+                        allowFullScreen
+                      />
+                  )}
+
+                  {findViewPostId.postType === "video" && findViewPostId.postVideoUrl && (
+                      <video
+                        className="w-full h-100 aspect-video rounded-xl object-cover"
+                        src={findViewPostId.postVideoUrl}
+                        controls
+                        preload="metadata"
+                        playsInline
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                  )}
 
                 </div>
 
@@ -306,6 +386,7 @@ export default function SavedPage() {
                 </div>
 
               </div>
+            </div>
       }
 
       {selectBookMarksPost === "Playlists" &&

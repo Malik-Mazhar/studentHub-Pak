@@ -43,6 +43,25 @@ export default function CommunityCenter() {
     }
   };
 
+  const getYoutubeVideoId = (url: string) => {
+    try {
+      const parsedUrl = new URL(url);
+
+      if (parsedUrl.hostname === "youtu.be") {
+        return parsedUrl.pathname.slice(1);
+      }
+
+      if (parsedUrl.hostname.includes("youtube.com")) {
+        return parsedUrl.searchParams.get("v");
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+  // const videoId = getYoutubeVideoId(videoLink);
+
 
 
   useEffect(() => {
@@ -193,9 +212,30 @@ export default function CommunityCenter() {
                     />
                   }
 
-                  {/* {post.video && (
-                    <FaPlayCircle className="absolute text-white text-7xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  )} */}  
+                  {post.postType === "video" && post.videoLink && (
+                      <iframe
+                        className="w-full h-100 aspect-video rounded-xl"
+                        src={`https://www.youtube.com/embed/${getYoutubeVideoId(
+                          post.videoLink
+                        )}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        title={post.title}
+                        allowFullScreen
+                      />
+                  )}
+
+                  {post.postType === "video" && post.postVideoUrl && (
+                      <video
+                        className="w-full h-100 aspect-video rounded-xl object-cover"
+                        src={post.postVideoUrl}
+                        controls
+                        preload="metadata"
+                        playsInline
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                  )}
+
 
                 </div>
 

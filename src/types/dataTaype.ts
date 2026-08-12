@@ -60,7 +60,7 @@ export interface userPostType {
     resourceLink?: string;
 
     postImageUrl?: string[];
-    postVideoUrl?: string[]
+    postVideoUrl?: string,
     postImgPublicId?: string;
 
     videoLink?: string;

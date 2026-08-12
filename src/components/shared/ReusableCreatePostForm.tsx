@@ -45,7 +45,6 @@ function ReusableCreatePostForm({
   const [postVideoPerview, setPostVideoPreview] = useState<string | null>(null);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
   const [documentName, setDocumentName] = useState("");
-  const [videoType, setVideoType] = useState("video");
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -57,6 +56,8 @@ function ReusableCreatePostForm({
     setValue,
     formState: { errors },
   } = form;
+
+  const videoLink = watch("videoLink");
 
   useEffect(() => {
     if (postDeta) {
@@ -99,7 +100,7 @@ function ReusableCreatePostForm({
       };
 
       if (postVideoSelect) {
-          formData.append("coverImg", postVideoSelect);
+          formData.append("postVideo", postVideoSelect);
       };
 
       let response;
@@ -178,7 +179,7 @@ function ReusableCreatePostForm({
                 label={postType +" Title"}
                 type="text"
                 placeholder="Give your post a short title..."
-                optional = {true}
+                optional = {false}
                 {...register("title")}
                 className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
                 />
@@ -193,6 +194,7 @@ function ReusableCreatePostForm({
                     type="text"
                     placeholder="Paste YouTube or video URL..."
                     optional= {true}
+                    {...register("videoLink")}
                   />
                 </div>
 
@@ -216,13 +218,9 @@ function ReusableCreatePostForm({
 
               </div>
 
-              {/* Different Fields */}
+              {/* Image Or Video */}
 
-              {postType === "Notes"  && (
-
-                <>
-
-                {!documentFile && !documentUrl && (
+                  {!documentFile && !documentUrl && !videoLink?.trim() && (
                     <div className="mt-6">
                     
                         <label className="block text-sm font-semibold mb-2">
@@ -283,6 +281,14 @@ function ReusableCreatePostForm({
                     
                     </div>
                   )}
+
+              {/* Different Fields */}
+
+              {postType === "Notes"  && (
+
+                <>
+
+
 
                 {documentFile && (
                   <div className="flex items-center gap-3 p-4 border rounded-lg">

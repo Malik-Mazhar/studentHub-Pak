@@ -44,78 +44,13 @@ export default function CreatePostPage() {
   const [videoType, setVideoType] = useState("video");
   const dispatch = useAppDispatch();
 
-  // const {
-  //   control,
-  //   register,
-  //   handleSubmit,
-  //   watch,
-  //   formState: { errors }
-  // } = useForm<z.infer <typeof userPostSchema>>({
-  //   resolver: zodResolver(userPostSchema),
-  //   defaultValues: {
-  //   tags: [],
-  // },
-  // });
-
-    const form = useForm<z.infer <typeof userPostSchema>>({
+  const form = useForm<z.infer <typeof userPostSchema>>({
     resolver: zodResolver(userPostSchema),
     defaultValues: {
     tags: [],
     
   },
   });
-
-  const onSubmit = async (data: z.infer<typeof userPostSchema>) => {
-    setIsSubmitting(true);
-    const payload = {
-      ...data,
-      postType: selectPostType.toLowerCase()
-    }
-
-    try {
-      const formData = new FormData();
-
-      for (const [key, value] of Object.entries(payload)) {
-        formData.append(key, String(value ?? ""));
-      };
-
-      if (postImageSelect) {
-          formData.append("postImage", postImageSelect);
-      }; 
-
-      if (postVideoSelect) {
-          formData.append("coverImg", postVideoSelect);
-      };
-
-      const response = await axios.post("/api/user/post/createpost", formData);
-
-      dispatch(addPost(response.data.userPost));
-
-      toast("post created successfully!", {
-          position: "top-right",        
-          description: <span className="text-black">{ response.data?.message }</span>,
-      });
-
-      setIsSubmitting(false);
-      router.push("/community")
-      
-    } catch (err) {
-      console.log("Error creating post please checking createpost page",err)
-      
-      const axiosError = err as AxiosError<ApiResponse>;
-
-      toast('post created Failed', {
-      position: "top-right",
-      description: <span className="text-black">{axiosError.response?.data?.message}</span>,
-      action: {
-              label: "Undo",
-              onClick: () => console.log("Undo"),
-          },
-      });
-
-      setIsSubmitting(false);
-    }
-  };
 
   const handleFile = (file: File) => {
     const url = URL.createObjectURL(file);
@@ -318,6 +253,7 @@ export default function CreatePostPage() {
             />
 
           }
+
           {findUserSelectPostType && findUserSelectPostType.title === "Video" && 
             // <form className="relative">
 
@@ -435,13 +371,13 @@ export default function CreatePostPage() {
                   <option value="playlist">YouTube Playlist</option>
                 </select>
 
-            {videoType === "video" ? 
-              <ReusableCreatePostForm
-                form={form}
-                postType="Video"
-              />
+                {videoType === "video" ? 
+                  <ReusableCreatePostForm
+                    form={form}
+                    postType="Video"
+                />
               :
-              <SharePlaylist/>
+                <SharePlaylist/>
           }
 
            

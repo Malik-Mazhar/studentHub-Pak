@@ -6,6 +6,8 @@ interface InputProps {
     label: string;
     optional: boolean;
     className?: string;
+    onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 export default function CustomInput({
@@ -14,6 +16,8 @@ export default function CustomInput({
     placeholder,
     className,
     optional = false,
+    onFocus,
+    onBlur,
     ...props
 }: InputProps) {
   return (
@@ -30,7 +34,9 @@ export default function CustomInput({
         <input
             type={type}
             placeholder={placeholder}
-            autoComplete="new-password"
+            autoComplete="new-password"     
+            onFocus={onFocus}
+            onBlur={onBlur}
             className= {twMerge(
                 `
                 w-full

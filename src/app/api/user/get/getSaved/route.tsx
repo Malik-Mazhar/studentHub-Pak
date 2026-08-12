@@ -28,7 +28,7 @@ export const GET = asyncHandler( async (req:Request) => {
     const [BookMarkPosts, BookMarkPlaylist] = await Promise.all([
         UserPostModel.find({
             _id: { $in: userBookMarks.bookmarks }
-        }),
+        }).sort({ createdAt: -1 }),
 
         PlaylistModel.find({
             _id: { $in: userBookMarks.bookmarks }

@@ -89,8 +89,10 @@ export const POST = asyncHandler( async (req:Request) => {
         pollOptions,
         pollDuration,
         postImageUrl: postImageUrlDetect,
-        postDocumentUrl: userdocumentFileDeta?.secure_url,
+        postVideoUrl: userVideoFileDeta?.secure_url,
+        postDocumentUrl: userdocumentFileDeta?.secure_url, 
         postImgPublicId: postImagePublicId,
+        postVideoPublicId: userVideoFileDeta?.publicId,
         postDocumentPublicId: userdocumentFileDeta?.publicId,
         visibility, 
 

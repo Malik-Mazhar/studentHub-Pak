@@ -9,7 +9,7 @@ export const userPostSchema  = z.object({
     className: z.string().optional(),
     tags: z.array(z.string()).optional(),
     postImageUrl: z.array(z.string()).optional(),
-    youtubePlaylistId: z.string().optional(),
+    videoLink: z.string().optional(),
     visibility: z.string()
 });
  

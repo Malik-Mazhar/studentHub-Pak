@@ -16,11 +16,12 @@ export interface UserPost extends Document {
     resourceLink?: string;
 
     postImageUrl?: string[];
+    postVideoUrl?: string;
     postDocumentUrl: string;
     postImgPublicId?: string[];
+    postVideoPublicId?: string;
     postDocumentPublicId: string;
-    
-    youtubePlaylistId?: string;
+
     videoLink?: string;
 
     pollQuestion?: string;
@@ -85,8 +86,14 @@ const userPostSchema: Schema<UserPost> = new Schema({
     postImageUrl: {
         type: [String],
     },
+    postVideoUrl: {
+        type: String,
+    },
     postImgPublicId: {
         type: [String],
+    },
+    postVideoPublicId: {
+        type: String,
     },
     postDocumentUrl: {
         type: String,
@@ -96,9 +103,6 @@ const userPostSchema: Schema<UserPost> = new Schema({
     },
 
     videoLink: String,
-    youtubePlaylistId: {
-        type: String
-    },
 
     pollQuestion: String,
     pollOptions: {
