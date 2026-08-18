@@ -7,6 +7,7 @@ import { useState } from "react";
 interface categorie {
   icon: LucideIcon,
   name: string;
+  slug: string;
   courses: number;
   bg: string;
   color: string;
@@ -63,7 +64,7 @@ export default function FilterTabs({categories, categoriesCard, selectedNotes, s
 
                           return (
                             <Link 
-                              href="/courses/category/programing"
+                              href={`/courses/category/${item.slug}`}
                               key={item.name}
                               className="flex w-56 items-center gap-4 bg-white border rounded-2xl p-2 hover:shadow-lg transition"
                             >

@@ -30,9 +30,6 @@ export default function NotesPage() {
   const [selectedNotes, setSelectedNotes] = useState<string | null>(null);
   
   const getClassNotes = notesData.filter((note) => note.className === selectedNotes?.split(" ")[1] + "th");
-
-  console.log("notesData", notesData)
-  console.log("selectedNotes", selectedNotes)
   
   const getAllNotes = async () => {
     try {

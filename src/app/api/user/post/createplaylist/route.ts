@@ -20,7 +20,7 @@ export const POST = asyncHandler(async (req: Request) => {
         throw new ApiError(401, "Unauthorized");
     }
 
-    const { youtubePlaylistLink, visibility = "Everyone", } = await req.json();
+    const { youtubePlaylistLink, categories, visibility = "Everyone", } = await req.json();
 
     if (!youtubePlaylistLink) {
         throw new ApiError(400, "Playlist URL is required.");
@@ -82,10 +82,12 @@ export const POST = asyncHandler(async (req: Request) => {
     const newPlaylist = await PlaylistModel.create({
         author: new Types.ObjectId(session.user._id),
 
-        youtubePlaylistId: playlistId,
-
         title,
         thumbnail,
+        
+        youtubePlaylistId: playlistId,
+        categories,
+
         videoCount,
         playlistDuration,
 

@@ -21,6 +21,7 @@ import Link from "next/link";
 const coursesCategories = [
   {
     name: "Programming",
+    slug: "programming",
     icon: Code2,
     courses: 120,
     bg: "bg-blue-100",
@@ -28,6 +29,7 @@ const coursesCategories = [
   },
   {
     name: "Web Development",
+    slug: "web-development",
     icon: Globe,
     courses: 95,
     bg: "bg-green-100",
@@ -35,6 +37,7 @@ const coursesCategories = [
   },
   {
     name: "Mobile App Development",
+    slug: "mobile-app-development",
     icon: Smartphone,
     courses: 82,
     bg: "bg-indigo-100",
@@ -42,6 +45,7 @@ const coursesCategories = [
   },
   {
     name: "Artificial Intelligence",
+    slug: "artificial-intelligence",
     icon: Brain,
     courses: 64,
     bg: "bg-purple-100",
@@ -49,6 +53,7 @@ const coursesCategories = [
   },
   {
     name: "Cyber Security",
+    slug: "cyber-security",
     icon: ShieldCheck,
     courses: 58,
     bg: "bg-red-100",
@@ -56,6 +61,7 @@ const coursesCategories = [
   },
   {
     name: "Data Science",
+    slug: "data-science",
     icon: Database,
     courses: 71,
     bg: "bg-cyan-100",
@@ -63,6 +69,7 @@ const coursesCategories = [
   },
   {
     name: "Graphic Design",
+    slug: "graphic-design",
     icon: Palette,
     courses: 89,
     bg: "bg-pink-100",
@@ -70,6 +77,7 @@ const coursesCategories = [
   },
   {
     name: "UI/UX Design",
+    slug: "ui-ux-design",
     icon: PenTool,
     courses: 67,
     bg: "bg-violet-100",
@@ -77,6 +85,7 @@ const coursesCategories = [
   },
   {
     name: "Digital Marketing",
+    slug: "digital-marketing",
     icon: Megaphone,
     courses: 76,
     bg: "bg-orange-100",
@@ -84,6 +93,7 @@ const coursesCategories = [
   },
   {
     name: "Video Editing",
+    slug: "video-editing",
     icon: Video,
     courses: 53,
     bg: "bg-yellow-100",
@@ -91,6 +101,7 @@ const coursesCategories = [
   },
   {
     name: "Business & Entrepreneurship",
+    slug: "business-and-entrepreneurship",
     icon: BriefcaseBusiness,
     courses: 91,
     bg: "bg-emerald-100",
@@ -98,6 +109,7 @@ const coursesCategories = [
   },
   {
     name: "Finance & Accounting",
+    slug: "finance-and-accounting",
     icon: Landmark,
     courses: 62,
     bg: "bg-teal-100",
@@ -105,6 +117,7 @@ const coursesCategories = [
   },
   {
     name: "English Language",
+    slug: "english-language",
     icon: Languages,
     courses: 110,
     bg: "bg-sky-100",
@@ -112,6 +125,7 @@ const coursesCategories = [
   },
   {
     name: "Freelancing",
+    slug: "freelancing",
     icon: Laptop,
     courses: 45,
     bg: "bg-lime-100",
@@ -119,6 +133,7 @@ const coursesCategories = [
   },
   {
     name: "Office Productivity (MS Office)",
+    slug: "office-productivity-ms-office",
     icon: Monitor,
     courses: 84,
     bg: "bg-gray-100",

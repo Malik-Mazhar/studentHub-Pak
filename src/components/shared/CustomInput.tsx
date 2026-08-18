@@ -6,6 +6,7 @@ interface InputProps {
     label: string;
     optional: boolean;
     className?: string;
+    error?: string;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
@@ -16,6 +17,7 @@ export default function CustomInput({
     placeholder,
     className,
     optional = false,
+    error,
     onFocus,
     onBlur,
     ...props
@@ -54,6 +56,12 @@ export default function CustomInput({
             }
             {...props}
         />
+
+        {error && (
+            <p className="text-sm text-red-500 mt-1">
+            {error}
+            </p>
+        )}
     </div>
 
   )

@@ -26,48 +26,56 @@ interface SubjectsSectionProps {
 const subjects = [
   {
     title: "Mathematics",
+    slug: "mathematics",
     totalNotes: "120",
     icon: Calculator,
     bg: "bg-green-50 text-green-600"
   },
   {
     title: "Physics",
+    slug: "physics",
     totalNotes: "98",
     icon: Atom,
     bg: "bg-blue-50 text-blue-600"
   },
   {
     title: "Chemistry",
+    slug: "chemistry",
     totalNotes: "110",
     icon: FlaskConical,
     bg: "bg-purple-50 text-purple-600"
   },
   {
     title: "Biology",
+    slug: "biology",
     totalNotes: "95",
     icon: BookOpen,
     bg: "bg-green-50 text-green-600"
   },
   {
     title: "Computer",
+    slug: "computer",
     totalNotes: "75",
     icon: Computer,
     bg: "bg-purple-50 text-purple-600"
   },
   {
     title: "English",
+    slug: "english",
     totalNotes: "60",
     icon: Languages,
     bg: "bg-green-50 text-green-600"
   },
   {
     title: "Urdu",
+    slug: "urdu",
     totalNotes: "45",
     icon: Globe,
     bg: "bg-blue-50 text-blue-600"
   },
   {
     title: "Islamiat",
+    slug: "islamiat",
     totalNotes: "50",
     icon: GraduationCap,
     bg: "bg-blue-50 text-yellow-600"
@@ -115,7 +123,7 @@ export default function SubjectsSection({notesData}: SubjectsSectionProps) {
         {subjects.map((subject) => (
           <Link
             key={subject.title}
-            href={`/notes/${subject.title.toLowerCase()}`}
+            href={`/notes/${subject.slug}`}
           >
             <SubjectCard {...subject} />
           </Link>

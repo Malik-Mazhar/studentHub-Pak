@@ -13,6 +13,7 @@ import { deletePost, setPosts, toggleBookmark, toggleLikePost } from "@/src/stor
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { sharePost } from "@/src/services/ApiServices/Share"
 
 interface NotesCardProps {
   owner: string;
@@ -49,6 +50,8 @@ export default function NotesCard({
     const menuRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
     const { data: session, status } = useSession();
+
+    console.log("fileUrl", fileUrl)
 
     const handleLike = async (postId: string) => {
         
@@ -130,27 +133,6 @@ export default function NotesCard({
       });
     };
 
-    const sharePost = async (postId: string) => {
-    const url = `${window.location.origin}/notes/${postId}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out this post",
-          text: "Take a look at this post.",
-          url,
-        });
-      } catch (error) {
-        console.log("Share cancelled");
-      }
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert("Link copied to clipboard!");
-    }
-
-    setOpen(false);
-  };
-
   return (
     <article className="flex gap-5 rounded-2xl border bg-white p-5 shadow-sm hover:shadow-md transition">
 
@@ -231,7 +213,7 @@ export default function NotesCard({
 
                         <button 
                           onClick={() => {
-                            sharePost(params)
+                             sharePost({pagePath: "courses", postId: params as string})
                             setOpen(false)
                           }} className="flex w-full items-center gap-3 cursor-pointer px-4 py-3 text-sm hover:bg-gray-50 transition">
                             <Share2 size={18} />
