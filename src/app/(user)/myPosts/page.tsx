@@ -1,59 +1,62 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { setBookmarks } from "@/src/store/bookmarkSlice";
-import { FaEllipsisH } from "react-icons/fa";
-import { FaBookmark, FaRegComment, FaShare } from "react-icons/fa6";
-import { ArrowBigLeft, ArrowBigLeftIcon, Loader2, ThumbsUp } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
+import { ArrowBigLeft, Loader2, ThumbsUp, } from "lucide-react";
+import { FaBookmark, FaEllipsisH, FaRegComment,FaShare, } from "react-icons/fa";
+import { PlaylistType, userPostType } from "@/src/types/dataTaype";
+import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAndComments";
+import { useAppDispatch } from "@/src/store/useSelecterhook";
 import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
-import { setPosts, toggleLikePost } from "@/src/store/postSlice";
 import { LoadingSpinner } from "@/src/app/loading";
 
-export default function SavedPage() {
-  const dispatch = useAppDispatch();
+
+
+const postTypes = ["All", "Images", "Videos", "Notes", "File", "Playlists"];
+
+export default function MyPostsPage() {
   const router = useRouter();
-  const [viewPost, setViewPost] = useState<null | string>(null);
-  const allBookmarksData = useAppSelector((state) => state.bookmarksData);
-  const PostData = useAppSelector((state) => state.postData.posts)
-  const [selectBookMarksPost, setSelectBookMarksPost] = useState<null | string>(null);
+  const dispatch = useAppDispatch();
+  const [posts, setPosts] = useState<(userPostType & PlaylistType)[]>([]);
+  const [selectedType, setSelectedType] = useState("All");
+  const [viewPost, setViewPost] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState("");
-    
-  const getAllBookmarks = async () => {
-    try {
-      setLoading(true);
-      setApiError("");
-      const response = await axios.get("/api/user/get/getSaved");
 
-      dispatch(setBookmarks(response.data.data))
 
-    } catch (error: any) {
-      console.log("getAllPosts api Error please check the community page api :", error);
-      
-      setApiError(
-        error?.response?.data?.message ||
-          "Failed to fetch your posts."
-      );
-    } finally {
+  useEffect(() => {
+    const getMyPosts = async () => {
+      try {
+        setLoading(true);
+        setApiError("");
+
+        const response = await axios.get("/api/user/get/getCurrentUserAllPosts" );
+
+        console.log("My Posts:", response.data.data);
+
+        setPosts(response.data.data || []);
+      } catch (error: any) {
+        console.log("Get my posts error:", error);
+
+        setApiError(
+          error?.response?.data?.message ||
+            "Failed to fetch your posts."
+        );
+      } finally {
         setLoading(false);
+      }
     };
-  };
-  
 
-  const findViewPostId = PostData.find((postId) => postId._id.toString() === viewPost)
+    getMyPosts();
+  }, []);
 
+  const filteredPosts = posts.filter((post) => {
 
-  const bookMarksTypes = ["All", "Images", "Videos", "Notes", "File", "Playlists"];
-
-  const filteredBookmarks = allBookmarksData.bookmarks.filter((post) => {
-
-    switch (selectBookMarksPost) {
+    switch (selectedType) {
       case "Images":
         return (
           post.postType === "discussion" &&
@@ -77,114 +80,115 @@ export default function SavedPage() {
     }
   }); 
 
-  const getAllPosts = async () => {
-      try {
-        const response = await axios.get("/api/user/get/getallposts?sort=latest");
+  const getYoutubeVideoId = (url: string) => {
+    try {
+      const parsedUrl = new URL(url);
 
-        dispatch(setPosts(response.data.data))
-
-      } catch (error) {
-        console.log("getAllPosts api Error please check the community page api :", error);
-
+      if (parsedUrl.hostname === "youtu.be") {
+        return parsedUrl.pathname.slice(1);
       }
-  };
 
-    const getYoutubeVideoId = (url: string) => {
-      try {
-        const parsedUrl = new URL(url);
-
-        if (parsedUrl.hostname === "youtu.be") {
-          return parsedUrl.pathname.slice(1);
-        }
-
-        if (parsedUrl.hostname.includes("youtube.com")) {
-          return parsedUrl.searchParams.get("v");
-        }
-
-        return null;
-      } catch {
-        return null;
+      if (parsedUrl.hostname.includes("youtube.com")) {
+        return parsedUrl.searchParams.get("v");
       }
-  };
 
-
-  useEffect(() => {
-    getAllBookmarks();
-    getAllPosts();
-  }, []);
-
-  useEffect(() => {
-    if (viewPost) {
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-
+      return null;
+    } catch {
+      return null;
     }
-  }, [viewPost]);
+  };
 
-  if (loading) {
-     return <LoadingSpinner />
+
+  /* Find Selected Post*/
+
+  const findViewPostId = posts.find(
+    (post) => post._id === viewPost
+  );
+
+  /* Render */
+
+    if (loading) {
+      return  <LoadingSpinner />
   }
-
 
   return (
     <main className="flex-1 min-w-0 p-3 pt-28 md:pt-18 sm:p-4 md:p-6 bg-gray-50 dark:bg-[#0b1120]">
 
-      {/* Heading */}
-      <div className="bg-white dark:bg-[#101827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-5 md:p-6">
+        {/* Header */}
+      <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] p-4 sm:p-5 md:p-6 shadow-sm">
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
-          <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              Saved Items
-            </h1>
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                  My Posts
+                </h1>
 
-            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-              All the content you've saved for quick access.
-            </p>
-          </div>
+                <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                  Manage and view all the posts you have created.
+                </p>
+              </div>
 
-          <input
-            type="text"
-            placeholder="Search saved..."
-            className="w-full lg:w-80 min-w-0 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-[#101827] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 px-4 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-blue-500"
-          />
+              <button
+                onClick={() => router.push("/createPost")}
+                className="w-full sm:w-auto rounded-xl cursor-pointer bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition"
+              >
+                + Create Post
+              </button>
 
-        </div>
+            </div>
 
-        {/* Filters */}
-        <div className="flex gap-2 sm:gap-3 mt-5 sm:mt-6 overflow-x-auto pb-1 scrollbar-hide">
+            {/* Search */}
+            <div className="mt-5">
+              <input
+                type="text"
+                placeholder="Search my posts..."
+                // value={search}
+                // onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101827] px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-          {bookMarksTypes.map((type, index) => (
+            {/* Filters */}
+            <div className="mt-5 flex gap-2 sm:gap-3 overflow-x-auto pb-1">
 
-            <button
-              key={index}
-              onClick={() => setSelectBookMarksPost(type)}
-              className={`
-                shrink-0 px-4 sm:px-5 py-2 rounded-lg border border-gray-300 dark:border-gray-700 cursor-pointer text-sm sm:text-base transition-colors
-                ${(selectBookMarksPost === type) || (selectBookMarksPost === null && index === 0) ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-[#101827] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1E293B]"}
-              `}
-            >
-              {type}
-            </button>
+              {postTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`shrink-0 rounded-lg border px-4 sm:px-5 py-2 text-sm sm:text-base transition ${
+                    selectedType === type
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : "border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101827] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1E293B]"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
 
-          ))}
-
-        </div>
+            </div>
       </div>
 
+
+      {apiError && (
+
+        <div className="mt-5 p-4 rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm">
+
+          {apiError}
+
+        </div>
+
+      )}
+
       {/* Cards */}
-      {!viewPost && selectBookMarksPost !== "Playlists" &&
+      {!viewPost && selectedType !== "Playlists" &&
         <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
 
           {/* Image */}
 
-          {filteredBookmarks.length > 0 ?
+          {filteredPosts.length > 0 ?
 
-            filteredBookmarks.map((post) => (
+            filteredPosts.map((post) => (
 
               <div key={post._id} className="bg-white dark:bg-[#101827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-3 sm:p-4 md:p-5 flex flex-col md:flex-row gap-4 sm:gap-5">
 
@@ -265,7 +269,7 @@ export default function SavedPage() {
 
             <div className="flex items-center justify-center py-12 sm:py-16">
               <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg text-center">
-                No {selectBookMarksPost?.toLowerCase()} found.
+                No {selectedType?.toLowerCase()} found.
               </p>
             </div>
 
@@ -449,9 +453,9 @@ export default function SavedPage() {
         </div>
       }
 
-      {selectBookMarksPost === "Playlists" &&
+      {selectedType === "Playlists" &&
         <div className="w-full min-w-0 overflow-x-hidden grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 pt-4 sm:pt-5 gap-4 sm:gap-5 lg:gap-6">
-          {filteredBookmarks
+          {filteredPosts
             .filter((playlis) => playlis.postType === "playlist")
             .map((playlist) => (
               <PlaylistCard

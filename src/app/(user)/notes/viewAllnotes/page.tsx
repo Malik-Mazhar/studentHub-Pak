@@ -32,83 +32,190 @@ function page() {
         getAllNotes();
       }, []);
     return (
-        <section className="mt-10 mx-6">
+      <section className="mt-30 lg:mt-20 sm:mt-10 mx-3 sm:mx-6">
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 space-y-5"> 
-            {/* //onClick={() => window.open(note.postDocumentUrl, "_blank")} */}
-            {notesData.map((note) => (
-                <div key={note._id} className="min-w-60 bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-lg duration-300">
-              
-                  <div>
-                      <div className="relative h-36 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
 
-                        <Image
-                        src={note.postImageUrl?.length? note.postImageUrl[0]: "/img/FileImg.png"}
-                        alt={note.title}
-                        title='click and open notes'
-                        fill
-                        className="object-cover cursor-pointer"
-                        onClick={() => setSelectedImage(note.postImageUrl? note.postImageUrl[0] : "")}
-                        /> 
+          {notesData.map((note) => (
 
-                        <span className="absolute top-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                          {note.notesCategory}
-                        </span>
+            <div
+              key={note._id}
+              className="
+                w-full
+                bg-white dark:bg-[#101827]
+                rounded-2xl
+                overflow-hidden
+                shadow-sm dark:shadow-none
+                border border-gray-200 dark:border-gray-800
+                hover:shadow-lg
+                dark:hover:border-gray-700
+                duration-300
+              "
+            >
 
-                    </div>
+              {/* Image */}
+              <div className="relative h-36 sm:h-40 w-full">
 
-                    {selectedImage && (
-                        <div
-                          className="fixed inset-0 z-50 bg-transparent backdrop-blur-xs flex items-center justify-center"
-                          onClick={() => setSelectedImage(null)}
-                        >
-                          <Image
-                            src={selectedImage}
-                            alt="Preview"
-                            width={1200}
-                            height={800}
-                            className="max-w-[95vw] max-h-[95vh] object-contain"
-                          />
-                        </div>
-                      )}
+                <Image
+                  src={
+                    note.postImageUrl?.length
+                      ? note.postImageUrl[0]
+                      : "/img/FileImg.png"
+                  }
+                  alt={note.title}
+                  title="Click and open notes"
+                  fill
+                  className="object-cover cursor-pointer"
+                  onClick={() =>
+                    setSelectedImage(
+                      note.postImageUrl?.[0] || ""
+                    )
+                  }
+                />
 
-                    <div className="p-4">
+                {/* Category */}
+                <span
+                  className="
+                    absolute top-3 left-3
+                    bg-green-500
+                    text-white
+                    text-xs
+                    px-2 py-1
+                    rounded
+                  "
+                >
+                  {note.notesCategory}
+                </span>
 
-                        <h3 className="font-semibold line-clamp-2">
-                          {note.title}
-                        </h3>
+              </div>
 
-                        <p className="text-sm text-gray-500 mt-2">
-                        {note.author.userProfile?.profileName}
-                        </p>
 
-                        <div className="flex items-center justify-between mt-4 text-gray-500 text-sm">
+              {/* Image Preview */}
+              {selectedImage && (
 
-                        <div className="flex items-center gap-1">
-                            <Download size={15} />
-                            76
-                        </div>
+                <div
+                  className="
+                    fixed inset-0 z-50
+                    bg-black/40
+                    backdrop-blur-sm
+                    flex items-center justify-center
+                    p-3 sm:p-5
+                  "
+                  onClick={() => setSelectedImage(null)}
+                >
 
-                        <div className="flex items-center gap-1">
-                            <Eye size={15} />
-                            100
-                        </div>
+                  <Image
+                    src={selectedImage}
+                    alt="Preview"
+                    width={1200}
+                    height={800}
+                    className="
+                      max-w-[95vw]
+                      max-h-[90vh]
+                      object-contain
+                      rounded-lg
+                    "
+                  />
 
-                        <button onClick={() => handleLikesAndComments({dispatch, postId: note._id})}  className={`flex items-center gap-1 cursor-pointer ${note.isLiked && "text-yellow-500"}`}>
-                            <Star size={15} fill="currentColor" />
-                            ii
-                        </button>
-
-                        </div>
-
-                    </div>
-                  </div>
                 </div>
 
-            ))}
+              )}
 
-          </div>
-        </section>
+
+              {/* Content */}
+              <div className="p-3 sm:p-4">
+
+                <h3
+                  className="
+                    font-semibold
+                    line-clamp-2
+                    text-sm sm:text-base
+                    text-gray-900 dark:text-white
+                  "
+                >
+                  {note.title}
+                </h3>
+
+
+                <p
+                  className="
+                    text-xs sm:text-sm
+                    text-gray-500 dark:text-gray-400
+                    mt-2
+                    truncate
+                  "
+                >
+                  {note.author.userProfile?.profileName}
+                </p>
+
+
+                {/* Actions */}
+                <div
+                  className="
+                    flex items-center justify-between
+                    mt-4
+                    text-gray-500 dark:text-gray-400
+                    text-xs sm:text-sm
+                  "
+                >
+
+                  <div className="flex items-center gap-1">
+
+                    <Download size={15} />
+
+                    <span>76</span>
+
+                  </div>
+
+
+                  <div className="flex items-center gap-1">
+
+                    <Eye size={15} />
+
+                    <span>100</span>
+
+                  </div>
+
+
+                  <button
+                    onClick={() =>
+                      handleLikesAndComments({
+                        dispatch,
+                        postId: note._id,
+                      })
+                    }
+                    className={`
+                      flex items-center gap-1
+                      cursor-pointer
+                      transition
+                      ${
+                        note.isLiked
+                          ? "text-yellow-500"
+                          : "text-gray-500 dark:text-gray-400"
+                      }
+                    `}
+                  >
+
+                    <Star
+                      size={15}
+                      fill="currentColor"
+                    />
+
+                    <span>ii</span>
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </section>
   );
 
 

@@ -127,29 +127,26 @@ export default function SharePlaylist() {
   ];
 
   return (
-     <section className="pt-10 relative">
+    <section className="relative pt-6 sm:pt-10">
 
-      <div className="">
+      <div className="w-full min-w-0">
 
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
           Share YouTube Playlist
         </h1>
 
-        <p className="text-gray-500 mt-2">
+        <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">
           Share educational YouTube playlists with the community.
         </p>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-8 space-y-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 sm:mt-8 space-y-5 sm:space-y-6">
 
           <CustomInput
             label="Playlist URL"
             type="text"
             placeholder="https://www.youtube.com/playlist?list=..."
             error={errors.youtubePlaylistLink?.message || apiError}
-            optional= {false}
+            optional={false}
             {...register("youtubePlaylistLink")}
           />
 
@@ -160,18 +157,16 @@ export default function SharePlaylist() {
               const selectedCategories = field.value || [];
 
               return (
-                <div className="relative w-full">
+                <div className="relative w-full min-w-0">
 
                   {/* Selected Categories + Dropdown Button */}
                   <div
                     onClick={() => setIsOpen((prev) => !prev)}
-                    className="min-h-11 w-full px-3 py-2 border border-gray-300
-                              rounded-xl bg-white flex items-center gap-2
-                              cursor-pointer"
+                    className="min-h-11 w-full min-w-0 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-[#101827] flex items-center gap-2 cursor-pointer transition-colors"
                   >
 
                     {/* Chips */}
-                    <div className="flex flex-wrap gap-2 flex-1">
+                    <div className="flex flex-wrap gap-2 flex-1 min-w-0">
 
                       {selectedCategories.length > 0 ? (
                         selectedCategories.map((slug) => {
@@ -182,11 +177,11 @@ export default function SharePlaylist() {
                           return (
                             <span
                               key={slug}
-                              className="inline-flex items-center gap-1
-                                        bg-blue-50 text-blue-600
-                                        px-2.5 py-1 rounded-lg text-sm"
+                              className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs sm:text-sm max-w-full"
                             >
-                              {category?.name}
+                              <span className="truncate">
+                                {category?.name}
+                              </span>
 
                               {/* Remove */}
                               <button
@@ -200,7 +195,7 @@ export default function SharePlaylist() {
                                     )
                                   );
                                 }}
-                                className="text-blue-400 hover:text-blue-700 cursor-pointer"
+                                className="shrink-0 text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer"
                               >
                                 <X size={16} />
                               </button>
@@ -208,7 +203,7 @@ export default function SharePlaylist() {
                           );
                         })
                       ) : (
-                        <span className="text-gray-400 text-sm py-1">
+                        <span className="text-gray-400 dark:text-gray-500 text-sm py-1">
                           Select categories
                         </span>
                       )}
@@ -216,7 +211,7 @@ export default function SharePlaylist() {
                     </div>
 
                     {/* Arrow */}
-                    <span className="text-gray-400">
+                    <span className="shrink-0 text-gray-400 dark:text-gray-500">
                       {isOpen ? (
                         <ChevronUp size={18} />
                       ) : (
@@ -228,11 +223,7 @@ export default function SharePlaylist() {
 
                   {/* Dropdown */}
                   {isOpen && (
-                    <div
-                      className="absolute z-50 mt-2 w-full max-h-64
-                                overflow-y-auto bg-white border
-                                border-gray-200 rounded-xl shadow-lg p-2"
-                    >
+                    <div className="absolute z-50 mt-2 w-full max-h-64 overflow-y-auto bg-white dark:bg-[#101827] border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-2">
 
                       {coursesCategories.map((item) => {
 
@@ -263,9 +254,7 @@ export default function SharePlaylist() {
                               }
 
                             }}
-                            className="flex items-center gap-3 px-3 py-2.5
-                                      rounded-lg hover:bg-gray-50
-                                      cursor-pointer"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                           >
 
                             <input
@@ -275,7 +264,7 @@ export default function SharePlaylist() {
                               className="cursor-pointer"
                             />
 
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
                               {item.name}
                             </span>
 
@@ -287,7 +276,7 @@ export default function SharePlaylist() {
                   )}
 
                   {errors.categories && (
-                    <p className="text-sm text-red-500 mt-1">
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">
                       {errors.categories.message}
                     </p>
                   )}
@@ -297,29 +286,27 @@ export default function SharePlaylist() {
             }}
           />
 
-
-
           <CustomSelect
             label="Visibility"
             options={["Everyone", "Only Me"]}
             {...register("visibility")}
           />
 
-          <div className="flex justify-end gap-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
 
             <CoustomButton
               type="button"
-              className="px-8 h-11"
+              className="w-full sm:w-auto px-8 h-10 sm:h-11"
             >
               Cancel
             </CoustomButton>
 
             <CoustomButton
               type="submit"
-              className="px-8 h-11"
+              className="w-full sm:w-auto px-8 h-10 sm:h-11"
             >
               {isSubmitting ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Sharing...
                 </div>

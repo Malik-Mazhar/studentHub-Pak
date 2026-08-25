@@ -28,6 +28,7 @@ const playlistSlice = createSlice({
       const post = state.playlists.find(
         (post) => post._id === postId
       );
+      console.log("action.payload", state.playlists)
 
       if (post) {
         post.isBookmarked = isBookmarked;

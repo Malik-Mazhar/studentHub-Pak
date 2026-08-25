@@ -51,29 +51,48 @@ export default function NotesPage() {
   const notesCategories = [ "All Classes", "Class 9", "Class 10", "1st Year", "2nd Year" ]
   
   return (
-    <main className="bg-slate-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">
+    <main className="bg-[#FBFCFE] dark:bg-[#0F172A] min-h-screen text-gray-900 dark:text-[#FBFCFE]">
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 py-5 sm:py-8  md:pt-20">
+        
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">
             Top Notes For You
-          </h1> 
+          </h1>
 
-          <p className="text-gray-500 mt-1">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
             High quality notes shared by students
           </p>
         </div>
 
         <SearchBar categories={notesCategories} />
 
-        <FilterTabs categories={categoriesClasses} selectedNotes={selectedNotes} setSelectedNotes= {setSelectedNotes} />
-        <HeroBanner img="/img/NotesPageBanner.png" someClasses="left-14" />
-        <RecentNotes notesData= {selectedNotes === null || selectedNotes === "All Notes" ? notesData: getClassNotes} className= {selectedNotes? selectedNotes : null} />
-        <SubjectsSection notesData= {notesData} />
-        <TopNotesSection />
-        <Newsletter />
-        <Footer />
+        <FilterTabs
+          categories={categoriesClasses}
+          selectedNotes={selectedNotes}
+          setSelectedNotes={setSelectedNotes}
+        />
 
+        <HeroBanner
+          img="/img/NotesPageBanner.png"
+          someClasses="left-4 sm:left-8 md:left-14"
+        />
+
+        <RecentNotes
+          notesData={
+            selectedNotes === null || selectedNotes === "All Notes"
+              ? notesData
+              : getClassNotes
+          }
+          className={selectedNotes ? selectedNotes : null}
+        />
+
+        <SubjectsSection notesData={notesData} />
+
+        <TopNotesSection />
+
+        <Newsletter />
+
+        <Footer />
       </div>
     </main>
   );

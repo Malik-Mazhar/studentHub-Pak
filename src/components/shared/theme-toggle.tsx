@@ -15,13 +15,21 @@ export default function ThemeToggle() {
   if (!mounted) return null;
 
   return (
-    <button
-      onClick={() =>
-        setTheme(theme === "dark" ? "light" : "dark")
-      }
-      className="p-2 rounded-lg border"
-    >
-      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-    </button>
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="w-full flex items-center gap-2 px-4 py-2 text-sm whitespace-nowrap"
+      >
+        {theme === "dark" ? (
+          <>
+            <Sun size={20} />
+            <span>Light Mode</span>
+          </>
+        ) : (
+          <>
+            <Moon size={20} />
+            <span>Dark Mode</span>
+          </>
+        )}
+      </button>
   );
 }

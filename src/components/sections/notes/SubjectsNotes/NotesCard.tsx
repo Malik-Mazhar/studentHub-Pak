@@ -36,7 +36,7 @@ export default function NotesCard({
   notesPostId,
   title,
   thumbnail,
-  authorName,
+  authorName, 
   authorImg,
   subject,
   className,
@@ -184,7 +184,7 @@ export default function NotesCard({
                             <>
 
                                 <Link
-                                    href={`/notes/${params}/${notesPostId}`}
+                                    href={`/edit-post/${notesPostId}`}
                                     className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition"
                                 >
                                     <Pencil size={18} />

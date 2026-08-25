@@ -18,6 +18,12 @@ import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAn
 import { useSession } from "next-auth/react";
 import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
 import { sharePost } from "@/src/services/ApiServices/Share";
+import { setPlaylists } from "@/src/store/playlistSlice";
+import VideoPlayerSection from "@/src/components/sections/courses/PlaylistPage/VideoPlayerSection";
+import PlaylistSidebar from "@/src/components/sections/courses/PlaylistPage/PlaylistSidebar";
+import PlaylistActions from "@/src/components/sections/courses/PlaylistPage/PlaylistActions";
+import CommentInput from "@/src/components/sections/courses/PlaylistPage/PlaylistComments/CommentInput";
+import CommentItem from "@/src/components/sections/courses/PlaylistPage/PlaylistComments/CommentItem/Replies";
 
 export default function PlaylistPage() {
     const[ playlistPostData, setPlaylistPostData ] = useState<PlaylistType | null>(null)
@@ -27,6 +33,7 @@ export default function PlaylistPage() {
     const [playlist, setPlaylist] = useState<any>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
+    const [emojiPickerFor, setEmojiPickerFor] = useState<string | null>(null);
     const [replyCommentId, setReplyCommentId] = useState<string | null>(null);
     const [isSubmiting, setIsSubmitting] = useState(false);
     const dispatch = useAppDispatch();
@@ -34,7 +41,8 @@ export default function PlaylistPage() {
     const { data: session } = useSession();
     const commentsData = useAppSelector((state) => state.commentsData.comments);
     const playlistReduxData = useAppSelector((state) => state.playlist)
-    console.log("playlistData", playlistReduxData)
+    console.log("playlistReduxData", playlistReduxData)
+
 
       const {
         register,
@@ -143,9 +151,11 @@ export default function PlaylistPage() {
         dispatch(setLoading(true));
 
         try {
-        const response = await axios.get(`/api/user/post/comment?postId=${playlistId}`);
+            const response = await axios.get(`/api/user/post/comment?postId=${playlistId}`);
+            const playlistResponse = await axios.get("/api/user/get/getPlaylistData");
 
-        dispatch(setComments(response?.data?.data))
+            dispatch(setComments(response?.data?.data));
+            dispatch(setPlaylists(playlistResponse.data.data));
         } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>;
 
@@ -160,460 +170,108 @@ export default function PlaylistPage() {
     };
 
     const savedPlaylist = playlistReduxData.playlists.find( (playlist) => playlist.youtubePlaylistId === playlistPostData?.youtubePlaylistId);
-    
+    console.log("Saved playlist:", savedPlaylist);
     useEffect(() => {
         getPlaylistComments();
     }, [])
 
   return (
-    <div className="bg-[#0b1120]  dark:bg-[#0F172A] dark:text-[#FBFCFE] min-h-600 text-white">
+    <div className="bg-[#FBFCFE] dark:bg-[#0F172A] dark:text-[#FBFCFE] min-h-screen text-gray-900">
 
-        <div className="flex w-full px-5 gap-5 py-3 ">
+        <div className="bg-white pt-23 md:pt-15 dark:bg-[#0F172A] dark:text-[#FBFCFE] text-gray-900">
 
-            <div className="w-[68%]">
-                
-                <button className="text-gray-400 hover:text-white mb-6">
-                ← Back to Playlists
-                </button>
+            <div className="flex flex-col lg:flex-row w-full px-3 sm:px-5 gap-5 py-3">
 
-
-                {selectedVideo && (
-                    <>
-                        <iframe
-                        className="w-full h-100 rounded-lg"
-                        src={`https://www.youtube.com/embed/${selectedVideo.snippet.resourceId.videoId}`}
-                        title={selectedVideo.snippet.title}
-                        allowFullScreen
-                        />
-
-                        <h1 className="text-xl text-[#FFFFFF] font-bold mt-4">
-                        {selectedVideo.snippet.title}
-                        </h1>
-
-                        <p className="text-[#AAAAAA]">
-                        {selectedVideo.snippet.channelTitle}
-                        </p>
-
-                        <div className="mt-3">
-
-                        <h2 className="text-xl font-semibold">
-                            {selectedVideo.title}
-                        </h2>
-
-                        </div>
-                    </>
-                )}
-
-
-            </div>
-
-            <div className="w-[32%] max-h-110 mt-[5%] bg-[#101827] rounded-xl border border-gray-800 overflow-hidden dark:border-[#374151] dark:bg-[#0F172A] dark:text-[#FBFCFE]">
-
-                <div className="p-2 border-b border-gray-800">
-
-                    <div className="p-2 border-b border-zinc-700">
-
-                        <div className="flex justify-between items-start">
-
-                            <div>
-                                <h2 className="text-[#FFFFFF] text-xl font-bold ">
-                                    {
-                                        playlist?.snippet.title.length > 20
-                                        ? playlist.snippet.title.slice(0, 20) + "..."
-                                        : playlist?.snippet.title
-                                    }
-                                </h2>
-
-                                <p className="text-sm text-gray-100">
-                                    {playlist?.snippet.channelTitle} • {currentIndex + 1} / {videos.length}
-                                </p>
-                            </div>
-
-                            <div className="flex gap-3 text-white text-xl">
-                            ✕
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div className="max-h-120 overflow-y-auto">
-
-                    {videos.map((video, index) => (
-
-                        <div
-                        key={video.snippet.resourceId.videoId}
-                        onClick={()=>{
-                            setSelectedVideo(video);
-                            setCurrentIndex(index);
-                        }}
-                        className={`flex gap-2 p-2 cursor-pointer hover:bg-[#303030]  hover:dark:bg-[#0F172A] hover:dark:text-[#FBFCFE]
-                            ${
-                            selectedVideo?.snippet?.resourceId?.videoId ===
-                            video.snippet.resourceId.videoId
-                                ? "bg-[#3a3a3a]  dark:bg-[#0F172A] dark:text-[#FBFCFE]"
-                                : ""
-                            }`}
-                        >
-
-                        <div className="w-3 text-gray-400 text-sm mt-8">
-                            {index + 1}
-                        </div>
-
-                        <div className="relative">
-
-                            <img
-                            src={video.snippet.thumbnails.medium.url}
-                            className="w-32 h-16 rounded object-cover"
-                            />
-
-                            <span className="absolute bottom-1 right-1 bg-black/90 text-white text-xs px-1 rounded">
-                            {formatDuration(video.duration)}
-                            </span>
-
-                        </div>
-
-                        <div className="flex-1">
-
-                            <h3 className="text-white text-sm font-medium line-clamp-2">
-                            {video.snippet.title}
-                            </h3>
-
-                            <p className="text-xs text-gray-400 mt-1">
-                            {video.snippet.channelTitle}
-                            </p>
-
-                        </div>
-
-                        </div>
-
-                    ))}
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div className="w-[66%] flex items-center justify-between m-5">
-
-            <div className="flex items-center gap-2">
-
-            <img
-                src={playlistPostData?.author.userProfile?.profileImgUrl ||"/img/defaultProfile.jfif"}
-                className="w-11 h-11 rounded-full"
-            />
-
-            <div>
-
-                <div className="flex items-center gap-2">
-
-                <p className="font-semibold text-sm">
-                    {playlistPostData?.author.userProfile?.profileName}
-                </p>
-
-                <CheckCircle
-                    size={18}
-                    className="text-blue-500"
+                {/* Video */}
+                <VideoPlayerSection
+                    selectedVideo={selectedVideo}
                 />
 
-                </div>
-
-                <p className="text-sm text-gray-400">
-                add this playList for learning perpase
-                </p>
-
-            </div>
-
-            </div>
-
-            {/* Actions */}
-
-            <div className="flex gap-3">
-
-            <button onClick={() => { sharePost({pagePath: "courses", postId: playlistId as string}) }} className="bg-[#182232] rounded-full px-5 py-3 flex items-center gap-2  dark:bg-[#0F172A] cursor-pointer dark:text-[#FBFCFE]">
-                <Share2 size={18} />
-                Share
-            </button>
-
-            {playlistPostData?._id &&
-                <button onClick={() => handleBookMark({dispatch, postId:playlistPostData._id})} className={`bg-[#182232] gap-2 rounded-full px-5 py-3 flex items-centergap-2 cursor-pointer `}>
-                    <Bookmark 
-                        size={18}
-                        fill={savedPlaylist?.isBookmarked? "currentColor": "none"}
-                        className={` ${savedPlaylist?.isBookmarked? "text-blue-800" : ""} mt-1`}
-                    />
-                    Save
-                </button>
-            }
-
-
+                {/* Desktop Sidebar */}
+                <PlaylistSidebar
+                    playlist={playlist}
+                    videos={videos}
+                    selectedVideo={selectedVideo}
+                    currentIndex={currentIndex}
+                    setSelectedVideo={setSelectedVideo}
+                    setCurrentIndex={setCurrentIndex}
+                    formatDuration={formatDuration}
+                />
 
             </div>
 
         </div>
 
-         <div className="px-5 w-[67%]">
+        <PlaylistActions
+            playlistPostData={playlistPostData}
+            savedPlaylist={savedPlaylist}
+            onShare={() =>
+                sharePost({
+                    pagePath: "courses",
+                    postId: playlistId as string,
+                })
+            }
+            onBookmark={() =>
+                handleBookMark({
+                    dispatch,
+                    postId: playlistPostData!._id,
+                    postType: "playlist",
+                })
+            }
+        />
+
+        <div className="w-full lg:w-[67%] px-3 sm:px-5 lg:px-0 mx-8">
 
             <form onSubmit={handleSubmit(onSubmit)}>
 
-                <h1 className="text-2xl font-bold pb-8">Comments</h1>
-                    <input type="hidden" value="Playlist" {...register("targetModel")} />
+                <h1 className="text-xl sm:text-2xl font-bold pb-5 sm:pb-8 text-gray-900 dark:text-[#FBFCFE]">
+                    Comments
+                </h1>
 
-                <div className="flex items-strat gap-5 ">
+                <input type="hidden" value="Playlist" {...register("targetModel")} />
 
-                    <img
-                        src={playlistPostData?.author.userProfile?.profileImgUrl || "/img/defaultProfile.jfif"}
-                        className="w-9 h-9 m-2 rounded-full"
+                    <CommentInput
+                        register={register}
+                        setValue={setValue}
+                        commentContent={commentContent}
+                        emojiPickerFor={emojiPickerFor}
+                        setEmojiPickerFor={setEmojiPickerFor}
+                        profileImage={playlistPostData?.author.userProfile?.profileImgUrl}
                     />
 
-                    <div className="flex-1">
 
-                        <input
-                            type="text"
-                            placeholder="Add a comment..."
-                            className="
-                            w-full
-                            bg-transparent
-                            border-b
-                            border-gray-100
-                            py-1
-                            outline-none
-                            text-white
-                            placeholder:text-gray-400
-                            "
-                            {...register("commentContent")}
-                        />
-                            <div className="mt-3 flex items-center justify-between">
+                {/* Comments */}
 
-                                <div className="relative">
+                <div className="flex-1 overflow-y-auto px-1 sm:px-4 lg:px-7 py-5 sm:py-7 pb-24">
 
-                                    <button
-                                    type="button"
-                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                    className="text-gray-400 hover:text-white cursor-pointer"
-                                    >
-                                    <Smile size={22} />
-                                    </button>
-
-                                    {showEmojiPicker && (
-                                    <div className="absolute top-10 left-0 z-50">
-                                        <EmojiPicker
-                                        width={400}
-                                        height={350}
-                                        theme={Theme.DARK}
-                                        onEmojiClick={(emojiData) =>
-                                            setValue(
-                                                "commentContent",
-                                                (commentContent || "")  + emojiData.emoji,
-                                                  { 
-                                                    shouldDirty: true,
-                                                    shouldTouch: true,
-                                                    shouldValidate: true,
-                                                   }
-                                            )
-                                        }
-                                        />
-                                    </div>
-                                    )}
-
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button className="text-white cursor-pointer">
-                                        Cancel
-                                    </button>
-
-                                    <button className="px-3 py-1 rounded-2xl hover:bg-white hover:text-black cursor-pointer">
-                                        Comment
-                                    </button>
-                                </div>
-
-                            </div>
-                    </div>
-                </div>
-
-                
-                <div className='flex-1 overflow-y-auto p-7 pb-24'>
-
-                    {commentsData && commentsData.map((comment) => (
-
-                        <div key={comment._id}  className='mb-6'>
-
-                            <div className='flex gap-2'>
-
-                                <img
-                                    src={ comment.author.userProfile?.coverImageUrl||"/img/defaultProfile.jfif" }
-                                    className="w-7 h-7 rounded-full"
-                                />
-
-                                <div className="flex-1 min-w-0">
-
-                                    <h6 className="font-semibold text-gray-200 text-sm">{comment.author.userProfile?.profileName}</h6>
-
-                                    <p className='text-sm text-gray-100'>{comment?.content}</p>
+                    {commentsData && commentsData.filter((comment) => !comment.parentComment).map((comment) => (
 
 
-                                    <div className='flex items-center gap-x-8 pt-1 pb-4'>
+                            <CommentItem
+                                key={comment._id}
+                                comment={comment}
+                                commentsData={commentsData}
+                                session={session}
+                                dispatch={dispatch}
+                                replyCommentId={replyCommentId}
+                                setReplyCommentId={setReplyCommentId}
+                                viewReplyComments={viewReplyComments}
+                                setViewReplyComments={setViewReplyComments}
+                                emojiPickerFor={emojiPickerFor}
+                                setEmojiPickerFor={setEmojiPickerFor}
+                                register={register}
+                                setValue={setValue}
+                                replyContent={replyContent}
+                                handleLikesAndComments={handleLikesAndComments}
+                            />
 
-                                        <button type='button' onClick={() => handleLikesAndComments({ dispatch, commentId: comment._id })} className={`cursor-pointer ${session?.user._id && comment.likes.includes(session?.user._id  )? "text-blue-800" : ""}`}><ThumbsUp size={15} /></button>
-                                        <button 
-                                            type='button' 
-                                            onClick={() =>
-                                                session?.user?._id &&
-                                                comment.likes.includes(session.user._id) &&
-                                                handleLikesAndComments({ dispatch, commentId: comment._id })
-                                            }
-                                            className={`cursor-pointer`}
-                                            >
-                                            <ThumbsDown size={15} />
-                                        </button>
-
-                                        <p 
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                setReplyCommentId(comment._id)
-                                                }
-                                            }
-                                        className='text-sm text-blue-700 cursor-pointer'>reply</p>
-                                    </div>
-
-                                    {replyCommentId === comment._id && (
-                                        <div className="flex items-center gap-5 ">
-
-                                            <img
-                                                src={playlistPostData?.author.userProfile?.profileImgUrl || "/img/defaultProfile.jfif"}
-                                                className="w-11 h-11 rounded-full"
-                                            />
-
-                                            <div className="flex-1">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Add a comment..."
-                                                    className="
-                                                    w-full
-                                                    bg-transparent
-                                                    border-b
-                                                    border-gray-100
-                                                    py-1
-                                                    outline-none
-                                                    text-white
-                                                    placeholder:text-gray-400
-                                                    "
-                                                    {...register("replyContent")}
-                                                />
-                                                    <div className="mt-3 flex items-center justify-between">
-
-                                                        <div className="relative">
-
-                                                            <button
-                                                            type="button"
-                                                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                                            className="text-gray-400 hover:text-white cursor-pointer"
-                                                            >
-                                                            <Smile size={22} />
-                                                            </button>
-
-                                                            {showEmojiPicker && (
-                                                            <div className="absolute top-10 left-0 z-50">
-                                                                <EmojiPicker
-                                                                width={400}
-                                                                height={350}
-                                                                theme={Theme.DARK}
-                                                                onEmojiClick={(emojiData) =>
-                                                                    setValue(
-                                                                        "replyContent",
-                                                                        (replyContent || "")  + emojiData.emoji,
-                                                                        { 
-                                                                            shouldDirty: true,
-                                                                            shouldTouch: true,
-                                                                            shouldValidate: true,
-                                                                        }
-                                                                    )
-                                                                }
-                                                                />
-                                                            </div>
-                                                            )}
-
-                                                        </div>
-
-                                                        <div className="flex gap-3">
-                                                            <button className="text-white cursor-pointer">
-                                                                Cancel
-                                                            </button>
-
-                                                            <button className="px-3 py-1 rounded-2xl hover:bg-white hover:text-black cursor-pointer">
-                                                                Comment
-                                                            </button>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                        </div>
-                                    )}
-
-                                </div> 
-
-                            </div>
-
-                            {/* Replies */}
-                            <div className="ml-10 mt-3 space-y-3">
-
-                                {commentsData.filter((reply) => reply.parentComment === comment._id).map((reply) => (
-
-                                    viewReplyComments ? 
-                                                                              
-                                        <div key={reply._id} className="gap-2">
-
-
-                                            <div className="flex gap-2 pb-3">
-
-                                                    <img
-                                                        src={reply.author.userProfile?.coverImageUrl || "/img/defaultProfile.jfif"}
-                                                        className="w-7 h-7 rounded-full"
-                                                    />
-
-                                                    <div>
-                                                        <h6 className="font-semibold text-sm text-gray-200"> {reply.author.userProfile?.profileName} </h6>
-
-                                                        <p className="text-sm text-gray-100"> {reply.content} </p>
-
-                                                        
-                                                    </div>
-                                            </div>
-
-                                        <div
-                                            onClick={() => setViewReplyComments(false)}
-                                            className="flex items-center gap-2 text-blue-500 cursor-pointer"
-                                        >
-                                            <ChevronUp size={16} />
-                                            <span>Hide replies</span>
-                                        </div>
-
-                                        </div>
-                                    : 
-                                    <div
-                                        key={reply._id}
-                                        onClick={() => setViewReplyComments(true)}
-                                        className="flex items-center gap-2 text-blue-500 cursor-pointer"
-                                        >
-                                        <ChevronDown size={16} />
-                                        <span>View replies</span>
-                                        </div>
-                                     ))}
-                            </div>
-
-                        </div>
                     ))}
 
                 </div>
 
-
             </form>
 
-         </div>
+        </div>
 
     </div>
   );

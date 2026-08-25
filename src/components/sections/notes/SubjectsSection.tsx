@@ -18,6 +18,8 @@ import { setPosts } from "@/src/store/postSlice";
 import { useEffect } from "react";
 import Link from "next/link";
 import { userPostType } from "@/src/types/dataTaype";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 interface SubjectsSectionProps {
   notesData: userPostType[]
@@ -85,6 +87,7 @@ const subjects = [
 
 export default function SubjectsSection({notesData}: SubjectsSectionProps) {
   const dispatch = useAppDispatch();
+  const [subjectIndex, setSubjectIndex] = useState(0);
 
   const allNotesData = notesData.map((item) => {
     const subject = subjects.find((sub) => sub.title === item.postType)
@@ -98,39 +101,97 @@ export default function SubjectsSection({notesData}: SubjectsSectionProps) {
   
 
   return (
-    <section className="mt-14">
+<section className="mt-10 sm:mt-14">
 
-      <div className="mb-6 flex items-center justify-between">
+  <div className="mb-5 sm:mb-6 flex items-center justify-between gap-3">
 
-        <div>
-          <h2 className="text-2xl font-bold">
-            Notes by Subjects
-          </h2>
+    <div className="min-w-0">
 
-          <p className="text-sm text-gray-500">
-            Browse notes by your favorite subject
-          </p>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-[#FBFCFE]">
+        Notes by Subjects
+      </h2>
+
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Browse notes by your favorite subject
+      </p>
+
+    </div>
+
+    <button className="shrink-0 text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+      View All
+    </button>
+
+  </div>
+
+
+  {/* Mobile Carousel */}
+
+  <div className="sm:hidden">
+
+    {subjects.length > 0 && (
+
+      <div className="relative">
+
+        <Link href={`/notes/${subjects[subjectIndex].slug}`}>
+          <SubjectCard {...subjects[subjectIndex]} />
+        </Link>
+
+        <div className="flex items-center justify-center gap-3 mt-4">
+
+          <button
+            type="button"
+            disabled={subjectIndex === 0}
+            onClick={() =>
+              setSubjectIndex((prev) => Math.max(prev - 1, 0))
+            }
+            className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] text-gray-700 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer transition"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {subjectIndex + 1} / {subjects.length}
+          </span>
+
+          <button
+            type="button"
+            disabled={subjectIndex === subjects.length - 1}
+            onClick={() =>
+              setSubjectIndex((prev) =>
+                Math.min(prev + 1, subjects.length - 1)
+              )
+            }
+            className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] text-gray-700 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer transition"
+          >
+            <ChevronRight size={18} />
+          </button>
+
         </div>
 
-        <button className="text-sm text-blue-600 hover:underline">
-          View All
-        </button>
-
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    )}
 
-        {subjects.map((subject) => (
-          <Link
-            key={subject.title}
-            href={`/notes/${subject.slug}`}
-          >
-            <SubjectCard {...subject} />
-          </Link>
-        ))}
+  </div>
 
-      </div>
 
-    </section>
+  {/* Tablet / Desktop Grid */}
+
+  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+
+    {subjects.map((subject) => (
+
+      <Link
+        key={subject.title}
+        href={`/notes/${subject.slug}`}
+      >
+        <SubjectCard {...subject} />
+      </Link>
+
+    ))}
+
+  </div>
+
+</section>
   );
 }

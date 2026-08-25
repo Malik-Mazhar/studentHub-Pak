@@ -168,256 +168,386 @@ function ReusableCreatePostForm({
 
 
   return (
-    <form className="relative" onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" {...register("postType")} />
-        
-              <div className="mt-8">
+    <form className="relative w-full min-w-0" onSubmit={handleSubmit(onSubmit)}>
+      
+      <input type="hidden" {...register("postType")} />
 
-              {/* Title */}
+      {/* Title */}
+      <div className="mt-6 sm:mt-8">
+        <CustomInput
+          label={postType + " Title"}
+          type="text"
+          placeholder="Give your post a short title..."
+          optional={false}
+          {...register("title")}
+          className="w-full"
+        />
+      </div>
 
-              <CustomInput
-                label={postType +" Title"}
-                type="text"
-                placeholder="Give your post a short title..."
-                optional = {false}
-                {...register("title")}
-                className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
-                />
+      {/* Video Link */}
+      {postType === "Video" && (
+        <div className="mt-5 sm:mt-6">
+          <CustomInput
+            label="Video Link"
+            type="text"
+            placeholder="Paste YouTube or video URL..."
+            optional={true}
+            {...register("videoLink")}
+          />
+        </div>
+      )}
 
-              </div>
+      {/* Content */}
+      <div className="mt-5 sm:mt-6">
+        <label
+          className="
+            mb-2 block
+            text-sm sm:text-base
+            font-semibold
+            text-gray-700 dark:text-gray-300
+          "
+        >
+          Write Something
+          <span className="ml-1 text-red-500">*</span>
+        </label>
 
-              {postType === "Video" && (
-                    
-                 <div className="mt-6">
-                   <CustomInput
-                    label="Video Link"
-                    type="text"
-                    placeholder="Paste YouTube or video URL..."
-                    optional= {true}
-                    {...register("videoLink")}
+        <textarea
+          rows={8}
+          placeholder="Write your post content here..."
+          {...register("content")}
+          className="
+            w-full min-w-0
+            resize-none
+            rounded-xl
+            border border-gray-300 dark:border-gray-700
+            bg-white dark:bg-[#101827]
+            p-3 sm:p-4
+            text-sm sm:text-base
+            text-gray-900 dark:text-white
+            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            outline-none
+            transition-colors duration-200
+            focus:border-gray-400
+            dark:focus:border-gray-600
+            focus:ring-1
+            focus:ring-gray-300
+            dark:focus:ring-gray-700
+          "
+        />
+      </div>
+
+      {/* Image / Video Upload */}
+      {!documentFile &&
+        !documentUrl &&
+        !videoLink?.trim() && (
+          <div className="mt-5 sm:mt-6">
+            <label
+              className="
+                mb-2 block
+                text-sm sm:text-base
+                font-semibold
+                text-gray-700 dark:text-gray-300
+              "
+            >
+              Attach File
+
+              <span className="ml-1 font-normal text-gray-400 dark:text-gray-500">
+                (Optional)
+              </span>
+            </label>
+
+            <div
+              className="
+                w-full min-w-0
+                rounded-2xl
+                border-2 border-dashed
+                border-gray-300 dark:border-gray-700
+                bg-gray-50 dark:bg-[#101827]
+                px-4 sm:px-6
+                py-8 sm:py-12
+                text-center
+                transition-colors
+              "
+            >
+              {/* Image Preview */}
+              {postImagePerview && (
+                <div className="w-full min-w-0">
+                  <img
+                    src={postImagePerview}
+                    alt="Selected image preview"
+                    className="
+                      mx-auto
+                      max-h-80
+                      w-full
+                      rounded-xl
+                      object-contain
+                    "
                   />
                 </div>
-
-              )}          
-
-            {/* Content */}
-
-              <div className="mt-6">
-
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Write Something
-                    <span className="text-red-500">*</span>
-                  </label>
-
-                  <textarea
-                    rows={8}
-                    placeholder="Write your post content here..."
-                    {...register("content")}
-                    className="w-full rounded-xl border border-gray-300 p-4 resize-none outline-none focus:border-blue-500"
-                  />
-
-              </div>
-
-              {/* Image Or Video */}
-
-                  {!documentFile && !documentUrl && !videoLink?.trim() && (
-                    <div className="mt-6">
-                    
-                        <label className="block text-sm font-semibold mb-2">
-
-                          Attach File
-
-                        <span className="text-gray-400">
-                            {" "} (Optional)
-                        </span>
-
-                        </label>
-                    
-                        <div className="border-2 border-dashed rounded-2xl py-12 flex flex-col items-center">
-                          
-                            { postImagePerview &&
-                                <div>
-                                  <img
-                                    src={postImagePerview}
-                                    alt="" 
-                                    className="w-full"
-                                  />
-                                </div>
-                            }
-
-
-                            { postVideoPerview && (
-                              <video
-                                src={postVideoPerview}
-                                controls
-                                className="w-full h-100 rounded-lg"
-                              />
-                            )}
-
-                            { !postImagePerview && !postVideoPerview && 
-                                <div>
-
-                                <div className="text-5xl">
-                                  ☁️
-                                </div>
-
-                                <h3 className=" relative font-semibold mt-4">
-
-                                <ImageUpload content="Drag & Drop files here" onFileSelect={handleFile} />
-
-                                </h3>
-
-                                <p className="text-gray-500 mt-2">
-
-                                  here to pick Image or video
-
-                                </p>
-
-                              </div>
-                            }
-
-
-                        </div>
-                    
-                    </div>
-                  )}
-
-              {/* Different Fields */}
-
-              {postType === "Notes"  && (
-
-                <>
-
-
-
-                {documentFile && (
-                  <div className="flex items-center gap-3 p-4 border rounded-lg">
-                    <span className="text-3xl">📄</span>
-
-                    <div>
-                      <p className="font-medium">{documentName}</p>
-                      <p className="text-sm text-gray-500">
-                        {(documentFile.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {documentUrl && (
-                  <div className="border rounded-lg p-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Current Document</p>
-
-                      <Link
-                        href={documentUrl}
-                        target="_blank"
-                        className="text-blue-600 underline"
-                      >
-                        View PDF
-                      </Link>
-                    </div>
-
-                    <button
-                      onClick={() => setDocumentUrl(null)}
-                      className="text-red-500"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-                </>
               )}
 
-              {postType === "Question" && (
-
-                <CustomInput
-                    label="Question"
-                    type="text"
-                    placeholder="Give your post a short title..."
-                    optional = {true}
-                    // {...register("")}
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:border-blue-500"
-                    />
+              {/* Video Preview */}
+              {postVideoPerview && (
+                <video
+                  src={postVideoPerview}
+                  controls
+                  className="
+                    mx-auto
+                    h-auto
+                    max-h-80
+                    w-full
+                    rounded-xl
+                    object-contain
+                  "
+                />
               )}
 
-                {/* Notes Category */}
-                {postType === "Notes" &&
-                <>
-
-                  <div className="mt-6">
-                      <CustomSelect 
-                        label="Notes Category"
-                        options={["Mathematics", "English", "Bio", "Science"]}
-                        {...register("notesCategory")}
-                        />
+              {/* Upload */}
+              {!postImagePerview && !postVideoPerview && (
+                <div className="flex flex-col items-center">
+                  <div className="text-4xl sm:text-5xl">
+                    ☁️
                   </div>
 
-                  <div className="mt-6">
-                      <CustomSelect 
-                        label="Class Name"
-                        options={["5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"]}
-                        {...register("className")}
-                        />
-                  </div>
-                  </>
-
-                }
-
-                {/* Category */}
-              <div className="mt-6">
-                  <CustomSelect 
-                    label="Category"
-                    options={["General Discussion", "Education", "Technology", "Science", "Career"]}
-                    {...register("category")}
-                    />
-                  </div>
-
-              {/* Tags */}
-              <div className="mt-6">
-                  <Controller
-                    name="tags"
-                    control={control}
-                    render={({ field }) => (
-                      <CustomTagInput
-                        label="Tags"
-                        tags={field.value ?? []}
-                        setTags={field.onChange}
-                        max={5}
-                      />
-                    )}
-                  />
-
-              </div>
-
-              {/* Visibility */}
-
-              <div className="flex justify-between items-center mt-10">
-
-                <CustomSelect
-                  label="Visibility"
-                  options={["Everyone", "Only Members", "Private"]}
-                  {...register("visibility")}
-                  />
-
-                <CoustomButton type="submit"
-                    className="px-10 h-10 rounded-xl"
+                  <h3
+                    className="
+                      mt-3 sm:mt-4
+                      font-semibold
+                      text-gray-800 dark:text-gray-200
+                    "
                   >
-                    {isSubmitting ? (
-                        <div className="flex gap-2">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Please wait
-                        </div>
-                    ):(
-                      "Publish Post"
-                    )}
+                    <ImageUpload
+                      content="Drag & Drop files here"
+                      onFileSelect={handleFile}
+                    />
+                  </h3>
 
-                </CoustomButton>
+                  <p
+                    className="
+                      mt-2
+                      text-xs sm:text-sm
+                      text-gray-500 dark:text-gray-400
+                    "
+                  >
+                    here to pick Image or video
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
+      {/* Notes */}
+      {postType === "Notes" && (
+        <>
+          {/* Selected Document */}
+          {documentFile && (
+            <div
+              className="
+                mt-5 sm:mt-6
+                flex
+                min-w-0
+                items-center
+                gap-3
+                rounded-xl
+                border border-gray-300 dark:border-gray-700
+                bg-white dark:bg-[#101827]
+                p-3 sm:p-4
+              "
+            >
+              <span className="shrink-0 text-2xl sm:text-3xl">
+                📄
+              </span>
+
+              <div className="min-w-0">
+                <p className="truncate font-medium text-gray-800 dark:text-gray-200">
+                  {documentName}
+                </p>
+
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                  {(documentFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
               </div>
-        
+            </div>
+          )}
 
-   
+          {/* Existing Document */}
+          {documentUrl && (
+            <div
+              className="
+                mt-5 sm:mt-6
+                flex
+                flex-col
+                gap-3
+                rounded-xl
+                border border-gray-300 dark:border-gray-700
+                bg-white dark:bg-[#101827]
+                p-3 sm:p-4
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+              "
+            >
+              <div className="min-w-0">
+                <p className="font-medium text-gray-800 dark:text-gray-200">
+                  Current Document
+                </p>
 
+                <Link
+                  href={documentUrl}
+                  target="_blank"
+                  className="
+                    inline-block
+                    mt-1
+                    text-sm
+                    text-blue-600 dark:text-blue-400
+                    underline
+                  "
+                >
+                  View PDF
+                </Link>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDocumentUrl(null)}
+                className="
+                  self-start
+                  text-sm
+                  text-red-500 dark:text-red-400
+                  hover:text-red-600 dark:hover:text-red-300
+                  sm:self-auto
+                "
+              >
+                Remove
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Question */}
+      {postType === "Question" && (
+        <div className="mt-5 sm:mt-6">
+          <CustomInput
+            label="Question"
+            type="text"
+            placeholder="Give your post a short title..."
+            optional={true}
+          />
+        </div>
+      )}
+
+      {/* Notes Category */}
+      {postType === "Notes" && (
+        <>
+          <div className="mt-5 sm:mt-6">
+            <CustomSelect
+              label="Notes Category"
+              options={[
+                "Mathematics",
+                "English",
+                "Bio",
+                "Science",
+              ]}
+              {...register("notesCategory")}
+            />
+          </div>
+
+          <div className="mt-5 sm:mt-6">
+            <CustomSelect
+              label="Class Name"
+              options={[
+                "5th",
+                "6th",
+                "7th",
+                "8th",
+                "9th",
+                "10th",
+                "11th",
+                "12th",
+              ]}
+              {...register("className")}
+            />
+          </div>
+        </>
+      )}
+
+      {/* Category */}
+      <div className="mt-5 sm:mt-6">
+        <CustomSelect
+          label="Category"
+          options={[
+            "General Discussion",
+            "Education",
+            "Technology",
+            "Science",
+            "Career",
+          ]}
+          {...register("category")}
+        />
+      </div>
+
+      {/* Tags */}
+      <div className="mt-5 sm:mt-6">
+        <Controller
+          name="tags"
+          control={control}
+          render={({ field }) => (
+            <CustomTagInput
+              label="Tags"
+              tags={field.value ?? []}
+              setTags={field.onChange}
+              max={5}
+            />
+          )}
+        />
+      </div>
+
+      {/* Visibility + Publish */}
+      <div
+        className="
+          mt-8 sm:mt-10
+          flex
+          flex-col
+          gap-4
+          sm:flex-row
+          sm:items-end
+          sm:justify-between
+        "
+      >
+        <div className="w-full sm:w-auto">
+          <CustomSelect
+            label="Visibility"
+            options={[
+              "Everyone",
+              "Only Members",
+              "Private",
+            ]}
+            {...register("visibility")}
+          />
+        </div>
+
+        <CoustomButton
+          type="submit"
+          className="
+            w-full
+            sm:w-auto
+            px-6 sm:px-10
+            h-10 sm:h-11
+            rounded-xl
+          "
+        >
+          {isSubmitting ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Please wait
+            </div>
+          ) : (
+            "Publish Post"
+          )}
+        </CoustomButton>
+      </div>
     </form>
   );
 }

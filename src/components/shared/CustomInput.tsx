@@ -15,7 +15,7 @@ export default function CustomInput({
     label,
     type,
     placeholder,
-    className,
+    className, 
     optional = false,
     error,
     onFocus,
@@ -24,44 +24,32 @@ export default function CustomInput({
 }: InputProps) {
   return (
     <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-            {label}
-            
-            {optional && (
-                <span className="text-gray-400 ml-1">(Optional)</span>
-            )}
+    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        {label}
 
-        </label>
-
-        <input
-            type={type}
-            placeholder={placeholder}
-            autoComplete="new-password"     
-            onFocus={onFocus}
-            onBlur={onBlur}
-            className= {twMerge(
-                `
-                w-full
-                rounded-xl 
-                border 
-                border-gray-300 
-                bg-white/80 
-                px-4 py-3 
-                outline-none 
-                focus:border-gray-300
-                focus:border-2
-                `,
-                className
-            )
-            }
-            {...props}
-        />
-
-        {error && (
-            <p className="text-sm text-red-500 mt-1">
-            {error}
-            </p>
+        {optional && (
+        <span className="text-gray-400 dark:text-gray-500 ml-1">(Optional)</span>
         )}
+    </label>
+
+    <input
+        type={type}
+        placeholder={placeholder}
+        autoComplete="new-password"
+        onFocus={onFocus}
+        onBlur={onBlur}
+        className={twMerge(
+        `w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-[#101827] px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:border-gray-300 dark:focus:border-gray-600 focus:border-2`,
+        className
+        )}
+        {...props}
+    />
+
+    {error && (
+        <p className="text-sm text-red-500 dark:text-red-400 mt-1">
+        {error}
+        </p>
+    )}
     </div>
 
   )

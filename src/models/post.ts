@@ -1,37 +1,40 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface UserPost extends Document {
-    author: Types.ObjectId;
-    postType: string;
+  author: Types.ObjectId;
+  postType: string;
 
-    title?: string;
-    content?: string;
+  title?: string;
+  content?: string;
 
-    category?: string;
-    notesCategory?: string;
-    className?: string
+  category?: string;
+  notesCategory?: string;
+  className?: string;
 
-    tags?: string[];
+  tags?: string[];
 
-    resourceLink?: string;
+  resourceLink?: string;
 
-    postImageUrl?: string[];
-    postVideoUrl?: string;
-    postDocumentUrl: string;
-    postImgPublicId?: string[];
-    postVideoPublicId?: string;
-    postDocumentPublicId: string;
+  postImageUrl?: string[];
+  postVideoUrl?: string;
+  postDocumentUrl: string;
+  postImgPublicId?: string[];
+  postVideoPublicId?: string;
+  postDocumentPublicId: string;
 
-    videoLink?: string;
+  videoLink?: string;
 
-    pollQuestion?: string;
-    pollOptions?: string[];
-    pollDuration?: number;
+  pollQuestion?: string;
+  pollOptions?: string[];
+  pollDuration?: number;
 
-    visibility: string;
+  visibility: string;
 
-    likes: Types.ObjectId[];
-};
+  likes: Types.ObjectId[];
+
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const userPostSchema: Schema<UserPost> = new Schema({
     author: {

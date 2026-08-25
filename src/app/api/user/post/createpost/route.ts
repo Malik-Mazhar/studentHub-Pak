@@ -110,28 +110,26 @@ export const POST = asyncHandler( async (req:Request) => {
 } );
 
 
-export const GET = asyncHandler( async (req:Request) => {
-    await dbConnect();
+export const GET = asyncHandler(async (req: Request) => {
+  await dbConnect();
 
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user?._id) {
-        throw new ApiError(401, "user Unauthorized" )
-    };
+  if (!session?.user?._id) {
+    throw new ApiError(401, "User Unauthorized");
+  }
 
-    const getCurrentUserAllPosts = await UserPostModel.findById({
-        author: session.user._id
-    });                      //if first latest post .sort({ createdAt: -1 });
+  const getCurrentUserAllPosts = await UserPostModel
+    .find({ author: session.user._id })
+    .sort({ createdAt: -1 });
 
-    if(!getCurrentUserAllPosts){
-        throw new ApiError(400, "cannection Error")
-    }
-
-    return Response
-    .json(
-        new ApiResponse(201, getCurrentUserAllPosts, "fatch current user post successfully")
-    );
-
+  return Response.json(
+    new ApiResponse(
+      200,
+      getCurrentUserAllPosts,
+      "Fetched current user's posts successfully"
+    )
+  );
 });
 
 export const PATCH = asyncHandler( async (req:Request) => {

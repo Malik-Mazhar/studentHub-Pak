@@ -17,6 +17,7 @@ import { setPlaylists } from "@/src/store/playlistSlice";
 import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const coursesCategories = [
   {
@@ -141,58 +142,8 @@ const coursesCategories = [
   },
 ];
 
-const notes = [
-  {
-    image: "/img/math.jpg",
-    subject: "Math",
-    title: "Full Chapter Notes",
-    author: "Ali Khan",
-    downloads: "1.2k",
-    views: "5k",
-    rating: 4.8,
-  },
-  {
-    image: "/img/math.jpg",
-    subject: "Maath",
-    title: "Full Chapter Notes",
-    author: "Ali Khan",
-    downloads: "1.2k",
-    views: "5k",
-    rating: 4.8,
-  },
-  {
-    image: "/img/phisics.jpg",
-    subject: "Physics",
-    title: "Numerical Notes",
-    author: "Usman",
-    downloads: "980",
-    views: "4.2k",
-    rating: 4.9,
-  },
-  {
-    image: "/img/Biology.jfif",
-    subject: "Chemistry",
-    title: "Organic Chemistry",
-    author: "Ahmed",
-    downloads: "850",
-    views: "3.5k",
-    rating: 4.7,
-  },
-  {
-    image: "/img/math.jpg",
-    subject: "Biology",
-    title: "Complete Chapter",
-    author: "Fatima",
-    downloads: "730",
-    views: "2.9k",
-    rating: 4.8,
-  },
-  
-];
-
 export default function NotesPage() {
   const dispatch = useAppDispatch();
-  const notesData = useAppSelector((state) => state.postData.posts)
   const playlistData = useAppSelector((state) => state.playlist.playlists)
   const [selectedNotes, setSelectedNotes] = useState<string | null>(null);
   const router = useRouter();
@@ -217,17 +168,19 @@ export default function NotesPage() {
   }, []);
   
   return (
-    <main className="bg-slate-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <main className="min-h-screen min-w-0 overflow-x-hidden bg-[#FBFCFE] dark:bg-[#0F172A] text-gray-900 dark:text-[#FBFCFE]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">
+        <div className="mb-6 sm:mb-8">
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-[#FBFCFE]">
             Courses
-          </h1> 
+          </h1>
 
-          <p className="text-gray-500 mt-1">
-            Learn new skills with export teachers
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
+            Learn new skills with expert teachers
           </p>
+
         </div>
 
         <SearchBar categories={coursesCategories.map((category) => category.name)} />
@@ -237,22 +190,31 @@ export default function NotesPage() {
 
             <section className="pt-10">
                 
-              <div className="flex justify-between items-center">
-                  <div>
-                      <h1 className="text-2xl font-bold">
-                        Featured Courses
-                      </h1>
+              <div className="flex justify-between items-start gap-4">
 
-                    <p className="text-gray-500">
-                        Explore community-shared YouTube playlists and start learning today.
-                    </p>
-                  </div>
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold">
+                    Featured Courses
+                  </h1>
 
-                  <Link href="/courses/viewAllPlaylist" className="text-blue-700 font-semibold underline hover:no-underline">View All</Link>
+                  <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-1">
+                    Explore community-shared YouTube playlists and start learning today.
+                  </p>
+                </div>
+
+                <Link
+                  href="/courses/viewAllPlaylist"
+                  className="shrink-0 text-xs sm:text-sm md:text-base
+                            text-blue-700 font-semibold
+                            underline hover:no-underline"
+                >
+                  View All
+                </Link>
+
               </div>
 
 
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 pt-5 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 pt-5 gap-6">
 
                   {playlistData.map((playlist) => (
                     <PlaylistCard 
@@ -272,10 +234,6 @@ export default function NotesPage() {
             
             </section>
 
-        <RecentNotes popularField={notes}  className= {selectedNotes? selectedNotes : null} />
-        <SubjectsSection notesData= {notesData} />
-        <TopNotesSection />
-        <Newsletter />
         <Footer />
 
       </div>

@@ -125,123 +125,379 @@ function Comment({ setShowComment, postId }: CommentProps) {
 
               console.log("replyCommentId", replyCommentId)
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    // <form onSubmit={handleSubmit(onSubmit)}>
 
-        <div className="fixed inset-0 z-50">
-            <div className="absolute right-0 top-0 h-full w-100 bg-white shadow-lg flex flex-col">
+    //     <div className="fixed inset-0 z-50">
+    //         <div className="absolute right-0 top-0 h-full w-100 bg-white shadow-lg flex flex-col">
 
-                <div className="flex justify-between items-center px-4 py-3">
+    //             <div className="flex justify-between items-center px-4 py-3">
 
-                    <h1>Comments({commentsData.length})</h1>
-                    <button onClick={() => setShowComment(false)} className="bg-gray-400 rounded-full p-1 text-white cursor-pointer shadow-lg">
+    //                 <h1>Comments({commentsData.length})</h1>
+    //                 <button onClick={() => setShowComment(false)} className="bg-gray-400 rounded-full p-1 text-white cursor-pointer shadow-lg">
                     
-                        <X size={20} />
-                    </button>
+    //                     <X size={20} />
+    //                 </button>
 
-                </div>
+    //             </div>
                  
-                 <div className='flex-1 overflow-y-auto p-7 pb-24'>
+    //              <div className='flex-1 overflow-y-auto p-7 pb-24'>
 
-                    {commentsData && commentsData.filter((comment) => comment && !comment.parentComment).map((comment) => (
+    //                 {commentsData && commentsData.filter((comment) => comment && !comment.parentComment).map((comment) => (
 
-                        <div key={comment._id}  className='mb-6'>
+    //                     <div key={comment._id}  className='mb-6'>
 
-                            <div className='flex gap-2'>
+    //                         <div className='flex gap-2'>
 
-                                <img
-                                    src={ comment.author.userProfile?.coverImageUrl||"/img/defaultProfile.jfif" }
-                                    className="w-7 h-7 rounded-full"
-                                />
+    //                             <img
+    //                                 src={ comment.author.userProfile?.coverImageUrl||"/img/defaultProfile.jfif" }
+    //                                 className="w-7 h-7 rounded-full"
+    //                             />
 
-                                <div className="gap-1">
+    //                             <div className="gap-1">
 
-                                    <h6 className="font-semibold text-sm">{comment.author.userProfile?.profileName}</h6>
+    //                                 <h6 className="font-semibold text-sm">{comment.author.userProfile?.profileName}</h6>
 
-                                    <p className='text-sm text-gray-700'>{comment?.content}</p>
+    //                                 <p className='text-sm text-gray-700'>{comment?.content}</p>
 
 
-                                    <div className='flex items-center gap-x-8 pt-1 pb-4'>
+    //                                 <div className='flex items-center gap-x-8 pt-1 pb-4'>
 
-                                        <button type='button' onClick={() => handleLike(comment._id)} className={`cursor-pointer ${session?.user._id && comment.likes.includes(session?.user._id  )? "text-blue-800" : ""}`}><ThumbsUp size={15} /></button>
-                                        <button 
-                                            type='button' 
-                                            onClick={() =>
-                                                session?.user?._id &&
-                                                comment.likes.includes(session.user._id) &&
-                                                handleLike(comment._id)
-                                            }
-                                            className={`cursor-pointer`}
-                                            >
-                                            <ThumbsDown size={15} />
-                                        </button>
+    //                                     <button type='button' onClick={() => handleLike(comment._id)} className={`cursor-pointer ${session?.user._id && comment.likes.includes(session?.user._id  )? "text-blue-800" : ""}`}><ThumbsUp size={15} /></button>
+    //                                     <button 
+    //                                         type='button' 
+    //                                         onClick={() =>
+    //                                             session?.user?._id &&
+    //                                             comment.likes.includes(session.user._id) &&
+    //                                             handleLike(comment._id)
+    //                                         }
+    //                                         className={`cursor-pointer`}
+    //                                         >
+    //                                         <ThumbsDown size={15} />
+    //                                     </button>
 
-                                        <p 
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                setReplyCommentId(comment._id)
-                                                }
-                                            }
-                                        className='text-sm text-blue-700 cursor-pointer'>reply</p>
-                                    </div>
+    //                                     <p 
+    //                                         onClick={(e) => {
+    //                                             e.stopPropagation()
+    //                                             setReplyCommentId(comment._id)
+    //                                             }
+    //                                         }
+    //                                     className='text-sm text-blue-700 cursor-pointer'>reply</p>
+    //                                 </div>
 
-                                    {replyCommentId === comment._id && (
-                                        <EmojiPickerInput
-                                            watch={watch}
-                                            register={register}
-                                            setValue={setValue}
-                                            isSubmitting={isSubmiting}
-                                            fieldName = "replyContent"
-                                            // placeholder=''
-                                        />
-                                    )}
+    //                                 {replyCommentId === comment._id && (
+    //                                     <EmojiPickerInput
+    //                                         watch={watch}
+    //                                         register={register}
+    //                                         setValue={setValue}
+    //                                         isSubmitting={isSubmiting}
+    //                                         fieldName = "replyContent"
+    //                                         // placeholder=''
+    //                                     />
+    //                                 )}
 
-                                </div> 
+    //                             </div> 
 
-                            </div>
+    //                         </div>
 
-                            {/* Replies */}
-                            <div className="ml-10 mt-3 space-y-3">
+    //                         {/* Replies */}
+    //                         <div className="ml-10 mt-3 space-y-3">
 
-                                {commentsData.filter((reply) => reply.parentComment === comment._id).map((reply) => (
+    //                             {commentsData.filter((reply) => reply.parentComment === comment._id).map((reply) => (
 
-                                    <div key={reply._id} className="flex gap-2">
+    //                                 <div key={reply._id} className="flex gap-2">
 
-                                        <img
-                                            src={reply.author.userProfile?.coverImageUrl || "/img/defaultProfile.jfif"}
-                                            className="w-7 h-7 rounded-full"
-                                        />
+    //                                     <img
+    //                                         src={reply.author.userProfile?.coverImageUrl || "/img/defaultProfile.jfif"}
+    //                                         className="w-7 h-7 rounded-full"
+    //                                     />
 
-                                    <div>
-                                        <h6 className="font-semibold text-sm"> {reply.author.userProfile?.profileName} </h6>
+    //                                 <div>
+    //                                     <h6 className="font-semibold text-sm"> {reply.author.userProfile?.profileName} </h6>
 
-                                        <p className="text-sm text-gray-700"> {reply.content} </p>
+    //                                     <p className="text-sm text-gray-700"> {reply.content} </p>
 
                                         
-                                    </div>
+    //                                 </div>
 
-                                    </div>
-                                ))}
-                            </div>
+    //                                 </div>
+    //                             ))}
+    //                         </div>
+
+    //                     </div>
+    //                 ))}
+
+    //             </div>
+
+
+
+    //                 <EmojiPickerInput
+    //                    watch={watch}
+    //                    register={register}
+    //                    setValue={setValue}
+    //                    isSubmitting={isSubmiting}
+    //                    fieldName = "commentContent"
+    //                 />
+
+    //         </div>
+        
+    //     </div>
+    // </form>
+
+    <form onSubmit={handleSubmit(onSubmit)}>
+  <div className="fixed inset-0 z-50">
+
+    <div
+      className="absolute right-0 top-0 h-full w-full lg:w-105 bg-white dark:bg-[#0F172A] text-gray-900 dark:text-gray-100 shadow-2xl flex flex-col border-l border-gray-200 dark:border-slate-800" >
+
+      {/* Header */}
+      <div
+        className=" flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-200 dark:border-slate-800 shrink-0 ">
+
+        <h1 className="font-semibold text-base sm:text-lg">
+          Comments ({commentsData.length})
+        </h1>
+
+        <button
+          type="button"
+          onClick={() => setShowComment(false)}
+          className="bg-gray-200 hover:bg-gray-300 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-full p-1.5 text-gray-700 dark:text-gray-200 cursor-pointer transi " >
+          <X size={20} />
+        </button>
+
+      </div>
+
+      {/* Comments */}
+      <div
+        className=" flex-1 overflow-y-auto px-4 sm:px-6 py-5 pb-28">
+
+        {commentsData &&
+          commentsData
+            .filter(
+              (comment) =>
+                comment && !comment.parentComment
+            )
+            .map((comment) => (
+
+              <div
+                key={comment._id}
+                className="mb-6"
+              >
+
+                {/* Main Comment */}
+                <div className="flex gap-2.5">
+
+                  <img
+                    src={
+                      comment.author.userProfile?.coverImageUrl ||
+                      "/img/defaultProfile.jfif"
+                    }
+                    className=" w-8 h-8 rounded-full object-cover shrink-0
+                    "
+                  />
+
+                  <div className="min-w-0 flex-1">
+
+                    <h6 className="font-semibold text-sm text-gray-900 dark:text-g ">
+                      {comment.author.userProfile?.profileName}
+                    </h6>
+
+                    <p
+                      className="
+                        text-sm
+                        text-gray-700
+                        dark:text-gray-300
+                        leading-6
+                        wrap-break-words
+                      "
+                    >
+                      {comment?.content}
+                    </p>
+
+                    {/* Actions */}
+                    <div
+                      className="
+                        flex items-center
+                        gap-x-6 sm:gap-x-8
+                        pt-2 pb-3
+                      "
+                    >
+
+                      {/* Like */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleLike(comment._id)
+                        }
+                        className={`
+                          cursor-pointer
+                          transition
+                          ${
+                            session?.user._id &&
+                            comment.likes.includes(
+                              session?.user._id
+                            )
+                              ? "text-blue-600 dark:text-blue-400"
+                              : "text-gray-500 dark:text-gray-400"
+                          }
+                        `}
+                      >
+                        <ThumbsUp size={15} />
+                      </button>
+
+                      {/* Dislike */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          session?.user?._id &&
+                          comment.likes.includes(
+                            session.user._id
+                          ) &&
+                          handleLike(comment._id)
+                        }
+                        className="
+                          cursor-pointer
+                          text-gray-500
+                          dark:text-gray-400
+                          hover:text-gray-800
+                          dark:hover:text-gray-200
+                          transition
+                        "
+                      >
+                        <ThumbsDown size={15} />
+                      </button>
+
+                      {/* Reply */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setReplyCommentId(comment._id);
+                        }}
+                        className="
+                          text-sm
+                          text-blue-600
+                          dark:text-blue-400
+                          hover:text-blue-700
+                          dark:hover:text-blue-300
+                          cursor-pointer
+                        "
+                      >
+                        Reply
+                      </button>
+
+                    </div>
+
+                    {/* Reply Input */}
+                    {replyCommentId === comment._id && (
+                      <div className="mb-3">
+                        <EmojiPickerInput
+                          watch={watch}
+                          register={register}
+                          setValue={setValue}
+                          isSubmitting={isSubmiting}
+                          fieldName="replyContent"
+                        />
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+
+                {/* Replies */}
+                <div
+                  className="
+                    ml-8 sm:ml-10
+                    mt-3
+                    space-y-4
+                    border-l
+                    border-gray-200
+                    dark:border-slate-800
+                    pl-3 sm:pl-4
+                  "
+                >
+
+                  {commentsData
+                    .filter(
+                      (reply) =>
+                        reply.parentComment === comment._id
+                    )
+                    .map((reply) => (
+
+                      <div
+                        key={reply._id}
+                        className="flex gap-2.5"
+                      >
+
+                        <img
+                          src={
+                            reply.author.userProfile?.coverImageUrl ||
+                            "/img/defaultProfile.jfif"
+                          }
+                          className="
+                            w-7 h-7
+                            rounded-full
+                            object-cover
+                            shrink-0
+                          "
+                        />
+
+                        <div className="min-w-0">
+
+                          <h6
+                            className="
+                              font-semibold
+                              text-sm
+                              text-gray-900
+                              dark:text-gray-100
+                            "
+                          >
+                            {reply.author.userProfile?.profileName}
+                          </h6>
+
+                          <p
+                            className="
+                              text-sm
+                              text-gray-700
+                              dark:text-gray-300
+                              leading-6
+                              wrap-break-words
+                            "
+                          >
+                            {reply.content}
+                          </p>
 
                         </div>
+
+                      </div>
+
                     ))}
 
                 </div>
 
+              </div>
 
+            ))}
 
-                    <EmojiPickerInput
-                       watch={watch}
-                       register={register}
-                       setValue={setValue}
-                       isSubmitting={isSubmiting}
-                       fieldName = "commentContent"
-                    />
+      </div>
 
-            </div>
-        
-        </div>
-    </form>
+      {/* Comment Input */}
+      <div className=" shrink-0 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] px-4 sm:px-5 py-3 " >
+
+        <EmojiPickerInput
+          watch={watch}
+          register={register}
+          setValue={setValue}
+          isSubmitting={isSubmiting}
+          fieldName="commentContent"
+        />
+
+      </div>
+
+    </div>
+
+  </div>
+</form>
   )
 }
 

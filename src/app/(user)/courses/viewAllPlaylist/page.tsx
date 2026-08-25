@@ -87,18 +87,18 @@ function page() {
     getAllPlaylist();
     }, []);
     return (
-        <section className="pt-10 mx-6">
+        <section className="pt-8 sm:pt-10 px-4 sm:px-6">
 
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-[#FBFCFE]">
                 Featured Courses
             </h1>
 
-            <p className="text-gray-500">
+            <p className="mt-1 max-w-2xl text-sm sm:text-base leading-6 text-gray-500 dark:text-gray-400">
                 Explore community-shared YouTube playlists and start learning today.
-            </p>
+            </p> 
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 pt-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 pt-5 gap-6">
 
                 {playlistData.map((playlist) => (
                     <PlaylistCard
@@ -106,7 +106,6 @@ function page() {
                         thumbnail={playlist.thumbnail}
                         createdAt={playlist.createdAt}
                         title={playlist.title}
-                        category={playlist.category}
                         videoCount={playlist.videoCount}
                         duration={playlist.duration}
                         fullname={playlist.author.userProfile.profileName}

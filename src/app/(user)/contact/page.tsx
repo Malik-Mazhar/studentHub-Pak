@@ -75,38 +75,38 @@ export default function ContactPage() {
     ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-gray-900 dark:text-gray-100">
 
       {/* Heading */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">
+      <div className="mb-6 sm:mb-8 sm:mt-10 mt-20">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-[#FBFCFE]">
           Contact Us
         </h1>
 
-        <p className="text-gray-500 mt-2">
+        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
           We'd love to hear from you. Get in touch with our team.
         </p>
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-[30%_40%_25%] gap-6">
+      <div className="grid grid-cols-1  lg:grid-cols-[30%_40%_25%] gap-5 lg:gap-6">
 
         {/* Left Side */}
-            <div className="lg:col-span-2 ">
+            <div className="lg:col-span-2 min-w-0">
 
                 {/* Hero Card */}
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm dark:shadow-none overflow-hidden">
 
                     <div className="grid md:grid-cols-2 items-center">
 
                     {/* Left */}
-                    <div className="px-10">
+                    <div className="px-5 sm:px-8 lg:px-10 py-8 md:py-10">
 
-                        <h2 className="text-3xl font-bold text-[#017D63] mb-5">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-[#017D63] mb-4 sm:mb-5">
                         We're Here to Help!
                         </h2>
 
-                        <p className="text-gray-600 leading-8">
+                        <p className="text-gray-600 dark:text-gray-300 leading-7 sm:leading-8">
                         Have a question, suggestion, or need support?
                         Fill out the form and our team will get back
                         to you as soon as possible.
@@ -114,7 +114,7 @@ export default function ContactPage() {
                     </div>
 
                     {/* Right Illustration */}
-                    <div className="hidden md:flex items-center justify-center p-10 bg-linear-to-br from-blue-50 via-white to-green-50">
+                    <div className="hidden md:flex items-center justify-center p-8 lg:p-10 bg-linear-to-br from-blue-50 via-white to-green-50   dark:from-[#172554]  dark:via-[#111827] dark:to-[#052e16]">
 
                         <div className="relative">
 
@@ -162,9 +162,9 @@ export default function ContactPage() {
 
             
                   {/* Contact Form */}
-                <div className="mt-6 bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+                <div className="mt-5 sm:mt-6 bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm  p-5 sm:p-6 lg:p-8">
 
-                    <h2 className="text-2xl font-bold text-gray-900 mb-8">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-[#FBFCFE] mb-6 sm:mb-8">
                         Send Us a Message
                     </h2>
 
@@ -172,7 +172,7 @@ export default function ContactPage() {
 
                         {/* Full Name */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Full Name
                             </label>
 
@@ -181,7 +181,20 @@ export default function ContactPage() {
                                 type="text"
                                 name="name"
                                 placeholder="Enter your full name"
-                                className="w-full h-12 rounded-xl border border-gray-300 pl-11 pr-4 outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                className="
+                                    w-full h-11 sm:h-12
+                                    rounded-xl
+                                    border border-gray-300 dark:border-gray-600
+                                    bg-white dark:bg-[#0F172A]
+                                    text-gray-900 dark:text-gray-100
+                                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                    pl-11 pr-4
+                                    outline-none
+                                    focus:ring-2
+                                    focus:ring-[#017D63]
+                                    focus:border-[#017D63]
+                                    transition
+                                    "
                                 />
 
                                 <svg
@@ -202,7 +215,7 @@ export default function ContactPage() {
 
                         {/* Email */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Email Address
                             </label>
 
@@ -211,8 +224,21 @@ export default function ContactPage() {
                                 type="email"
                                 name="email"
                                 placeholder="Enter your email address"
-                                className="w-full h-12 rounded-xl border border-gray-300 pl-11 pr-4 outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                />
+                                className="
+                                    w-full h-11 sm:h-12
+                                    rounded-xl
+                                    border border-gray-300 dark:border-gray-600
+                                    bg-white dark:bg-[#0F172A]
+                                    text-gray-900 dark:text-gray-100
+                                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                    pl-11 pr-4
+                                    outline-none
+                                    focus:ring-2
+                                    focus:ring-[#017D63]
+                                    focus:border-[#017D63]
+                                    transition
+                                "
+                               />
 
                                 <svg
                                 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
@@ -232,11 +258,11 @@ export default function ContactPage() {
 
                         {/* Subject */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Subject
                             </label>
 
-                            <select name="subject" className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition">
+                            <select name="subject"   className="w-full h-11 sm:h-12 rounded-xl border border-gray-300 dark:border-gray-600  bg-white dark:bg-[#0F172A]  text-gray-900 dark:text-gray-100 px-4 outline-none focus:ring-2  focus:ring-green-500  focus:border-green-500 transition ">
                                 <option>Select a subject</option>
                                 <option value="General Inquiry">General Inquiry</option>
                                 <option value="Technical Support">Technical Support</option>
@@ -248,7 +274,7 @@ export default function ContactPage() {
 
                         {/* Message */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Message
                             </label>
 
@@ -256,8 +282,22 @@ export default function ContactPage() {
                                 rows={4}
                                 name="message"
                                 placeholder="Type your message here..."
-                                className="w-full rounded-xl border border-gray-300 p-4 outline-none resize-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                            />
+                                className="
+                                    w-full
+                                    rounded-xl
+                                    border border-gray-300 dark:border-gray-600
+                                    bg-white dark:bg-[#0F172A]
+                                    text-gray-900 dark:text-gray-100
+                                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                    p-4
+                                    outline-none
+                                    resize-none
+                                    focus:ring-2
+                                    focus:ring-green-500
+                                    focus:border-green-500
+                                    transition
+                                "
+                             />
                         </div>
 
                         {/* Upload Box */}
@@ -305,21 +345,21 @@ export default function ContactPage() {
                 </div>
 
                 
-                <div className="mt-6 bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+                <div className="mt-5 sm:mt-6 bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 sm:p-6 lg:p-8">
 
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 sm:mb-6 gap-2">
 
-                    <h2 className="text-2xl font-bold">
-                        Frequently Asked Questions
-                    </h2>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-[#FBFCFE]">
+                            Frequently Asked Questions
+                        </h2>
 
-                    <button className="text-blue-600 font-medium">
-                        View All
-                    </button>
+                        <button className="self-start sm:self-auto text-sm sm:text-base text-blue-600 dark:text-blue-400font-medium hover:text-blue-700 dark:hover:text-blue-300 transit ">
+                            View All
+                        </button>
 
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
 
                         {faqs.map((faq, index) => {
                             const isOpen = openFaq === index;
@@ -327,7 +367,7 @@ export default function ContactPage() {
                             return (
                                 <div
                                 key={faq.question}
-                                className="border border-gray-200 rounded-xl overflow-hidden"
+                                className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
                                 >
                                 {/* Question */}
                                 <button
@@ -335,21 +375,21 @@ export default function ContactPage() {
                                     onClick={() =>
                                     setOpenFaq(isOpen ? null : index)
                                     }
-                                    className="w-full flex items-center justify-between gap-4 py-2 px-5 text-left hover:bg-gray-50 transition"
+                                    className="w-full flex items-center justify-between gap-3 sm:gap-4 py-3 sm:py-4 px-4 sm:px-5 text-left hover:bg-gray-50 dark:hover:bg-[#17223c] transition"
                                 >
-                                    <span className="font-medium text-gray-800">
+                                    <span className="min-w-0 flex-1 text-sm sm:text-base font-medium  text-gray-800 dark:text-gray-200 leading-5 sm:leading-6 break- ">
                                     {faq.question}
                                     </span>
 
-                                    <span className="text-2xl text-gray-500 shrink-0 cursor-pointer">
+                                    <span className="shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-xl sm:text-2xl  text-gray-500 dark:text-gray-400">
                                     {isOpen ? "−" : "+"}
                                     </span>
                                 </button>
 
                                 {/* Answer */}
                                 {isOpen && (
-                                    <div className="px-5 pb-5">
-                                    <p className="text-gray-500 leading-6">
+                                    <div className="px-3 sm:px-5 pb-4 sm:pb-5">
+                                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 leading-6">
                                         {faq.answer}
                                     </p>
                                     </div>
@@ -373,8 +413,7 @@ export default function ContactPage() {
 
                 <iframe
                 title="map"
-                width="100%"
-                height="350"
+                className="w-full h-37.5 sm:h-55 md:h-75 rounded-xl"
                 loading="lazy"
                 allowFullScreen
                 src="https://www.google.com/maps?q=Ghugi+Bus+Stop,+Bhara+Kahu,+Islamabad&output=embed"
@@ -387,9 +426,9 @@ export default function ContactPage() {
             </div>
 
         {/* Right Side */}
-        <div>
+        <div className="min-w-0">
 
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 sm:p-6">
                 
                 <h3 className="text-xl font-bold mb-4">
                     We're Here for You
@@ -401,7 +440,7 @@ export default function ContactPage() {
 
                 </div>
 
-                <p className="text-gray-500 leading-7 mb-8">
+                <p className="text-gray-500 dark:text-gray-400 leading-7 mb-8">
                     Our support team is available to assist you.
                 </p>
 
@@ -431,61 +470,61 @@ export default function ContactPage() {
 
             </div>
             
-            <div className="mt-9 bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="mt-9 bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none p-6">
 
-                <h3 className="text-xl font-bold mb-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-[#FBFCFE] mb-4">
                     Contact Information
                 </h3>
 
                 <div className="space-y-6">
 
                     <div className="flex gap-4">
-                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                            <MdEmail className="w-5 h-5 text-[#017D63]" />
+                        <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                            <MdEmail className="w-5 h-5 text-[#017D63] dark:text-green-400" />
                         </div>
 
                         <div>
-                            <h4 className="font-semibold">Email</h4>
-                            <p className="text-gray-500 text-xs">
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-200">Email</h4>
+                            <p className="text-gray-500 dark:text-gray-400 text-xs break-all">
                                 jamillmazhar555@gmail.com
                             </p>
                         </div>
                     </div>
 
                     <div className="flex gap-4">
-                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                            <MdPhone className="w-5 h-5 text-[#017D63]" />
+                        <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                            <MdPhone className="w-5 h-5 text-[#017D63] dark:text-green-400" />
                         </div>
 
                         <div>
-                            <h4 className="font-semibold">Phone</h4>
-                            <p className="text-gray-500 text-sm">
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-200">Phone</h4>
+                            <p className="text-gray-500 dark:text-gray-400 text-xs break-all">
                             +92 312 44544478
                             </p>
                         </div>
                     </div>
 
                     <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                        <MdLocationOn className="w-5 h-5 text-[#017D63]" />
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        <MdLocationOn className="w-5 h-5 text-[#017D63] dark:text-green-400" />
                     </div>
 
                     <div>
-                        <h4 className="font-semibold">Address</h4>
-                        <p className="text-gray-500 text-sm">
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-200">Address</h4>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs break-all">
                             Islamabad, Pakistan
                         </p>
                     </div>
                     </div>
 
                     <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                        <MdAccessTime className="w-5 h-5 text-[#017D63]" />
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        <MdAccessTime className="w-5 h-5 text-[#017D63] dark:text-green-400" />
                     </div>
 
                     <div>
-                        <h4 className="font-semibold">Office Hours</h4>
-                        <p className="text-gray-500 text-sm">
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-200">Office Hours</h4>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs break-all">
                         Mon - Fri <br />
                         9AM - 6PM
                         </p>
@@ -498,13 +537,13 @@ export default function ContactPage() {
 
             
             {/* Social */}
-            <div className="mt-9 bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="mt-6 sm:mt-9 bg-white dark:bg-[#111827] rounded-2xl  border border-gray-200 dark:border-gray-700 shadow-sm p-5 sm:p-6">
 
-                <h3 className="text-xl font-bold mb-4">
+                <h3 className="text-xl font-bold mb-4 dark:text-[#FBFCFE]">
                     Connect With Us
                 </h3>
 
-                <p className="text-gray-500 text-sm mb-6">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                     Follow us on social media.
                 </p>
 
@@ -570,21 +609,21 @@ export default function ContactPage() {
       </div>
 
 
-        <div className="mt-8 rounded-2xl bg-linear-to-r from-green-900 to-cyan-900 px-5 py-3 flex flex-col md:flex-row justify-between items-center">
+        <div className="mt-6 sm:mt-8 rounded-2xl  bg-linear-to-r from-green-900 to-cyan-900  px-5 sm:px-8 py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
 
         <div>
 
-        <h2 className="text-2xl text-white font-bold">
-        Never Stop Learning
+        <h2 className="text-xl sm:text-2xl text-gray-900 dark:text-white font-bold">
+            Never Stop Learning
         </h2>
 
-        <p className="text-green-100 s, mt-1">
-        Explore thousands of free courses and build your future.
+        <p className="text-sm sm:text-base text-green-100 dark:text-green-100 mt-1">
+            Explore thousands of free courses and build your future.
         </p>
 
         </div>
 
-        <button className="mt-4 md:mt-0 bg-white text-green-700 font-semibold px-8 py-3 cursor-pointer rounded-xl hover:bg-gray-100 transition">
+        <button className="w-full md:w-auto mt-4 md:mt-0 bg-white text-green-700 font-semibold px-6 sm:px-8 py-3 cursor-pointer rounded-xl hover:bg-gray-100 transition">
             Explore All Courses →
         </button>
 

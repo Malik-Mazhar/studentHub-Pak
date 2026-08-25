@@ -4,7 +4,6 @@ import CoustomButton from "@/src/components/shared/CustomButton"
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  FaArrowLeft,
   FaComments,
   FaFileAlt,
   FaQuestionCircle,
