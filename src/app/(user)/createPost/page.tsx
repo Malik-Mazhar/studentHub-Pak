@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 import ReusableCreatePostForm from "@/src/components/shared/ReusableCreatePostForm";
 import SharePlaylist from "@/src/components/shared/playlist/SharePlaylistForm";
+import { Plus, Trash2 } from "lucide-react";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -20,13 +21,20 @@ export default function CreatePostPage() {
   const [question, setQuestion] = useState("");
   const [duration, setDuration] = useState("");
   const [videoType, setVideoType] = useState("video");
+  const [correctOption, setCorrectOption] = useState<number | null>(null);
+  const [pollQuestion, setPollQuestion] = useState("");
   const dispatch = useAppDispatch();
 
   const form = useForm<z.infer <typeof userPostSchema>>({
     resolver: zodResolver(userPostSchema),
     defaultValues: {
     tags: [],
-    
+
+    pollOptions: [
+      { value: "" },
+      { value: "" },
+    ],
+    pollDuration: undefined,
   },
   });
 
@@ -53,10 +61,16 @@ export default function CreatePostPage() {
     );
   };
 
-  const removeOption = (id: number) => {
+  const deleteOption = (id: number) => {
+    // Kam az kam 2 options rehne dein
     if (options.length <= 2) return;
 
-    setOptions(options.filter((option) => option.id !== id));
+    setOptions((prev) => prev.filter((option) => option.id !== id));
+
+    // Agar deleted option correct answer tha
+    if (correctOption === id) {
+      setCorrectOption(null);
+    }
   };
 
   const postTypes = [
@@ -305,6 +319,311 @@ export default function CreatePostPage() {
 
               )}
 
+              {findUserSelectPostType && findUserSelectPostType.title === "Question" &&
+              <div>
+                      {/* Question */}
+                  <div className="mb-7">
+                    <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                      Question <span className="text-red-500">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      placeholder="What do you want to ask?"
+                      className="w-full h-11 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827] text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  {/* Options */}
+                  <div className="mb-7">
+                    <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                      Options <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="space-y-3">
+                      {options.map((option) => (
+                        <div
+                          key={option.id}
+                          className="flex items-center gap-3"
+                        >
+                          {/* Correct answer radio */}
+                          <input
+                            type="radio"
+                            name="correctOption"
+                            checked={correctOption === option.id}
+                            onChange={() => setCorrectOption(option.id)}
+                            className="w-4 h-4 shrink-0 cursor-pointer"
+                          />
+
+                          {/* Option input */}
+                          <input
+                            type="text"
+                            value={option.value}
+                            onChange={(e) =>
+                              updateOption(option.id, e.target.value)
+                            }
+                            placeholder={`Option ${options.indexOf(option) + 1}`}
+                            className="flex-1 min-w-0 h-11 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827] text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+
+                          {/* Delete */}
+                          <button
+                            type="button"
+                            onClick={() => deleteOption(option.id)}
+                            disabled={options.length <= 2}
+                            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <Trash2 size={17} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add option */}
+                    <button
+                      type="button"
+                      onClick={addOption}
+                      className="mt-4 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                    >
+                      <Plus size={17} />
+                      Add Option
+                    </button>
+
+                    <p className="mt-2 text-xs text-gray-400">
+                      Select the radio button to mark the correct answer.
+                    </p>
+                  </div>
+
+                  {/* Duration */}
+                  <div className="mb-8">
+                    <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                      Question Duration
+                      <span className="text-gray-400 font-normal ml-1">
+                        (Optional)
+                      </span>
+                    </label>
+
+                    <select
+                      value={duration}
+                      onChange={(e) => setDuration(e.target.value)}
+                      className="w-full h-11 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827] text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select duration</option>
+                      <option value="15">15 seconds</option>
+                      <option value="30">30 seconds</option>
+                      <option value="60">1 minute</option>
+                      <option value="120">2 minutes</option>
+                      <option value="300">5 minutes</option>
+                    </select>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      className="px-5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold"
+                    >
+                      Create Question
+                    </button>
+                  </div>
+              </div>
+              }
+
+              {findUserSelectPostType && findUserSelectPostType.title === "Poll" && 
+                // <div>
+                //     <div className="mb-7">
+
+                //       <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                //         Poll Question <span className="text-red-500">*</span>
+                //       </label>
+
+                //       <input
+                //         type="text"
+                //         value={pollQuestion}
+                //         onChange={(e) => setPollQuestion(e.target.value)}
+                //         placeholder="What do you want to ask?"
+                //         className="
+                //           w-full h-11
+                //           px-3
+                //           rounded-lg
+                //           border border-gray-200 dark:border-gray-700
+                //           bg-white dark:bg-[#111827]
+                //           text-gray-900 dark:text-white
+                //           placeholder:text-gray-400
+                //           outline-none
+                //           focus:ring-2 focus:ring-blue-500
+                //         "
+                //       />
+                //     </div>
+
+                //     {/* Options */}
+                //     <div className="mb-7">
+                //       <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                //         Options <span className="text-red-500">*</span>
+                //       </label>
+
+                //       <div className="space-y-3">
+                //         {options.map((option, index) => (
+                //           <div
+                //             key={option.id}
+                //             className="flex items-center gap-3"
+                //           >
+                //             {/* Option indicator */}
+                //             <div
+                //               className="
+                //                 w-4 h-4
+                //                 shrink-0
+                //                 rounded-full
+                //                 border-2 border-gray-300 dark:border-gray-600
+                //               "
+                //             />
+
+                //             {/* Option Input */}
+                //             <input
+                //               type="text"
+                //               value={option.value}
+                //               onChange={(e) =>
+                //                 updateOption(option.id, e.target.value)
+                //               }
+                //               placeholder={`Option ${index + 1}`}
+                //               className="
+                //                 flex-1 min-w-0
+                //                 h-11
+                //                 px-3
+                //                 rounded-lg
+                //                 border border-gray-200 dark:border-gray-700
+                //                 bg-white dark:bg-[#111827]
+                //                 text-gray-900 dark:text-white
+                //                 placeholder:text-gray-400
+                //                 outline-none
+                //                 focus:ring-2 focus:ring-blue-500
+                //               "
+                //             />
+
+                //             {/* Delete */}
+                //             <button
+                //               type="button"
+                //               onClick={() => deleteOption(option.id)}
+                //               disabled={options.length <= 2}
+                //               className="
+                //                 w-11 h-11
+                //                 shrink-0
+                //                 flex items-center justify-center
+                //                 rounded-lg
+                //                 border border-gray-200 dark:border-gray-700
+                //                 text-gray-500
+                //                 hover:text-red-500
+                //                 hover:bg-red-50
+                //                 dark:hover:bg-red-950/30
+                //                 disabled:opacity-40
+                //                 disabled:cursor-not-allowed
+                //               "
+                //             >
+                //               <Trash2 size={17} />
+                //             </button>
+                //           </div>
+                //         ))}
+                //       </div>
+
+                //       {/* Add Option */}
+                //       <button
+                //         type="button"
+                //         onClick={addOption}
+                //         className="
+                //           mt-4
+                //           flex items-center gap-2
+                //           text-sm font-medium
+                //           text-blue-600
+                //           hover:text-blue-700
+                //         "
+                //       >
+                //         <Plus size={17} />
+                //         Add Option
+                //       </button>
+                //     </div>
+
+                //     {/* Duration */}
+                //     <div className="mb-8">
+                //       <label className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                //         Poll Duration{" "}
+                //         <span className="text-gray-400 font-normal">
+                //           (Optional)
+                //         </span>
+                //       </label>
+
+                //       <select
+                //         value={duration}
+                //         onChange={(e) => setDuration(e.target.value)}
+                //         className="
+                //           w-full h-11
+                //           px-3
+                //           rounded-lg
+                //           border border-gray-200 dark:border-gray-700
+                //           bg-white dark:bg-[#111827]
+                //           text-gray-700 dark:text-gray-300
+                //           outline-none
+                //           focus:ring-2 focus:ring-blue-500
+                //         "
+                //       >
+                //         <option value="">Select duration</option>
+                //         <option value="1h">1 Hour</option>
+                //         <option value="6h">6 Hours</option>
+                //         <option value="12h">12 Hours</option>
+                //         <option value="1d">1 Day</option>
+                //         <option value="3d">3 Days</option>
+                //         <option value="7d">7 Days</option>
+                //       </select>
+                //     </div>
+
+                //     {/* Buttons */}
+                //     <div className="flex items-center justify-end gap-3">
+                //       <button
+                //         type="button"
+                //         className="
+                //           px-5 py-2.5
+                //           rounded-lg
+                //           border border-gray-200 dark:border-gray-700
+                //           text-sm font-semibold
+                //           text-gray-700 dark:text-gray-300
+                //           hover:bg-gray-50
+                //           dark:hover:bg-gray-800
+                //         "
+                //       >
+                //         Cancel
+                //       </button>
+
+                //       <button
+                //         type="submit"
+                //         className="
+                //           px-5 py-2.5
+                //           rounded-lg
+                //           bg-blue-600
+                //           hover:bg-blue-700
+                //           text-white
+                //           text-sm font-semibold
+                //         "
+                //       >
+                //         Create Poll
+                //       </button>
+                //     </div>
+                // </div>
+
+                  <ReusableCreatePostForm
+                    form={form}
+                    postType="Poll"
+                  />
+ 
+              }
+
             </div>
 
           </div>
@@ -314,3 +633,79 @@ export default function CreatePostPage() {
       </div>
   );
 }
+
+
+// import { useState } from "react";
+// import { Trash2, Plus } from "lucide-react";
+
+// const CreateQuestion = () => {
+//   const [question, setQuestion] = useState("");
+
+//   const [options, setOptions] = useState([
+//     { id: 1, text: "" },
+//     { id: 2, text: "" },
+//   ]);
+
+//   const [correctOption, setCorrectOption] = useState<number | null>(null);
+
+//   const [duration, setDuration] = useState("");
+
+//   // Add new option
+//   const addOption = () => {
+//     setOptions((prev) => [
+//       ...prev,
+//       {
+//         id: Date.now(),
+//         text: "",
+//       },
+//     ]);
+//   };
+
+//   // Delete option
+//   const deleteOption = (id: number) => {
+//     // Kam az kam 2 options rehne dein
+//     if (options.length <= 2) return;
+
+//     setOptions((prev) => prev.filter((option) => option.id !== id));
+
+//     // Agar deleted option correct answer tha
+//     if (correctOption === id) {
+//       setCorrectOption(null);
+//     }
+//   };
+
+//   // Option text update
+//   const updateOption = (id: number, value: string) => {
+//     setOptions((prev) =>
+//       prev.map((option) =>
+//         option.id === id
+//           ? { ...option, text: value }
+//           : option
+//       )
+//     );
+//   };
+
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     const data = {
+//       question,
+//       options,
+//       correctOption,
+//       duration,
+//     };
+
+//     console.log("Question Data:", data);
+//   };
+
+//   return (
+//     <form
+//       onSubmit={handleSubmit}
+//       className="max-w-2xl mx-auto p-6 bg-white dark:bg-[#0f172a] rounded-2xl border border-gray-200 dark:border-gray-700"
+//     >
+
+//     </form>
+//   );
+// };
+
+// export default CreateQuestion;

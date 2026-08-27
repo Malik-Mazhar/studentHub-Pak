@@ -19,14 +19,21 @@ export const POST = asyncHandler( async (req:Request) => {
     const data = Object.fromEntries(formData.entries()) as any;
     
 
-    const tags = (formData.get("tags") as string).split(",").map(tag => tag.trim());
+    const tagsRaw = (formData.get("tags") );
+    const tags = tagsRaw
+    ? JSON.parse(tagsRaw as string)
+    : [];
+    const pollOptionsRaw = formData.get("pollOptions");
+    const pollOptions = pollOptionsRaw
+        ? JSON.parse(pollOptionsRaw as string)
+        : [];
 
     const files = (formData.getAll("postImage") as File[]) || [];
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
-
+    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollDuration, visibility,} = data;
+    console.log("pollOptions", pollOptions)
     
     const session = await getServerSession(authOptions);
 

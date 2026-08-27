@@ -30,6 +30,10 @@ export default function CustomInput({
         {optional && (
         <span className="text-gray-400 dark:text-gray-500 ml-1">(Optional)</span>
         )}
+
+        {!optional && (
+            <span className="ml-1 text-red-500">*</span>
+        )}
     </label>
 
     <input

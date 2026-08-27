@@ -107,12 +107,18 @@ const userPostSchema: Schema<UserPost> = new Schema({
 
     videoLink: String,
 
-    pollQuestion: String,
-    pollOptions: {
-        type: [String],
-        default: [],
+    pollQuestion: {
+    type: String,
+    trim: true,
     },
-    pollDuration: Number,
+    pollOptions: {
+    type: [String],
+    default: [],
+    },
+    pollDuration: {
+    type: Number,
+    default: null,
+    },
      
     visibility: {
         type: String,

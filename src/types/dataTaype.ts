@@ -68,6 +68,15 @@ export interface userPostType {
 
     pollQuestion?: string;
     pollOptions?: string[];
+    pollResults?: {
+      option: string;
+      votes: number;
+      percentage: number;
+    }[];
+    totalVotes?:number;
+
+    hasVoted: boolean;
+    votedOption:string;
     pollDuration?: number;
 
     visibility: string;

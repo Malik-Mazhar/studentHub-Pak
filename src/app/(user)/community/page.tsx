@@ -7,8 +7,8 @@ import { FaRegComment, FaShare, FaBookmark, FaEllipsisH, FaEdit} from "react-ico
 import Comment from "@/src/components/sections/Comment";
 import { useAppSelector } from "@/src/store/useSelecterhook";
 import { useDispatch } from "react-redux";
-import { Flag, Link2, Pencil, Share2, ThumbsUp, Trash2 } from "lucide-react";
-import { setPosts, toggleLikePost, toggleBookmark } from "@/src/store/postSlice";
+import { BarChart3, Clock, Flag, Link2, Pencil, Share2, ThumbsUp, Trash2, Users } from "lucide-react";
+import { setPosts, toggleLikePost, toggleBookmark, updatePostVote } from "@/src/store/postSlice";
 import { toast } from "sonner";
 import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
 import { ApiResponse } from "@/src/lib/apiResponse";
@@ -25,11 +25,14 @@ export default function CommunityCenter() {
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
   const PostData = useAppSelector((state) => state.postData.posts)
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
   console.log("PostData", PostData)
 
   const getAllPosts = async () => {
     try {
-      const response = await axios.get("/api/user/get/getallposts?sort=latest");
+    const response = await axios.get("/api/user/get/getallposts?sort=latest" );
 
       dispatch(setPosts(response.data.data))
 
@@ -130,6 +133,29 @@ export default function CommunityCenter() {
      };
   };
 
+  const handleVote = async (postId: string) => {
+
+    if (!selectedOption || isVoting) return;
+
+    try {
+      setIsVoting(true);
+
+      await axios.post(`/api/user/post/createpost/${postId}/vote`, {
+        postId,
+        option: selectedOption,
+      });
+
+      // UI immediately update
+      dispatch(updatePostVote({postId, option: selectedOption}));
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsVoting(false);
+    }
+
+  };
+
   return (
 
     <div className="flex min-h-screen pt-20 sm:pt-10 bg-[#FBFCFE] text-gray-900 dark:bg-[#0F172A] dark:text-gray-100">
@@ -150,7 +176,7 @@ export default function CommunityCenter() {
                   Following
                 </button>
 
-                <button onClick={() => getPopularPosts()} className="shrink-0 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200  dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition">
+                <button onClick={() => getPopularPosts()} className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition">
                   Popular
                 </button>
 
@@ -297,6 +323,12 @@ export default function CommunityCenter() {
 
                 </div>
 
+                  {/* Title */}
+
+              <h3 className="my-3 sm:my-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-6 sm:leading-7 wrap-break-words">
+                {post?.title}
+              </h3>
+
                 {/* Content */}
 
                 <p className="my-3 sm:my-4 text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-6 sm:leading-7 wrap-break-words">{post?.content}</p>
@@ -338,6 +370,213 @@ export default function CommunityCenter() {
 
 
                 </div>
+
+                {/* Poll */}
+
+                {post.postType === "poll" &&
+
+                  <div className="mt-4">
+
+                    {/* Poll Label */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40">
+                        <BarChart3
+                          size={16}
+                          className="text-blue-600 dark:text-blue-400"
+                        />
+                      </div>
+
+                      <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
+                        Poll
+                      </span>
+                    </div>
+
+
+                    {/* Poll */}
+                    <div className="mt-4 p-2 sm:p-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0f172a]">
+
+                      {/* Poll Options */}
+                      <div className="space-y-2">
+
+                        {post?.pollResults?.map((result) => {
+
+                          const isSelected = selectedOption === result.option;
+
+                          const isVotedOption =
+                            post.hasVoted && post.votedOption === result.option;
+
+                          return (
+                            <label
+                              key={result.option}
+                              className={`block px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border transition
+                                ${
+                                  isSelected || isVotedOption
+                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+                                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827]"
+                                }
+                                ${
+                                  post.hasVoted
+                                    ? "cursor-default"
+                                    : "cursor-pointer hover:border-blue-400"
+                                }
+                              `}
+                            >
+
+                              {/* Option + Percentage */}
+                              <div className="flex items-center justify-between gap-3">
+
+                                {/* Option */}
+                                <div className="flex items-center gap-3 min-w-0">
+
+                                  <input
+                                    type="radio"
+                                    name={`poll-${post._id}`}
+                                    value={result.option}
+                                    checked={isSelected}
+                                    onChange={() =>
+                                      setSelectedOption(result.option)
+                                    }
+                                    disabled={isVoting}
+                                    className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 accent-blue-600"
+                                  />
+
+                                  <span className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 wrap-break-words">
+                                    {result.option}
+                                  </span>
+
+                                </div>
+
+                                {/* Percentage + Votes */}
+                                <div className="flex items-center gap-1.5 shrink-0">
+
+                                  <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
+                                    {result.percentage}%
+                                  </span>
+
+                                  <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                                    ({result.votes} votes)
+                                  </span>
+
+                                </div>
+
+                              </div>
+
+                              {/* Progress Bar */}
+                              <div className="mt-3 ml-7 sm:ml-8">
+
+                                <div className="w-full h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+
+                                  <div
+                                    className="h-full rounded-full bg-blue-500 transition-all duration-500"
+                                    style={{
+                                      width: `${result.percentage}%`,
+                                    }}
+                                  />
+
+                                </div>
+
+                              </div>
+
+                              {/* Your Vote */}
+                              {isVotedOption && (
+                                <div className="mt-2 ml-7 sm:ml-8">
+                                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                                    Your vote
+                                  </span>
+                                </div>
+                              )}
+
+                            </label>
+                          );
+                        })}
+
+                      </div>
+
+                      {/* Footer */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 px-1 sm:px-2">
+
+                        {/* Left: Poll + Duration */}
+                        <div className="flex flex-wrap items-center gap-2.5 text-sm sm:text-base">
+
+                          {/* Poll Badge */}
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/50 bg-blue-50/70 dark:bg-blue-950/30 shadow-sm">
+
+                            <BarChart3
+                              size={19}
+                              className="text-blue-600 dark:text-blue-400"
+                            />
+
+                            <span className="font-semibold text-blue-600 dark:text-blue-400">
+                              Poll
+                            </span>
+
+                          </div>
+
+                          <span className="text-gray-300 dark:text-gray-600">
+                            •
+                          </span>
+
+                          {/* Duration */}
+                          {post.pollDuration && (
+                            <div className="flex items-center gap-2">
+
+                              <Clock
+                                size={19}
+                                className="text-gray-500 dark:text-gray-400"
+                              />
+
+                              <span className="font-medium text-gray-500 dark:text-gray-400">
+                                Ends in{" "}
+                                {Math.floor(post.pollDuration / (60 * 24))}{" "}
+                                {Math.floor(post.pollDuration / (60 * 24)) === 1
+                                  ? "day"
+                                  : "days"}
+                              </span>
+
+                            </div>
+                          )}
+
+                        </div>
+
+                        {/* Right: Total Votes + All Votes */}
+                        <div className="flex items-center gap-3 text-sm sm:text-base">
+
+                          {/* Total Votes */}
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shadow-sm">
+
+                            <Users
+                              size={19}
+                              className="text-gray-500 dark:text-gray-400"
+                            />
+
+                            <span className="font-medium text-gray-500 dark:text-gray-400">
+                              {post.totalVotes} votes
+                            </span>
+
+                          </div>
+
+                          <span className="text-gray-300 dark:text-gray-600">
+                            •
+                          </span>
+
+                          {/* All Votes */}
+                          <button
+                            type="button"
+                            onClick={() => handleVote(post._id)}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold transition"
+                          >
+                            <BarChart3 size={18} />
+
+                            All Votes
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                }
 
                 {/* Tags */}
 

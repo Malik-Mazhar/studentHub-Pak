@@ -10,6 +10,14 @@ export const userPostSchema  = z.object({
     tags: z.array(z.string()).optional(),
     postImageUrl: z.array(z.string()).optional(),
     videoLink: z.string().optional(),
+    pollOptions: z
+    .array(
+        z.object({
+        value: z.string().min(1, "Option is required"),
+        })
+    )
+    .min(2, "At least 2 options are required"),
+    pollDuration: z.number().optional(),
     visibility: z.string()
 });
  
