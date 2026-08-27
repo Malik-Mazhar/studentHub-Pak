@@ -307,7 +307,7 @@ export const postAggregation = (
 
         videoLink: 1,
 
-        pollQuestion: 1,
+        correctAnswer: 1,
         pollOptions: 1,
         pollDuration: 1,
 

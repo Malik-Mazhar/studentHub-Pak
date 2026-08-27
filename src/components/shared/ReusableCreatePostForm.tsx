@@ -45,9 +45,6 @@ function ReusableCreatePostForm({
   const [postVideoPerview, setPostVideoPreview] = useState<string | null>(null);
   const [documentUrl, setDocumentUrl] = useState<string | null>(null);
   const [documentName, setDocumentName] = useState("");
-  const [correctOption, setCorrectOption] = useState<number | null>(null);
-  const [pollQuestion, setPollQuestion] = useState("");
-  const [duration, setDuration] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -61,9 +58,9 @@ function ReusableCreatePostForm({
   } = form;
 
   const { fields, append, remove } = useFieldArray({
-  control,
-  name: "pollOptions",
-});
+    control,
+    name: "pollOptions",
+  });
 
   const videoLink = watch("videoLink");
 
@@ -182,43 +179,6 @@ function ReusableCreatePostForm({
     }
   };
 
-  
-    // const [options, setOptions] = useState([
-    //   { id: 1, value: "" },
-    //   { id: 2, value: "" },
-    // ]);
-  
-    // const addOption = () => {
-    //   setOptions([
-    //     ...options,
-    //     {
-    //       id: Date.now(),
-    //       value: "",
-    //     },
-    //   ]);
-    // };
-  
-    // const updateOption = (id: number, value: string) => {
-    //   setOptions(
-    //     options.map((option) =>
-    //       option.id === id ? { ...option, value } : option
-    //     )
-    //   );
-    // };
-  
-    // const deleteOption = (id: number) => {
-    //   // Kam az kam 2 options rehne dein
-    //   if (options.length <= 2) return;
-  
-    //   setOptions((prev) => prev.filter((option) => option.id !== id));
-  
-    //   // Agar deleted option correct answer tha
-    //   if (correctOption === id) {
-    //     setCorrectOption(null);
-    //   }
-    // };
-
-
   return (
     <form className="relative w-full min-w-0" onSubmit={handleSubmit(onSubmit)}>
       
@@ -291,6 +251,126 @@ function ReusableCreatePostForm({
           "
         />
       </div>
+      
+      {(postType === "Poll" || postType === "Question") && (
+        <div className="mt-5 sm:mt-6">
+
+          {/* Options */}
+          <div className="mb-7">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Options <span className="text-red-500">*</span>
+            </label>
+
+            <div className="space-y-3">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex items-center gap-3"
+                >
+
+                  {/* Correct Answer - Question only */}
+                  {postType === "Question" && (
+                    <input
+                      type="radio"
+                      value={index}
+                      {...register("correctOption")}
+                      className="w-4 h-4 shrink-0 cursor-pointer accent-blue-600"
+                    />
+                  )}
+
+                  {/* Option Input */}
+                  <input
+                    type="text"
+                    {...register(`pollOptions.${index}.value`)}
+                    placeholder={`Option ${index + 1}`}
+                    className="
+                      flex-1 min-w-0
+                      h-11 px-3
+                      rounded-lg
+                      border border-gray-200 dark:border-gray-700
+                      bg-white dark:bg-[#111827]
+                      text-gray-900 dark:text-white
+                      placeholder:text-gray-400
+                      outline-none
+                      focus:ring-2 focus:ring-blue-500
+                    "
+                  />
+
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    disabled={fields.length <= 2}
+                    className="
+                      w-11 h-11 shrink-0
+                      flex items-center justify-center
+                      rounded-lg
+                      border border-gray-200 dark:border-gray-700
+                      text-gray-500
+                      hover:text-red-500
+                      hover:bg-red-50
+                      dark:hover:bg-red-950/30
+                      disabled:opacity-40
+                      disabled:cursor-not-allowed
+                    "
+                  >
+                    <Trash2 size={17} />
+                  </button>
+
+                </div>
+              ))}
+            </div>
+
+            {/* Add Option */}
+            <button
+              type="button"
+              onClick={() => append({ value: "" })}
+              className="mt-4 flex items-center gap-2 text-sm font-medium cursor-pointer text-blue-600 hover:text-blue-700">
+              <Plus size={17} 
+            />
+              Add Option
+            </button>
+          </div>
+
+          {/* Duration */}
+          <div className="mb-8">
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {postType === "Poll"? "Poll Duration": "Question Duration"}{" "}
+              <span className="text-gray-400 font-normal">
+                (Optional)
+              </span>
+            </label>
+
+            <select
+                {...register("pollDuration", {
+                  setValueAs: (value) => {
+                    if (value === "") return undefined;
+                    return Number(value);
+                  },
+                })}
+              className="
+                w-full h-11
+                px-3
+                rounded-lg
+                border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-[#111827]
+                text-gray-700 dark:text-gray-300
+                outline-none
+                focus:ring-2 focus:ring-blue-500
+              "
+            >
+              <option value="">Select duration</option>
+              <option value="3600">1 Hour</option>
+              <option value="21600">6 Hours</option>
+              <option value="43200">12 Hours</option>
+              <option value="86400">1 Day</option>
+              <option value="259200">3 Days</option>
+              <option value="604800">7 Days</option>
+            </select>
+          </div>
+
+        </div>
+      )}
 
       {/* Image / Video Upload */}
       {!documentFile &&!documentUrl &&
@@ -482,7 +562,7 @@ function ReusableCreatePostForm({
       )}
 
       {/* Question */}
-      {postType === "Question" && (
+      {/* {postType === "Question" && (
         <div className="mt-5 sm:mt-6">
           <CustomInput
             label="Question"
@@ -491,120 +571,8 @@ function ReusableCreatePostForm({
             optional={true}
           />
         </div>
-      )}
+      )} */}
 
-      {postType === "Poll" && (
-        <div className="mt-5 sm:mt-6">
-
-          {/* Options */}
-          <div className="mb-7">
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Options <span className="text-red-500">*</span>
-            </label>
-
-            <div className="space-y-3">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="flex items-center gap-3"
-                  >
-                    {/* Option indicator */}
-                    <div className="w-4 h-4 shrink-0 rounded-full border-2 border-gray-300 dark:border-gray-600" />
-
-                    {/* Option Input */}
-                    <input
-                      type="text"
-                      {...register(`pollOptions.${index}.value`)}
-                      placeholder={`Option ${index + 1}`}
-                      className="
-                        flex-1 min-w-0
-                        h-11
-                        px-3
-                        rounded-lg
-                        border border-gray-200 dark:border-gray-700
-                        bg-white dark:bg-[#111827]
-                        text-gray-900 dark:text-white
-                        placeholder:text-gray-400
-                        outline-none
-                        focus:ring-2 focus:ring-blue-500
-                      "
-                    />
-
-                    {/* Delete */}
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      disabled={fields.length <= 2}
-                      className="
-                        w-11 h-11
-                        shrink-0
-                        flex items-center justify-center
-                        rounded-lg
-                        border border-gray-200 dark:border-gray-700
-                        text-gray-500
-                        hover:text-red-500
-                        hover:bg-red-50
-                        dark:hover:bg-red-950/30
-                        disabled:opacity-40
-                        disabled:cursor-not-allowed
-                      "
-                    >
-                      <Trash2 size={17} />
-                    </button>
-                  </div>
-                ))}
-            </div>
-
-            {/* Add Option */}
-            <button
-              type="button"
-              onClick={() => append({ value: "" })}
-              className="mt-4 flex items-center gap-2 text-sm font-medium cursor-pointer text-blue-600 hover:text-blue-700">
-              <Plus size={17} 
-            />
-              Add Option
-            </button>
-          </div>
-
-          {/* Duration */}
-          <div className="mb-8">
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Poll Duration{" "}
-              <span className="text-gray-400 font-normal">
-                (Optional)
-              </span>
-            </label>
-
-            <select
-                {...register("pollDuration", {
-                  setValueAs: (value) => {
-                    if (value === "") return undefined;
-                    return Number(value);
-                  },
-                })}
-              className="
-                w-full h-11
-                px-3
-                rounded-lg
-                border border-gray-200 dark:border-gray-700
-                bg-white dark:bg-[#111827]
-                text-gray-700 dark:text-gray-300
-                outline-none
-                focus:ring-2 focus:ring-blue-500
-              "
-            >
-              <option value="">Select duration</option>
-              <option value="3600">1 Hour</option>
-              <option value="21600">6 Hours</option>
-              <option value="43200">12 Hours</option>
-              <option value="86400">1 Day</option>
-              <option value="259200">3 Days</option>
-              <option value="604800">7 Days</option>
-            </select>
-          </div>
-
-        </div>
-      )}
 
       {/* Notes Category */}
       {postType === "Notes" && (

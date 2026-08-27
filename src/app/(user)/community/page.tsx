@@ -28,6 +28,8 @@ export default function CommunityCenter() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+
   console.log("PostData", PostData)
 
   const getAllPosts = async () => {
@@ -154,6 +156,10 @@ export default function CommunityCenter() {
       setIsVoting(false);
     }
 
+  };
+
+  const handleAnswer = (index: number) => {
+    setSelectedAnswer(index + 1);
   };
 
   return (
@@ -574,6 +580,139 @@ export default function CommunityCenter() {
 
                       </div>
 
+                    </div>
+                  </div>
+                }
+
+                { post.postType === "question" && 
+                  <div className="px-3 sm:px-4 pb-4">
+                    <div className="space-y-2.5 sm:space-y-3">
+                      {post.pollOptions?.map((option: string, index: number) => {
+                        const optionNumber = index + 1;
+
+                        const isSelected = selectedAnswer === optionNumber;
+                        const isCorrect = post.correctAnswer === optionNumber;
+
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => handleAnswer(optionNumber)}
+                            disabled={selectedAnswer !== null}
+                            className={`
+                              w-full
+                              flex items-center gap-2.5 sm:gap-3
+                              p-3 sm:p-3.5
+                              rounded-xl
+                              border
+                              text-left
+                              transition-colors
+                              duration-200
+
+                              ${
+                                selectedAnswer !== null && isCorrect
+                                  ? `
+                                    border-green-500
+                                    bg-green-50
+                                    dark:border-green-500
+                                    dark:bg-green-950/30
+                                  `
+                                  : ""
+                              }
+
+                              ${
+                                selectedAnswer === optionNumber && !isCorrect
+                                  ? `
+                                    border-red-500
+                                    bg-red-50
+                                    dark:border-red-500
+                                    dark:bg-red-950/30
+                                  `
+                                  : ""
+                              }
+
+                              ${
+                                selectedAnswer === null
+                                  ? `
+                                    border-gray-200
+                                    bg-white
+                                    hover:bg-gray-50
+                                    hover:border-gray-300
+
+                                    dark:border-gray-700
+                                    dark:bg-[#111827]
+                                    dark:hover:bg-gray-800
+                                    dark:hover:border-gray-600
+                                  `
+                                  : ""
+                              }
+                            `}
+                          >
+                            {/* Option Number */}
+                            <span
+                              className="
+                                shrink-0
+                                w-7 h-7
+                                sm:w-8 sm:h-8
+                                flex items-center justify-center
+                                rounded-lg
+                                bg-gray-100
+                                dark:bg-gray-800
+                                text-xs sm:text-sm
+                                font-semibold
+                                text-gray-700
+                                dark:text-gray-300
+                              "
+                            >
+                              {optionNumber}
+                            </span>
+
+                            {/* Option Text */}
+                            <span
+                              className="
+                                flex-1
+                                min-w-0
+                                text-sm sm:text-base
+                                leading-5 sm:leading-6
+                                text-gray-800
+                                dark:text-gray-200
+                                wrap-break-words
+                              "
+                            >
+                              {option}
+                            </span>
+
+                            {/* Correct */}
+                            {selectedAnswer !== null && isCorrect && (
+                              <span
+                                className="
+                                  shrink-0
+                                  text-green-600
+                                  dark:text-green-400
+                                  font-bold
+                                  text-lg
+                                "
+                              >
+                                ✓
+                              </span>
+                            )}
+
+                            {/* Wrong */}
+                            {selectedAnswer === optionNumber && !isCorrect && (
+                              <span
+                                className="
+                                  shrink-0
+                                  text-red-600
+                                  dark:text-red-400
+                                  font-bold
+                                  text-lg
+                                "
+                              >
+                                ✕
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 }

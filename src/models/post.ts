@@ -24,7 +24,7 @@ export interface UserPost extends Document {
 
   videoLink?: string;
 
-  pollQuestion?: string;
+  correctAnswer?: number;
   pollOptions?: string[];
   pollDuration?: number;
 
@@ -107,9 +107,9 @@ const userPostSchema: Schema<UserPost> = new Schema({
 
     videoLink: String,
 
-    pollQuestion: {
-    type: String,
-    trim: true,
+    correctAnswer: {
+    type: Number,
+    required: true,
     },
     pollOptions: {
     type: [String],

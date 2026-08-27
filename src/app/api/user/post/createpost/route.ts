@@ -31,9 +31,15 @@ export const POST = asyncHandler( async (req:Request) => {
     const files = (formData.getAll("postImage") as File[]) || [];
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
+    const correctAnswerValue = formData.get("correctOption");
 
-    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollQuestion, pollDuration, visibility,} = data;
-    console.log("pollOptions", pollOptions)
+    const correctAnswer =
+    correctAnswerValue !== null
+        ? Number(correctAnswerValue)
+        : null;
+
+    const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollDuration, visibility,} = data;
+    console.log("correctAnswer", correctAnswer)
     
     const session = await getServerSession(authOptions);
 
@@ -92,7 +98,7 @@ export const POST = asyncHandler( async (req:Request) => {
         tags,
         resourceLink,
         videoLink,
-        pollQuestion,
+        correctAnswer,
         pollOptions,
         pollDuration,
         postImageUrl: postImageUrlDetect,
@@ -153,7 +159,7 @@ export const PATCH = asyncHandler( async (req:Request) => {
     const videoFile = formData.get("postVideo") as File | null;
     const documentFile = formData.get("document") as File | null;
 
-    const { postType, title, content, notesCategory, category, resourceLink, videoLink, pollQuestion, pollOptions, pollDuration, visibility,} = data;
+    const { postType, title, content, notesCategory, category, resourceLink, videoLink, correctAnswer, pollOptions, pollDuration, visibility,} = data;
 
 
     const { searchParams } = new URL(req.url);
@@ -253,7 +259,7 @@ export const PATCH = asyncHandler( async (req:Request) => {
     Post.tags = tags;
     Post.resourceLink = resourceLink;
     Post.videoLink = videoLink;
-    Post.pollQuestion = pollQuestion;
+    Post.correctAnswer = correctAnswer;
     Post.pollOptions = pollOptions;
     Post.pollDuration = pollDuration;
     Post.visibility = visibility;

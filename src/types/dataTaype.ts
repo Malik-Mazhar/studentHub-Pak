@@ -66,7 +66,7 @@ export interface userPostType {
     videoLink?: string;
     youtubePlaylistId?: string;
 
-    pollQuestion?: string;
+    correctAnswer?: number;
     pollOptions?: string[];
     pollResults?: {
       option: string;

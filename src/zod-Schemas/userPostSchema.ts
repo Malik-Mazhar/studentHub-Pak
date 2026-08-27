@@ -18,6 +18,7 @@ export const userPostSchema  = z.object({
     )
     .min(2, "At least 2 options are required"),
     pollDuration: z.number().optional(),
+    correctOption: z.string().optional(),
     visibility: z.string()
 });
  
