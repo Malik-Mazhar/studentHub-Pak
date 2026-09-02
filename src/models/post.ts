@@ -109,7 +109,6 @@ const userPostSchema: Schema<UserPost> = new Schema({
 
     correctAnswer: {
     type: Number,
-    required: true,
     },
     pollOptions: {
     type: [String],

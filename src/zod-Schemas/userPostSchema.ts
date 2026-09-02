@@ -13,10 +13,10 @@ export const userPostSchema  = z.object({
     pollOptions: z
     .array(
         z.object({
-        value: z.string().min(1, "Option is required"),
+        value: z.string(),
         })
     )
-    .min(2, "At least 2 options are required"),
+    .optional(),
     pollDuration: z.number().optional(),
     correctOption: z.string().optional(),
     visibility: z.string()

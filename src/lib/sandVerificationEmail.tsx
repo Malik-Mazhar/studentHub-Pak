@@ -5,7 +5,7 @@ export default async function sandVerificationEmail(username:string, email:strin
     
 console.log("api key is this",process.env.RESEND_API_KEY)
   try {
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: email,
       subject: 'Hello world',

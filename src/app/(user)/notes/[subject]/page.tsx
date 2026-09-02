@@ -89,7 +89,7 @@ export default function SubjectNotes() {
 
     const findCourseCategory = subjects.find((course) => course.slug === useParam);
     const CategoryIcon = findCourseCategory?.icon as LucideIcon;
-    console.log("notesData", notesData.filter((noteType) => noteType.notesCategory === useParam.charAt(0).toLocaleUpperCase() + useParam.slice(1)).map((note) => note.postDocumentUrl))
+    console.log("notesData", notesData)
 
     
     useEffect(() => {
@@ -190,8 +190,9 @@ export default function SubjectNotes() {
                 <NotesCard 
                     key={note._id}
                     notesPostId={note._id}
-                    title="Integration Complete Notes"
-                    thumbnail="/img/math.jpg"
+                    title={note.title}
+                    postDocumentUrl={note.postDocumentUrl}
+                    postImageUrl={note.postImageUrl?.[0]}
                     authorName={note?.author.userProfile?.profileName || "Undifined"}
                     authorImg={note?.author.userProfile?.profileImgUrl || "/img/defaultProfile.jfif"}
                     subject={ note && note.notesCategory}

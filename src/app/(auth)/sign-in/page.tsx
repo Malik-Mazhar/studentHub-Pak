@@ -100,83 +100,123 @@ const page = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-800"> 
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0b1120] px-4 py-8 sm:px-6">
 
-                <div className="text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-                        LogIn
-                    </h1>
-                </div>
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827] p-5 sm:p-8 shadow-xl">
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FieldGroup>
+            {/* Heading */}
+            <div className="text-center mb-7 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                Welcome Back
+            </h1>
 
-                        <Field>
-                            <FieldLabel htmlFor="fieldgroup-email" className="font-bold">Email</FieldLabel>
-                            <Input
-                            id="fieldgroup-email"
-                            type="email"
-                            placeholder="name@example.com"
-                            {...register("identifier")}
-                            />
-                            {/* //dobara anna he error handling k liye */}
-                            <div className="relative">
-                            <p className="absolute text-red-500 text-sm top-full left-0">
-                                {errors.identifier && errors.identifier.message || error && "Invalid email or password"}
-                            </p>
-                            </div>
+            <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                Sign in to continue to StudentHub
+            </p>
+            </div>
 
-                        </Field>
-                        <Field>
-                            <FieldLabel htmlFor="fieldgroup-password" className="font-bold">Password</FieldLabel>
-                            <Input 
-                            id="fieldgroup-password"
-                            placeholder="Enter your password" 
-                            {...register("password")}
-                            />
-                            {/* {errors.password && <p className="text-red-500">{}</p>} */}
-                            <div className="relative">
-                            <p className="absolute text-red-500 text-sm top-full left-0">
-                                {errors.password && errors.password.message || error && "Invalid email or password"}
-                            </p>
-                            </div>
-                        </Field>
-                        <Field orientation="horizontal" className="pt-5">
-                            
-                            <Button type="submit" disabled={isSubmitting} className="w-3/4 m-auto py-4 text-lg font-bold cursor-pointer">
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Please wait
-                                </>
-                                ) : (
-                                'Sign In'
-                            )}
-                            </Button>
-                        </Field>
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+            <FieldGroup>
 
-                    </FieldGroup>
-                </form>
+                {/* Email */}
+                <Field>
+                <FieldLabel htmlFor="fieldgroup-email" className="font-semibold text-gray-700 dark:text-gray-200">
+                    Email
+                </FieldLabel>
 
-                <div className="flex items-center justify-center gap-4">
-        
-                    <button onClick={() => signIn("google", { callbackUrl: "/"})} className="flex h-12 w-12 items-center justify-center rounded-full cursor-pointer bg-white shadow-md">
-                        <FcGoogle className='h-8 w-8' />
-                    </button>
+                <Input
+                    id="fieldgroup-email"
+                    type="email"
+                    placeholder="name@example.com"
+                    {...register("identifier")}
+                    className="bg-white dark:bg-[#0b1120] border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                />
 
-                    </div>
-
-                <div className="text-center mt-4">
-                    <p className="flex">
-                        Create New Account?
-                        <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
-                        Sign up
-                        </Link>
+                <div className="relative min-h-5">
+                    <p className="absolute top-1 left-0 text-xs sm:text-sm text-red-500">
+                    {errors.identifier?.message || (error && "Invalid email or password")}
                     </p>
                 </div>
+                </Field>
 
+                {/* Password */}
+                <Field>
+                <FieldLabel htmlFor="fieldgroup-password" className="font-semibold text-gray-700 dark:text-gray-200">
+                    Password
+                </FieldLabel>
+
+                <Input
+                    id="fieldgroup-password"
+                    type="password"
+                    placeholder="Enter your password"
+                    {...register("password")}
+                    className="bg-white dark:bg-[#0b1120] border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                />
+
+                <div className="relative min-h-5">
+                    <p className="absolute top-1 left-0 text-xs sm:text-sm text-red-500">
+                    {errors.password?.message || (error && "Invalid email or password")}
+                    </p>
+                </div>
+                </Field>
+
+                {/* Login Button */}
+                <Field orientation="horizontal" className="pt-2">
+                <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-5 rounded-xl text-base sm:text-lg font-bold cursor-pointer bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-colors"
+                >
+                    {isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                    </span>
+                    ) : (
+                    "Sign In"
+                    )}
+                </Button>
+                </Field>
+
+            </FieldGroup>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+                OR CONTINUE WITH
+            </span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
             </div>
+
+            {/* Google */}
+            <div className="flex justify-center">
+            <button
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+                className="flex h-12 w-12 sm:h-13 sm:w-13 items-center justify-center rounded-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md cursor-pointer transition-all"
+            >
+                <FcGoogle className="h-7 w-7 sm:h-8 sm:w-8" />
+            </button>
+            </div>
+
+            {/* Sign Up */}
+            <div className="text-center mt-7">
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                Don't have an account?{" "}
+                <Link
+                href="/sign-up"
+                className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                >
+                Sign up
+                </Link>
+            </p>
+            </div>
+
+        </div>
+
         </div>
     )
 };

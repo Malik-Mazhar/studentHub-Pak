@@ -18,14 +18,15 @@ export const GET = asyncHandler( async (req:Request) => {
     const sort:Record<string, 1 | -1> = sortType === "popular" ? { postLikesCount: -1 } : { createdAt: -1 };
 
     const session = await getServerSession(authOptions);
-    const userId = session?.user._id;
+    const userId = session?.user._id ?? null;
 
-    if (!userId) {
-        throw new ApiError(401, "user Unauthorized" )
+    let bookmarkIds: Types.ObjectId[] = [];
+
+    if(userId){
+        const user = await UserModel.findById(userId).select("bookmarks");      //if first latest post .sort({ createdAt: -1 });
+        bookmarkIds = user?.bookmarks || [];
     };
 
-    const user = await UserModel.findById(userId).select("bookmarks");      //if first latest post .sort({ createdAt: -1 });
-    const bookmarkIds = user?.bookmarks || [];
 
     const getAllPosts = await UserPostModel.aggregate(postAggregation(userId, sort, bookmarkIds, postType))
 

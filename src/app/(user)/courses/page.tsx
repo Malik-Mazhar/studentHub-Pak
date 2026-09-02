@@ -7,7 +7,7 @@ import RecentNotes from "@/src/components/sections/notes/RecentNotes";
 import SubjectsSection from "@/src/components/sections/notes/SubjectsSection";
 import TopNotesSection from "@/src/components/sections/notes/TopNotesSection";
 import Newsletter from "@/src/components/sections/notes/Newsletter";
-import Footer from "@/src/components/sections/notes/Footer";
+import Footer from "@/src/components/sections/Footer";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
@@ -168,7 +168,7 @@ export default function NotesPage() {
   }, []);
   
   return (
-    <main className="min-h-screen min-w-0 overflow-x-hidden bg-[#FBFCFE] dark:bg-[#0F172A] text-gray-900 dark:text-[#FBFCFE]">
+    <main className="min-h-screen min-w-0 overflow-x-hidden pt-25 md:pt-17 bg-[#FBFCFE] dark:bg-[#0F172A] text-gray-900 dark:text-[#FBFCFE]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         <div className="mb-6 sm:mb-8">
@@ -186,7 +186,7 @@ export default function NotesPage() {
         <SearchBar categories={coursesCategories.map((category) => category.name)} />
 
         <FilterTabs categoriesCard={coursesCategories} selectedNotes={selectedNotes} setSelectedNotes= {setSelectedNotes} />
-        <HeroBanner img={"/img/BannerCourse.png"} someClasses="left-14" />
+        <HeroBanner img={"/img/BannerCourse.png"} href={"/notes/viewAllPlaylist"} someClasses="left-4 sm:left-8 md:left-14 bottom-2 sm:bottom-8 md:bottom-6  h-4 md:h-13 w-16 md:w-46  py-1 md:py-3" />
 
             <section className="pt-10">
                 

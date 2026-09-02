@@ -24,9 +24,12 @@ export const uploadMediaHandler = async (
   }
 
   // Allowed types
-  const isImage = file.type.startsWith("image/");
+  const isImage = file.type.startsWith("image/"); 
+
   const isVideo = file.type.startsWith("video/");
+
   const isPdf = file.type === "application/pdf";
+
   const isDoc =
   file.type === "application/msword" ||
   file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -53,12 +56,22 @@ export const uploadMediaHandler = async (
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
+  // Cloudinary resource type
+  let resourceType: "image" | "video" | "raw" = "raw";
+
+  if (isImage) {
+    resourceType = "image";
+  } else if (isVideo) {
+    resourceType = "video";
+  }
+
+
   const result = await new Promise<CloudinaryUploadResult>(
     (resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder,
-          resource_type: isVideo ? "video" : "image",
+          resource_type: resourceType,
         },
         (error, result) => {
           if (error) {

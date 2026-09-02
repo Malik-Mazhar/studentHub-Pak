@@ -26,7 +26,6 @@ export default function CommunityCenter() {
   const { data: session, status } = useSession();
   const PostData = useAppSelector((state) => state.postData.posts)
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
@@ -94,8 +93,18 @@ export default function CommunityCenter() {
     };
   }, []);
 
+  const handleAuthentication = () => {
+    toast.info("Please log in to access this feature.");
+    setShowComment(false)
+    setOpenPostId(null)
+      return;
+  }
+
 
   const handleLike = async (postId: string) => {
+      if (status !== "authenticated") {
+          handleAuthentication()
+      }
     try {
         const formData = new FormData();
 
@@ -112,6 +121,9 @@ export default function CommunityCenter() {
   };
 
   const handleBookMarksPost = async (postId: string) => {
+      if (status !== "authenticated") {
+          handleAuthentication()
+      }
      try {
 
       const response = await axios.post(`/api/user/post/bookmark?postId=${postId}`);
@@ -136,6 +148,9 @@ export default function CommunityCenter() {
   };
 
   const handleVote = async (postId: string) => {
+      if (status !== "authenticated") {
+          handleAuthentication()
+      }
 
     if (!selectedOption || isVoting) return;
 
@@ -161,6 +176,10 @@ export default function CommunityCenter() {
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index + 1);
   };
+
+      if (status !== "authenticated" && showComment || openPostId) {
+          handleAuthentication()
+      }
 
   return (
 
@@ -201,9 +220,12 @@ export default function CommunityCenter() {
                 <option value="popular">Popular</option>
               </select>
 
-              <Link href="/createPost">        
-                  <CustomButton className="flex items-center py-2 px-3 sm:px-5 gap-x-2 sm:gap-x-3 whitespace-nowrap"><FaEdit size={18} /> post</CustomButton>
-              </Link> 
+              {status !== "unauthenticated" && 
+
+                <Link href="/createPost">        
+                    <CustomButton className="flex items-center py-2 px-3 sm:px-5 gap-x-2 sm:gap-x-3 whitespace-nowrap"><FaEdit size={18} /> post</CustomButton>
+                </Link> 
+              }
 
             </div>
 
@@ -223,11 +245,22 @@ export default function CommunityCenter() {
 
                   <div className="flex gap-2 sm:gap-3 min-w-0">
 
-                    <img
-                      src={ post?.author?.userProfile?.profileImgUrl || "/img/defaultProfile.jfif" }
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
-                    />
-
+                      <Link href="/profile/profile" 
+                        onClick={(e) => {
+                          if (status !== "authenticated") {
+                            e.preventDefault();
+                            handleAuthentication();
+                          }
+                        }}
+                      >
+                        <img
+                          src={
+                            post?.author?.userProfile?.profileImgUrl ||
+                            "/img/defaultProfile.jfif"
+                          }
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
+                        />
+                      </Link>
                     <div className="min-w-0">
 
                       <div className="flex flex-wrap items-center gap-2">
@@ -255,7 +288,7 @@ export default function CommunityCenter() {
                       <FaEllipsisH />
                     </button>
 
-                    {openPostId === post._id && (
+                    {status === "authenticated" && openPostId === post._id && (
                       <div className="absolute right-0 top-8 w-52 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] shadow-xl z-50 overflow-hidden">
 
                         {post.author._id === session?.user._id && (
@@ -778,10 +811,10 @@ export default function CommunityCenter() {
           </div>
 
       </div>
-
-        {showComment && postId && 
-          <Comment setShowComment={setShowComment} postId= {postId} />
-        }
+    
+            {status !== "unauthenticated" && showComment && postId && 
+              <Comment setShowComment={setShowComment} postId= {postId} />
+            }
     </div>
     
   );

@@ -3,7 +3,8 @@ import { Bookmark, MoreVertical, Star, Download,
   Trash2,
   Link2,
   Share2,
-  Flag, } from "lucide-react";
+  Flag,
+  Eye, } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { FaBookmark } from "react-icons/fa";
 import { toast } from "sonner";
@@ -19,7 +20,9 @@ interface NotesCardProps {
   owner: string;
   notesPostId: string;
   title: string;
-  thumbnail: string;
+  thumbnail?: string;
+  postDocumentUrl?:string;
+  postImageUrl?: string;
   authorName: string;
   authorImg: string;
   subject: string;
@@ -36,6 +39,8 @@ export default function NotesCard({
   notesPostId,
   title,
   thumbnail,
+  postDocumentUrl,
+  postImageUrl,
   authorName, 
   authorImg,
   subject,
@@ -50,8 +55,8 @@ export default function NotesCard({
     const menuRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
     const { data: session, status } = useSession();
-
-    console.log("fileUrl", fileUrl)
+    const [showPdf, setShowPdf] = useState(false);
+    console.log("postImageUrl", fileUrl)
 
     const handleLike = async (postId: string) => {
         
@@ -139,7 +144,7 @@ export default function NotesCard({
       {/* Left Image */}
       <div className="w-36 h-44 shrink-0 overflow-hidden rounded-xl">
         <img
-          src={thumbnail}
+          src={thumbnail || postImageUrl || postDocumentUrl? "/img/FileImg.png" : ""}
           alt={title}
           className="h-full w-full object-cover"
         />
@@ -282,21 +287,53 @@ export default function NotesCard({
 
             </div>
 
-            <button onClick={() => window.open("https://res.cloudinary.com/dzmxzxsnc/image/upload/v1784292198/users/6a3f6fa011799ece491170bc/posts/cualjbi8bdh3ngbmf2cj.pd", "_blank")} className="flex items-center cursor-pointer hover:bg-gray-100 hover:shadow-sm py-2 px-3 rounded-lg gap-2">
+            <a href={`/api/user/get/pdf/${notesPostId}?download=true`} className="flex items-center cursor-pointer hover:bg-gray-100 hover:shadow-sm py-2 px-3 rounded-lg gap-2 mr-3">
 
               <Download size={18} />
 
-              <span>2.3K Downloads</span>
+              <span> Downloads</span>
 
-            </button>
+            </a>
+
+            {postDocumentUrl && 
+
+              <button onClick={() => setShowPdf(true)}  className="flex items-center cursor-pointer hover:bg-gray-100 hover:shadow-sm py-2 px-3 rounded-lg gap-2 mr-3">
+
+                <Eye size={18} />
+                <span> View PDF File</span>
+                
+              </button>
+            }
 
           </div>
 
           <span className="rounded-lg border border-red-400 px-3 py-2 font-semibold hover:bg-red-500 hover:text-white cursor-pointer text-red-500">
-            {fileUrl?.split(".").pop()?.toUpperCase()}
+            {postDocumentUrl? "PDF" : "Image"}
           </span>
 
         </div>
+
+          {showPdf && (
+            <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+              <div className="bg-white rounded-xl w-full max-w-5xl h-[90vh] relative overflow-hidden">
+
+                {/* Close */}
+                <button
+                  onClick={() => setShowPdf(false)}
+                  className="absolute right-3 top-3 z-10 cursor-pointer bg-black text-white px-3 py-1 rounded"
+                >
+                  ✕
+                </button>
+
+                {/* PDF */}
+                <iframe
+                  src={`/api/user/get/pdf/${notesPostId}`}
+                  className="w-full h-full"
+                  title="PDF Preview"
+                />
+              </div>
+            </div>
+          )}
 
       </div>
 

@@ -53,6 +53,7 @@ function ReusableCreatePostForm({
     control,
     handleSubmit,
     watch,
+    setError,
     setValue,
     formState: { errors },
   } = form;
@@ -88,9 +89,10 @@ function ReusableCreatePostForm({
       ...data,
       postType:  postType.toLowerCase(),
 
-      pollOptions: data.pollOptions.map(
-      (option) => option.value
-    ),
+
+      ...(data.pollOptions && {
+        pollOptions: data.pollOptions.map((option) => option.value),
+      }),
     }
 
     try {
@@ -141,9 +143,11 @@ function ReusableCreatePostForm({
       
       const axiosError = err as AxiosError<ApiResponse>;
 
+      const message = axiosError.response?.data?.message
+
       toast('post created Failed', {
       position: "top-right",
-      description: <span className="text-black">{axiosError.response?.data?.message}</span>,
+      description: <span className="text-black">{message}</span>,
       action: {
               label: "Undo",
               onClick: () => console.log("Undo"),
@@ -191,6 +195,7 @@ function ReusableCreatePostForm({
           type="text"
           placeholder="Give your post a short title..."
           optional={false}
+          error={errors.title?.message}
           {...register("title")}
           className="w-full"
         />
@@ -204,6 +209,7 @@ function ReusableCreatePostForm({
             type="text"
             placeholder="Paste YouTube or video URL..."
             optional={true}
+            error={errors.videoLink?.message}
             {...register("videoLink")}
           />
         </div>
@@ -250,6 +256,12 @@ function ReusableCreatePostForm({
             dark:focus:ring-gray-700
           "
         />
+
+        {errors && (
+            <p className="text-sm text-red-500 dark:text-red-400 mt-1">
+            {errors.content?.message}
+            </p>
+        )}
       </div>
       
       {(postType === "Poll" || postType === "Question") && (
@@ -320,6 +332,11 @@ function ReusableCreatePostForm({
                 </div>
               ))}
             </div>
+            {errors && (
+              <p className="text-sm text-red-500 dark:text-red-400 mt-1">
+              {errors.pollOptions?.message}
+              </p>
+            )}
 
             {/* Add Option */}
             <button
@@ -560,18 +577,6 @@ function ReusableCreatePostForm({
           )}
         </>
       )}
-
-      {/* Question */}
-      {/* {postType === "Question" && (
-        <div className="mt-5 sm:mt-6">
-          <CustomInput
-            label="Question"
-            type="text"
-            placeholder="Give your post a short title..."
-            optional={true}
-          />
-        </div>
-      )} */}
 
 
       {/* Notes Category */}

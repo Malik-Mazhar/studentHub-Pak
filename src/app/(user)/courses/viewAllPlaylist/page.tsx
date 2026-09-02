@@ -87,7 +87,7 @@ function page() {
     getAllPlaylist();
     }, []);
     return (
-        <section className="pt-8 sm:pt-10 px-4 sm:px-6">
+        <section className="px-4 sm:px-6 pt-28 md:pt-19">
 
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-[#FBFCFE]">
                 Featured Courses

@@ -18,11 +18,7 @@ export default function CreatePostPage() {
   const router = useRouter();
   const [selectPostType, setSelectPostType] = useState("Discussion");
   const [postMode, setPostMode] = useState("simple");
-  const [question, setQuestion] = useState("");
-  const [duration, setDuration] = useState("");
   const [videoType, setVideoType] = useState("video");
-  const [correctOption, setCorrectOption] = useState<number | null>(null);
-  const [pollQuestion, setPollQuestion] = useState("");
   const dispatch = useAppDispatch();
 
   const form = useForm<z.infer <typeof userPostSchema>>({
@@ -37,41 +33,6 @@ export default function CreatePostPage() {
     pollDuration: undefined,
   },
   });
-
-  const [options, setOptions] = useState([
-    { id: 1, value: "" },
-    { id: 2, value: "" },
-  ]);
-
-  const addOption = () => {
-    setOptions([
-      ...options,
-      {
-        id: Date.now(),
-        value: "",
-      },
-    ]);
-  };
-
-  const updateOption = (id: number, value: string) => {
-    setOptions(
-      options.map((option) =>
-        option.id === id ? { ...option, value } : option
-      )
-    );
-  };
-
-  const deleteOption = (id: number) => {
-    // Kam az kam 2 options rehne dein
-    if (options.length <= 2) return;
-
-    setOptions((prev) => prev.filter((option) => option.id !== id));
-
-    // Agar deleted option correct answer tha
-    if (correctOption === id) {
-      setCorrectOption(null);
-    }
-  };
 
   const postTypes = [
     {
@@ -125,21 +86,23 @@ export default function CreatePostPage() {
       <div className="flex flex-col gap-4 sm:gap-6 p-3 pt-28 sm:p-5 lg:p-6 bg-[#FBFCFE] dark:bg-[#0F172A] min-h-screen">
 
         {/* LEFT */}
-        <div className="flex-1 min-w-0">
+        <div className="md:pt-17 flex-1 min-w-0">
 
           <div>
 
             {/* Back */}
-            <CoustomButton
-              onClick={() => router.push("/community")}
-              className=" flex items-center gap-2 sm:gap-3 text-gray-700 dark:text-gray-300 bg-transparent shadow-none hover:text-[#0aa382] transition text-sm sm:text-base "
-            >
-              <FaArrowLeft />
+            {postMode === "simple" && 
+              <CoustomButton
+                onClick={() => router.push("/community")}
+                className=" flex items-center gap-2 sm:gap-3 text-white dark:text-gray-300 bg-transparent shadow-none hover:text-[#0aa382] transition text-sm sm:text-base "
+              >
+                <FaArrowLeft />
 
-              <span className="font-medium">
-                Back to Community
-              </span>
-            </CoustomButton>
+                <span className="font-medium">
+                  Back to Community
+                </span>
+              </CoustomButton>
+            }
 
 
             {/* Card */}

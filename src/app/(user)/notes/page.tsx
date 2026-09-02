@@ -7,7 +7,7 @@ import RecentNotes from "@/src/components/sections/notes/RecentNotes";
 import SubjectsSection from "@/src/components/sections/notes/SubjectsSection";
 import TopNotesSection from "@/src/components/sections/notes/TopNotesSection";
 import Newsletter from "@/src/components/sections/notes/Newsletter";
-import Footer from "@/src/components/sections/notes/Footer";
+import Footer from "@/src/components/sections/Footer";
 import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
@@ -74,7 +74,8 @@ export default function NotesPage() {
 
         <HeroBanner
           img="/img/NotesPageBanner.png"
-          someClasses="left-4 sm:left-8 md:left-14"
+          someClasses="left-4 sm:left-8 md:left-14 bottom-6 sm:bottom-8 md:bottom-18  h-4 sm:h-13  w-16 md:w-46"
+          href="/notes/viewAllnotes"
         />
 
         <RecentNotes

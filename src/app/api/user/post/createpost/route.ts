@@ -39,7 +39,7 @@ export const POST = asyncHandler( async (req:Request) => {
         : null;
 
     const { postType, title, content, notesCategory, className, category, resourceLink, videoLink, pollDuration, visibility,} = data;
-    console.log("correctAnswer", correctAnswer)
+
     
     const session = await getServerSession(authOptions);
 
@@ -82,6 +82,14 @@ export const POST = asyncHandler( async (req:Request) => {
 
     if ( !title || !postType || (postType === "Notes" && !notesCategory)) {
         throw new ApiError(400, "Title and postType are required");
+    }
+
+    switch (postType) {
+        case "Poll":
+            if (correctAnswer === null || correctAnswer === undefined) {
+            throw new ApiError(400, "correctAnswer is required");
+            }
+            break;
     }
 
     if (!session?.user?._id) {

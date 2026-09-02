@@ -1,12 +1,15 @@
 import { Types } from "mongoose";
+import { ApiError } from "../apiError";
 
 export const postAggregation = (
-  userId: string,
+  userId: string | null | undefined,
   sort: Record<string, 1 | -1>,
   bookmarkIds: Types.ObjectId[],
   postType?: string | null
 ) => {
   const pipeline: any[] = [];
+
+  const userObjectId = userId ? new Types.ObjectId(userId) : null;
 
   // 👇 Agar postType mila hai to filter laga do
   if (postType) {
@@ -53,12 +56,11 @@ export const postAggregation = (
               $expr: {
                 $and: [
                   { $eq: ["$postId", "$$postId"] },
-                  {
-                    $eq: [
-                      "$userId",
-                      new Types.ObjectId(userId),
-                    ],
-                  },
+                  ...(userObjectId ?
+                    [{ $eq: ["$userId", userObjectId]}]
+                    :
+                    [{ $eq: [false, true]}]
+                  )
                 ],
               },
             },
@@ -120,7 +122,7 @@ export const postAggregation = (
 
         isLiked: {
           $in: [
-            new Types.ObjectId(userId),
+            userObjectId,
             {
               $ifNull: ["$likes", []],
             },
