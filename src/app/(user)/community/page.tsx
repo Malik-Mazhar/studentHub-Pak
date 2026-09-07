@@ -16,8 +16,11 @@ import { useSession } from "next-auth/react";
 import { removePost } from "@/src/services/ApiServices/removePost"
 import { sharePost } from "@/src/services/ApiServices/Share";
 import { copyLink } from "@/src/services/ApiServices/copyLink";
+import FollowButton from "@/src/components/shared/FollowButton";
+import { useSearchParams } from "next/navigation";
 
 export default function CommunityCenter() {
+  const searchParams = useSearchParams();
   const [showComment, setShowComment] = useState(false);
   const [postId, setPostId] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
@@ -71,7 +74,7 @@ export default function CommunityCenter() {
       return null;
     }
   };
-  // const videoId = getYoutubeVideoId(videoLink);
+  const targetPostId = searchParams.get("postId");
 
 
 
@@ -92,6 +95,23 @@ export default function CommunityCenter() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (!targetPostId) return;
+
+    const timeout = setTimeout(() => {
+      const element = document.getElementById(`post-${targetPostId}`);
+
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [targetPostId, PostData]);
 
   const handleAuthentication = () => {
     toast.info("Please log in to access this feature.");
@@ -177,7 +197,7 @@ export default function CommunityCenter() {
     setSelectedAnswer(index + 1);
   };
 
-      if (status !== "authenticated" && showComment || openPostId) {
+      if (status === "unauthenticated" && (showComment || openPostId)) {
           handleAuthentication()
       }
 
@@ -238,7 +258,14 @@ export default function CommunityCenter() {
             {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
               <div
                 key={post?._id}
-                className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 transition-colors">
+                id={`post-${post._id}`}
+                className={`bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 transition-colors
+                    ${
+                      targetPostId === post._id
+                        ? "ring-2 ring-[#017D63] dark:ring-[#0aa382]"
+                        : ""
+                    }
+                `}>
                 {/* Header */}
 
                 <div className="flex justify-between items-start gap-3">
@@ -267,13 +294,15 @@ export default function CommunityCenter() {
 
                         <h3 className="font-semibold truncate max-w-45 sm:max-w-none">{post?.author?.userProfile?.profileName}</h3>
 
-                          <span className="text-[10px] sm:text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-1 rounded-full">
-                            Top Contributor
-                          </span>
+
 
                       </div>
 
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
+                      <div className="flex items-center gap-4 pt-1">
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
+                        
+                        <FollowButton userId={post.author._id} />
+                      </div>
 
                     </div>
 
@@ -288,7 +317,7 @@ export default function CommunityCenter() {
                       <FaEllipsisH />
                     </button>
 
-                    {status === "authenticated" && openPostId === post._id && (
+                    { openPostId === post._id && (
                       <div className="absolute right-0 top-8 w-52 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] shadow-xl z-50 overflow-hidden">
 
                         {post.author._id === session?.user._id && (
@@ -383,7 +412,7 @@ export default function CommunityCenter() {
                     />
                   }
 
-                  {post.postType === "video" && post.videoLink && (
+                  {post.postType === "video" && post.videoLink?.trim() && (
                       <iframe
                         className="w-full aspect-video rounded-lg sm:rounded-xl"
                         src={`https://www.youtube.com/embed/${getYoutubeVideoId(

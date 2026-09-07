@@ -118,6 +118,16 @@ export interface UserComment {
   likes: string[];
 }
 
+export interface NotificationType {
+  _id: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  postId: userPostType
+  createdAt: string;
+  sender: User
+}
+
 export interface ApiResponse {
   success: boolean;
   message: string;

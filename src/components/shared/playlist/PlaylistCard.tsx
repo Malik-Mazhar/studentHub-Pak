@@ -91,7 +91,7 @@ export default function PlaylistCard({
 
         <Image
             src={profileImage || "/img/defaultProfile.jfif"}
-            alt={fullname}
+            alt={fullname || "user Name"}
             width={36}
             height={36}
             className="w-7 h-7 sm:w-9 sm:h-9 rounded-full object-cover shrink-0"

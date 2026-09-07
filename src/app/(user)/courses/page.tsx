@@ -224,8 +224,8 @@ export default function NotesPage() {
                       title={playlist.title}
                       videoCount={playlist.videoCount}
                       duration={playlist.duration}
-                      fullname={playlist.author.userProfile.profileName}
-                      profileImage={playlist.author.userProfile?.profileImage}
+                      fullname={playlist?.author?.userProfile?.profileImage}
+                      profileImage={playlist?.author?.userProfile?.profileImage}
                       description={playlist.description}
                       onClick={() => router.push(`/courses/${playlist._id}`)}
                     />

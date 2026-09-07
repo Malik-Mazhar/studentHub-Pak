@@ -14,7 +14,7 @@ export const removePost = async ({
   }:removePostProp) => {
   
   try {
-    const response = await axios.delete(`/api/user/delete?postId=${postId}`);
+    const response = await axios.delete(`/api/user/delete/deletePost?postId=${postId}`);
 
     console.log(response.data);
 

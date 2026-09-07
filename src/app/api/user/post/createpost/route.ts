@@ -10,6 +10,8 @@ import { uploadImageHandler } from "@/src/middlewares/uploads";
 import { Types } from "mongoose";
 import { deleteImageHandler } from "@/src/services/uploadToCloudinary";
 import { userPostType } from "@/src/types/dataTaype";
+import Follow from "@/src/models/follow.model";
+import Notification from "@/src/models/Notification.model";
 
 export const POST = asyncHandler( async (req:Request) => {
     await dbConnect();
@@ -121,6 +123,30 @@ export const POST = asyncHandler( async (req:Request) => {
     });
 
     await userPost.save();
+
+    const postTypeMessages: Record<string, string> = {
+        discussion: "started a new discussion",
+        notes: "shared new notes",
+        question: "posted a new question",
+        poll: "created a new poll",
+        resource: "shared a new resource",
+        video: "posted a new video",
+    };
+
+
+    const followers = await Follow.find({
+        following: session.user._id,
+    }).select("follower");
+
+    await Notification.insertMany(
+        followers.map((item) => ({
+            recipient: item.follower,
+            sender: session.user._id,
+            type: "new_post",
+            message: postTypeMessages[userPost.postType] || "posted a new post",
+            postId: userPost._id,
+        }))
+    );
 
 
     return Response
@@ -323,46 +349,3 @@ export const DELETE = asyncHandler(async (req: Request) => {
     new ApiResponse(200, null, "Post deleted successfully")
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-    
-    // const postData: Partial<UserPost> = {
-    //     postType,
-    //     visibility,
-    //     author: new Types.ObjectId(session.user._id),
-    // };
-
-    // if (postType === "playlist" && playlist) {
-    //     postData.youtubePlaylistId = playlist;
-
-    // } else {
-    //     postData.title = title;
-    //     postData.content = content;
-    //     postData.category = category;
-    //     postData.notesCategory = notesCategory;
-    //     postData.className = className;
-    //     postData.tags = tags;
-    //     postData.resourceLink = resourceLink;
-    //     postData.videoLink = videoLink;
-    //     postData.pollQuestion = pollQuestion;
-    //     postData.pollOptions = pollOptions;
-    //     postData.pollDuration = pollDuration;
-    //     postData.postImageUrl = postImageUrlDetect;
-    //     postData.postDocumentUrl = userdocumentFileDeta?.secure_url;
-    //     postData.postImgPublicId = postImagePublicId;
-    //     postData.postDocumentPublicId = userdocumentFileDeta?.publicId;
-    // }
-
-    // const userPost = new UserPostModel(postData);
