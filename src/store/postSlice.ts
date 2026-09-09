@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { userPostType } from "../types/dataTaype";
+import { PlaylistType, userPostType } from "../types/dataTaype";
 
 type PostState = {
   posts: userPostType[];
+  currentUserPosts: (userPostType & PlaylistType)[]
   loading: boolean;
   error: string | null;
 };
 
 const initialState: PostState = {
   posts: [],
+  currentUserPosts: [],
   loading: false,
   error: null,
 };
@@ -25,6 +27,9 @@ export const postSlice = createSlice({
       state.posts.unshift(action.payload);
     },
 
+    setCurrentUserPosts: (state, action) => {
+      state.currentUserPosts = action.payload;
+    },
     
     toggleLikePost: (state, action) => {
       const { postId, isLiked, likesCount } = action.payload;
@@ -107,8 +112,9 @@ export const postSlice = createSlice({
         (post: any) => post._id !== action.payload
       );
     },
+
   },
 });
 
-export const { setPosts, addPost, toggleLikePost, toggleBookmark, updatePostVote, deletePost } = postSlice.actions;
+export const { setPosts, addPost, setCurrentUserPosts, toggleLikePost, toggleBookmark, updatePostVote, deletePost } = postSlice.actions;
 export default postSlice.reducer;

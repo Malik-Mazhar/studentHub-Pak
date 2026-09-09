@@ -1,4 +1,5 @@
-import { useAppSelector } from "@/src/store/useSelecterhook";
+import { logout } from "@/src/store/userDataSlice";
+import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import {
   Home,
   Bookmark,
@@ -7,22 +8,42 @@ import {
   MessageSquareMoreIcon,
   Users,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { MdOutlineNotifications, MdOutlineAssignment, MdOutlineClass } from "react-icons/md";
+import NotificationDropdown from "../sections/notifications/NotificationDropdown";
 
 type SidebarItemProps = {
   icon: React.ReactNode;
   text: string;
   navigate?: string;
   className?: string;
+  onClick?: () => void;
 };
 
 
 export default function Sidebar() {
+  const dispatch = useAppDispatch()
   const { data: session, status } = useSession();
   const userProfileData = useAppSelector((state) => state.userData.profileData);
+  const [isLoading, setIsLoading] = useState(false);
+
+  
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
+      await signOut();
+
+      dispatch(logout());
+    } catch (error) {
+      console.log("Logout failed", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className=" w-36 sm:w-48 lg:w-60 shrink-0 min-w-0 bg-linear-to-b from-[#003178] to-[#004B91] rounded-l-2xl text-white p-2 sm:p-3 flex flex-col " >
 
@@ -104,19 +125,20 @@ export default function Sidebar() {
           navigate="/myPosts"
         />
 
-        <SidebarItem
-          icon={<MessageSquareMoreIcon size={18} />}
-          text="Messages"
-          navigate="/myPosts"
-        />
-
 
         {/* Desktop only */}
         <div className="hidden sm:block">
 
           <SidebarItem
+            icon={<MessageSquareMoreIcon size={18} />}
+            text="Messages"
+            navigate="/myPosts"
+          />
+
+          <SidebarItem
             icon={<MdOutlineNotifications size={18} />}
             text="Notifications"
+            navigate="/notifications"
           />
 
           <SidebarItem
@@ -130,12 +152,13 @@ export default function Sidebar() {
             text="Settings"
           />
 
-          <SidebarItem
-            icon={<LogOut size={18} />}
-            text="Logout"
-          />
-
         </div>
+
+        <SidebarItem
+          icon={<LogOut size={18} />}
+          text="Logout"
+          onClick={handleLogout}
+        />
 
       </div>
 
@@ -148,29 +171,37 @@ function SidebarItem({
   text,
   navigate,
   className = "",
+  onClick,
 }: SidebarItemProps) {
+  const [showNotifications, setShowNotifications] = useState(false);
+
+    if (text === "Notifications") {
+    return (
+      <div onClick={() => setShowNotifications(!showNotifications)} className={`flex items-center gap-x-3 pl-1 py-2 sm:py-1 px-2 sm:px-2 rounded-lg font-semibold text-[10px] sm:text-sm hover:bg-[#314E7F] cursor-pointer transition min-w-0 relative ${className}`}>
+        <NotificationDropdown
+          showNotifications={showNotifications}
+          setShowNotifications={setShowNotifications}
+          showDropDownInDashboardSidebar="DashboardSidebar"
+        />
+        <span>{text}</span>
+      </div>
+    );
+  }
+
   return (
-    <div       className={`
-        flex items-center gap-2 sm:gap-3
-        py-2 sm:py-2.5
-        px-2 sm:px-4
-        rounded-lg
-        font-semibold
-        text-[10px] sm:text-sm
-        hover:bg-[#314E7F]
-        cursor-pointer
-        transition
-        min-w-0
-        ${className}
-      `}>
+    <div       
+      onClick={onClick}
+      className={`flex items-center gap-2 sm:gap-3 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg font-semibold text-[10px] sm:text-sm hover:bg-[#314E7F] cursor-pointer transition min-w-0 ${className}`}
+    >
       {icon}
 
-      <Link href={`${navigate}`}>
-
-        <span className="sm:block">
-          {text}
-        </span>
-      </Link>
+        {navigate ? (
+          <Link href={navigate}>
+            <span>{text}</span>
+          </Link>
+        ) : (
+          <span>{text}</span>
+        )}
     </div>
   );
 }

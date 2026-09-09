@@ -22,7 +22,7 @@ function PlaylistActions({
 
                 <img
                     src={
-                        playlistPostData?.author.userProfile?.profileImgUrl ||
+                        playlistPostData?.author?.userProfile?.profileImgUrl ||
                         "/img/defaultProfile.jfif"
                     }
                     className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shrink-0"
@@ -33,7 +33,7 @@ function PlaylistActions({
                     <div className="flex items-center gap-2">
 
                         <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
-                            {playlistPostData?.author.userProfile?.profileName}
+                            {playlistPostData?.author?.userProfile?.profileName}
                         </p>
 
                         <CheckCircle

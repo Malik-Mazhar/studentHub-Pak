@@ -52,7 +52,7 @@ const CommentItem = ({
 
                 <img
                     src={
-                        comment.author.userProfile?.coverImageUrl ||
+                        comment?.author?.userProfile?.coverImageUrl ||
                         "/img/defaultProfile.jfif"
                     }
                     className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover shrink-0"
@@ -61,7 +61,7 @@ const CommentItem = ({
                 <div className="flex-1 min-w-0">
 
                     <h6 className="font-semibold text-gray-900 dark:text-gray-200 text-sm">
-                        {comment.author.userProfile?.profileName}
+                        {comment?.author?.userProfile?.profileName}
                     </h6>
 
                     <p className="text-sm text-gray-700 dark:text-gray-100 wrap-break-word leading-6">

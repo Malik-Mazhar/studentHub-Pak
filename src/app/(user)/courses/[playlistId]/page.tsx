@@ -236,7 +236,7 @@ export default function PlaylistPage() {
                         commentContent={commentContent}
                         emojiPickerFor={emojiPickerFor}
                         setEmojiPickerFor={setEmojiPickerFor}
-                        profileImage={playlistPostData?.author.userProfile?.profileImgUrl}
+                        profileImage={playlistPostData?.author?.userProfile?.profileImgUrl}
                     />
 
 

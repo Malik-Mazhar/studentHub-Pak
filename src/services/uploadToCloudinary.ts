@@ -41,7 +41,7 @@ export const uploadMediaHandler = async (
   }
 
   // Size validation
-  if (isImage && file.size > 2 * 1024 * 1024) {
+  if (isImage && file.size > 4 * 1024 * 1024) {
     throw new Error("Image size must be less than 2MB");
   }
 

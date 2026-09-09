@@ -15,6 +15,7 @@ export async function uploadImageHandler(file: File, folder: string) {
     }
 
     const result = await uploadMediaHandler(file, folder);
+    console.log("uploadMediaHandler result", result)
 
     if (!result?.secure_url) {
       return {
@@ -35,7 +36,7 @@ export async function uploadImageHandler(file: File, folder: string) {
 
     return {
       success: false,
-      message: "Upload image failed"
+      message: error ?? "Upload image failed"
     };
   }
 };

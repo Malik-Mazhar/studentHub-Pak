@@ -144,15 +144,20 @@ function ReusableCreatePostForm({
       const axiosError = err as AxiosError<ApiResponse>;
 
       const message = axiosError.response?.data?.message
+      setError("root", {message: message || "Something went wrong. Please try again."})
 
-      toast('post created Failed', {
-      position: "top-right",
-      description: <span className="text-black">{message}</span>,
-      action: {
-              label: "Undo",
-              onClick: () => console.log("Undo"),
-          },
-      });
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+      // toast('post created Failed', {
+      // position: "top-right",
+      // description: <span className="text-black">{message}</span>,
+      // action: {
+      //         label: "Undo",
+      //         onClick: () => console.log("Undo"),
+      //     },
+      // });
 
       setIsSubmitting(false);
     }
@@ -185,6 +190,12 @@ function ReusableCreatePostForm({
 
   return (
     <form className="relative w-full min-w-0" onSubmit={handleSubmit(onSubmit)}>
+
+      {errors.root && (
+        <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
+          {errors.root.message}
+        </div>
+      )}
       
       <input type="hidden" {...register("postType")} />
 

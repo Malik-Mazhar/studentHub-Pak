@@ -54,8 +54,8 @@ export const POST = asyncHandler( async (req:Request) => {
         for (const file of files) {
             const uploaded = await uploadImageHandler( file, `users/${session?.user._id}/posts`);
 
-            if (!uploaded) {
-            throw new ApiError(500, "Service problem");
+            if (!uploaded.success) {
+            throw new ApiError(500, `${uploaded.message}`);
             }
 
             userImageFileDeta.push(uploaded);
@@ -72,7 +72,7 @@ export const POST = asyncHandler( async (req:Request) => {
 
     if(documentFile instanceof File){
        userdocumentFileDeta = await uploadImageHandler( documentFile, `users/${session?.user._id}/posts`)
-    console.log("userdocumentFileDeta", userdocumentFileDeta)
+
 
         if (!userdocumentFileDeta) {
         throw new ApiError(500, "Service problem");
