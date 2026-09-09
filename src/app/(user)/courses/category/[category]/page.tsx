@@ -8,6 +8,7 @@ import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
 import { setPlaylists } from "@/src/store/playlistSlice";
 import { useEffect } from "react";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 const coursesCategories = [
   {
@@ -191,6 +192,8 @@ export default function HeroSection() {
   
       
   useEffect(() => {
+    
+    addToHistory("courses", category as string)
     if (!isLoading) {
       getAllPostData();
     }

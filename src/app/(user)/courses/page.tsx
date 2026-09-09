@@ -18,6 +18,7 @@ import PlaylistCard from "@/src/components/shared/playlist/PlaylistCard";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 const coursesCategories = [
   {
@@ -165,6 +166,7 @@ export default function NotesPage() {
     
   useEffect(() => {
     getAllPostData();
+    addToHistory("courses")
   }, []);
   
   return (

@@ -14,6 +14,7 @@ import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAn
 import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
 import { setPosts, toggleLikePost } from "@/src/store/postSlice";
 import { LoadingSpinner } from "@/src/app/loading";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 export default function SavedPage() {
   const dispatch = useAppDispatch();
@@ -111,6 +112,7 @@ export default function SavedPage() {
   useEffect(() => {
     getAllBookmarks();
     getAllPosts();
+    addToHistory("save Post")
   }, []);
 
   useEffect(() => {

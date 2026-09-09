@@ -100,7 +100,7 @@ export default function SubjectNotes() {
     
       
   return (
-    <main className="mx-auto p-6 bg-[#FBFCFE] dark:bg-[#0F172A] dark:text-[#FBFCFE]">
+    <main className="mx-auto p-6 pt-26 md:pt-20 bg-[#FBFCFE] dark:bg-[#0F172A] dark:text-[#FBFCFE]">
 
       <div className="flex items-center gap-2 text-sm mb-5">
         <span className="text-gray-500 font-bold text-md cursor-pointer" onClick={() => router.push("/")}>

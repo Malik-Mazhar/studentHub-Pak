@@ -21,6 +21,7 @@ import axios from "axios";
 import { userPostType } from "@/src/types/dataTaype";
 import { deletePost } from "@/src/store/postSlice";
 import { useAppDispatch } from "@/src/store/useSelecterhook";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 export default function CreatePostPage() {
   const { postId } = useParams();
@@ -50,7 +51,7 @@ export default function CreatePostPage() {
         }
 
       };
-
+    addToHistory("create Post", selectPostType)
     getPost();
 }, [postId]);
 

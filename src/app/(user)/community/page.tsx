@@ -18,6 +18,7 @@ import { sharePost } from "@/src/services/ApiServices/Share";
 import { copyLink } from "@/src/services/ApiServices/copyLink";
 import FollowButton from "@/src/components/shared/FollowButton";
 import { useSearchParams } from "next/navigation";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 export default function CommunityCenter() {
   const searchParams = useSearchParams();
@@ -32,7 +33,6 @@ export default function CommunityCenter() {
   const [isVoting, setIsVoting] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
-  console.log("PostData", PostData)
 
   const getAllPosts = async () => {
     try {
@@ -88,6 +88,7 @@ export default function CommunityCenter() {
       }
     };
       getAllPosts();
+      addToHistory("community");
 
     document.addEventListener("mousedown", handleClickOutside);
 

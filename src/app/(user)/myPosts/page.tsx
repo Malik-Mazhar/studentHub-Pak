@@ -12,6 +12,7 @@ import { handleLikesAndComments } from "@/src/services/ApiServices/handleLikesAn
 import { useAppDispatch } from "@/src/store/useSelecterhook";
 import { handleBookMark } from "@/src/services/ApiServices/handleBookMark";
 import { LoadingSpinner } from "@/src/app/loading";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 
 
@@ -50,7 +51,8 @@ export default function MyPostsPage() {
         setLoading(false);
       }
     };
-
+    
+    addToHistory("My Posts")
     getMyPosts();
   }, []);
 

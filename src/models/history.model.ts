@@ -2,18 +2,23 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface HistoryProp extends Document {
   userId: mongoose.Types.ObjectId;
-  action: "view" | "create" | "attempt" | "save" | "comment";
-  resourceType:
-    | "post"
-    | "note"
-    | "question"
-    | "quiz"
-    | "video"
-    | "playlist"
+
+  page:
+    | "community"
+    | "create Post"
+    | "notes"
+    |  "contact"
+    | "My Posts"
+    | "save Post"
+    | "questions"
+    | "videos"
+    | "courses"
+    | "playlists"
     | "profile";
-  resourceId: mongoose.Types.ObjectId;
-  title?: string;
-  thumbnail?: string;
+
+  resourceId?: string;
+
+  visitedAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,42 +29,34 @@ const historySchema = new Schema<HistoryProp>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
-    action: {
-      type: String,
-      enum: ["view", "create", "attempt", "save", "comment"],
-      required: true,
-    },
-
-    resourceType: {
+    page: {
       type: String,
       enum: [
-        "post",
-        "note",
-        "question",
-        "quiz",
-        "video",
-        "playlist",
+        "community",
+        "create Post",
+        "notes",
+        "contact",
+        "My Posts",
+        "save Post",
+        "questions",
+        "videos",
+        "courses",
+        "playlists",
         "profile",
       ],
       required: true,
     },
 
     resourceId: {
-      type: Schema.Types.ObjectId,
-      required: true,
+      type: String,
+      required: false,
     },
 
-    title: {
-      type: String,
-      trim: true,
-    },
-
-    thumbnail: {
-      type: String,
-      trim: true,
+    visitedAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
@@ -67,17 +64,20 @@ const historySchema = new Schema<HistoryProp>(
   }
 );
 
-// Latest history first
-historySchema.index({ userId: 1, createdAt: -1 });
+// One history record per user + page + resource
+historySchema.index(
+  { userId: 1, page: 1, resourceId: 1 },
+  { unique: true }
+);
 
-// Prevent duplicate view records for the exact same resource
-// if you decide to update an existing view instead of creating one.
+// Latest visited first
 historySchema.index({
   userId: 1,
-  resourceType: 1,
-  resourceId: 1,
+  visitedAt: -1,
 });
 
-const History: Model<HistoryProp> = mongoose.models.History || mongoose.model<HistoryProp>("History", historySchema);
+const History: Model<HistoryProp> =
+  mongoose.models.History ||
+  mongoose.model<HistoryProp>("History", historySchema);
 
 export default History;

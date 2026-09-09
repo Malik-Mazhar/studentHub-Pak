@@ -3,7 +3,8 @@ import axios from "axios";
 import { Headphones} from "lucide-react";
 import { MdEmail, MdHeadsetMic, MdPhone, MdLocationOn, MdAccessTime, } from "react-icons/md";
 import { FaFacebookF, FaInstagram, FaXTwitter, FaYoutube, } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 export default function ContactPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -73,6 +74,10 @@ export default function ContactPage() {
         "Please include your name, email address, a clear subject, and a detailed description of your issue. Screenshots or other relevant information can also help us resolve your problem faster.",
     },
     ];
+
+    useEffect(() => {
+        addToHistory("contact")
+    }, [])
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-gray-900 dark:text-gray-100">

@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/useSelecterhook";
 import axios from "axios";
 import { setPosts } from "@/src/store/postSlice";
 import { useEffect, useState } from "react";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 const categoriesClasses = [
   "All Notes",
@@ -46,6 +47,7 @@ export default function NotesPage() {
     
   useEffect(() => {
     getAllNotes();
+    addToHistory("notes")
   }, []);
 
   const notesCategories = [ "All Classes", "Class 9", "Class 10", "1st Year", "2nd Year" ]

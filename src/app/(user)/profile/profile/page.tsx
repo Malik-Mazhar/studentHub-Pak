@@ -24,6 +24,7 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import { UserProfile } from "@/src/types/dataTaype";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 
 const page = () => {
@@ -159,6 +160,10 @@ const page = () => {
     const tabData = ProfileInformation[selectedTabs as keyof typeof ProfileInformation];
     const currentObj = Object.values(tabData).find((type) => type.label === editSection);
     const fieldError = errors[currentObj?.value as keyof typeof errors];
+
+    useEffect(() => {
+        addToHistory("profile")
+    }, []);
     
 
     return (

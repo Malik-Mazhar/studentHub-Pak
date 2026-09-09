@@ -6,6 +6,7 @@ import axios from 'axios';
 import PlaylistCard from '@/src/components/shared/playlist/PlaylistCard';
 import { useRouter } from 'next/navigation';
 import { setPlaylists } from '@/src/store/playlistSlice';
+import { addToHistory } from '@/src/services/ApiServices/addToHistory';
 
 const notes = [
   {
@@ -69,12 +70,14 @@ function page() {
     const dispatch = useAppDispatch();
     const playlistData = useAppSelector((state) => state.playlist.playlists)
     const router = useRouter();
+    console.log("playlistData", playlistData)
       
     const getAllPlaylist = async () => {
     try {
       const playlistResponse = await axios.get("/api/user/get/getPlaylistData");
 
       dispatch(setPlaylists(playlistResponse.data.data));
+    console.log("playlistResponse.data.data", playlistResponse.data.data)
 
     } catch (error) {
         console.log("getAllPosts api Error please check the community page api :", error);
@@ -85,6 +88,7 @@ function page() {
     
     useEffect(() => {
     getAllPlaylist();
+    addToHistory("courses", "viewAllPlayList");
     }, []);
     return (
         <section className="px-4 sm:px-6 pt-28 md:pt-19">
@@ -108,7 +112,7 @@ function page() {
                         title={playlist.title}
                         videoCount={playlist.videoCount}
                         duration={playlist.duration}
-                        fullname={playlist.author.userProfile.profileName}
+                        fullname={playlist?.author?.userProfile?.profileName}
                         profileImage={playlist.author.userProfile?.profileImage}
                         description={playlist.description}
                         onClick={() => router.push(`/courses/${playlist._id}`)}

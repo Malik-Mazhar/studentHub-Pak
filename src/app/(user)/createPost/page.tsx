@@ -2,24 +2,22 @@
 
 import CoustomButton from "@/src/components/shared/CustomButton"
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {FaArrowLeft, FaComments, FaFileAlt, FaQuestionCircle, FaPoll, FaLink,} from "react-icons/fa";
 import { FaVideo } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { userPostSchema } from "@/src/zod-Schemas/userPostSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAppDispatch } from "@/src/store/useSelecterhook";
 import ReusableCreatePostForm from "@/src/components/shared/ReusableCreatePostForm";
 import SharePlaylist from "@/src/components/shared/playlist/SharePlaylistForm";
-import { Plus, Trash2 } from "lucide-react";
+import { addToHistory } from "@/src/services/ApiServices/addToHistory";
 
 export default function CreatePostPage() {
   const router = useRouter();
   const [selectPostType, setSelectPostType] = useState("Discussion");
   const [postMode, setPostMode] = useState("simple");
   const [videoType, setVideoType] = useState("video");
-  const dispatch = useAppDispatch();
 
   const form = useForm<z.infer <typeof userPostSchema>>({
     resolver: zodResolver(userPostSchema),
@@ -80,7 +78,11 @@ export default function CreatePostPage() {
     },
   ];
 
-  const findUserSelectPostType = postTypes.find((selectType) => selectType.title === selectPostType)
+  const findUserSelectPostType = postTypes.find((selectType) => selectType.title === selectPostType);
+
+  useEffect(() => {
+    addToHistory("create Post", selectPostType)
+  }, [])
 
   return (
       <div className="flex flex-col gap-4 sm:gap-6 p-3 pt-28 sm:p-5 lg:p-6 bg-[#FBFCFE] dark:bg-[#0F172A] min-h-screen">
@@ -306,79 +308,3 @@ export default function CreatePostPage() {
       </div>
   );
 }
-
-
-// import { useState } from "react";
-// import { Trash2, Plus } from "lucide-react";
-
-// const CreateQuestion = () => {
-//   const [question, setQuestion] = useState("");
-
-//   const [options, setOptions] = useState([
-//     { id: 1, text: "" },
-//     { id: 2, text: "" },
-//   ]);
-
-//   const [correctOption, setCorrectOption] = useState<number | null>(null);
-
-//   const [duration, setDuration] = useState("");
-
-//   // Add new option
-//   const addOption = () => {
-//     setOptions((prev) => [
-//       ...prev,
-//       {
-//         id: Date.now(),
-//         text: "",
-//       },
-//     ]);
-//   };
-
-//   // Delete option
-//   const deleteOption = (id: number) => {
-//     // Kam az kam 2 options rehne dein
-//     if (options.length <= 2) return;
-
-//     setOptions((prev) => prev.filter((option) => option.id !== id));
-
-//     // Agar deleted option correct answer tha
-//     if (correctOption === id) {
-//       setCorrectOption(null);
-//     }
-//   };
-
-//   // Option text update
-//   const updateOption = (id: number, value: string) => {
-//     setOptions((prev) =>
-//       prev.map((option) =>
-//         option.id === id
-//           ? { ...option, text: value }
-//           : option
-//       )
-//     );
-//   };
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const data = {
-//       question,
-//       options,
-//       correctOption,
-//       duration,
-//     };
-
-//     console.log("Question Data:", data);
-//   };
-
-//   return (
-//     <form
-//       onSubmit={handleSubmit}
-//       className="max-w-2xl mx-auto p-6 bg-white dark:bg-[#0f172a] rounded-2xl border border-gray-200 dark:border-gray-700"
-//     >
-
-//     </form>
-//   );
-// };
-
-// export default CreateQuestion;

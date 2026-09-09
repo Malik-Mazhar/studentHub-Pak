@@ -12,40 +12,71 @@ import PlaylistModel from "@/src/models/playlist.model";
 import { authOptions } from "@/src/app/api/auth/[...nextauth]/options";
 import UserModel from "@/src/models/user";
 
-export const GET = asyncHandler( async (req:Request) => {
-    await dbConnect();
+// export const GET = asyncHandler( async (req:Request) => {
 
-    const session = await getServerSession(authOptions);
+//     await dbConnect();
 
-    if (!session?.user?._id) {
-        throw new ApiError(401, "user Unauthorized" )
-    };
+//     const session = await getServerSession(authOptions);
 
-        // Current user
-    const user = await UserModel.findById(session.user._id).select("bookmarks");
+//     if (!session?.user?._id) {
+//         throw new ApiError(401, "user Unauthorized" )
+//     };
 
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
+//         // Current user
+//     const user = await UserModel.findById(session.user._id).select("bookmarks");
 
-    const getAllPlaylist = await PlaylistModel.find().populate("author", "userProfile profileName profileImgUrl");                      //if first latest post .sort({ createdAt: -1 });
+//     if (!user) {
+//         throw new ApiError(404, "User not found");
+//     }
 
-    if(!getAllPlaylist){
-        throw new ApiError(400, "cannection Error")
-    };
+//     const getAllPlaylist = await PlaylistModel.find().populate("author", "userProfile profileName profileImgUrl");                      //if first latest post .sort({ createdAt: -1 });
 
-        // Add bookmark status to every playlist
-    const playlistsWithBookmarkStatus = getAllPlaylist.map((playlist) => ({
-        ...playlist.toObject(),
+//     if(!getAllPlaylist){
+//         throw new ApiError(400, "cannection Error")
+//     };
 
-        isBookmarked: user.bookmarks.some(
-            (id: any) => id.toString() === playlist._id.toString()
-        ),
-    }));
+//         // Add bookmark status to every playlist
+//     const playlistsWithBookmarkStatus = getAllPlaylist.map((playlist) => ({
+//         ...playlist.toObject(),
 
-    return Response
-    .json(
-        new ApiResponse(201, playlistsWithBookmarkStatus, "fatch All Playlist successfully")
-    );
+//         isBookmarked: user.bookmarks.some(
+//             (id: any) => id.toString() === playlist._id.toString()
+//         ),
+//     }));
 
+//     return Response
+//     .json(
+//         new ApiResponse(201, playlistsWithBookmarkStatus, "fatch All Playlist successfully")
+//     );
+
+// });
+
+
+
+
+
+
+export const GET = asyncHandler(async (req: Request) => {
+  await dbConnect();
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?._id) {
+    throw new ApiError(401, "User Unauthorized");
+  }
+
+  const playlists = await PlaylistModel.find()
+    .populate(
+      "author",
+      "userProfile profileName profileImgUrl"
+    )
+    .sort({ createdAt: -1 });
+
+  return Response.json(
+    new ApiResponse(
+      200,
+      playlists,
+      "Fetched all playlists successfully"
+    )
+  );
 });

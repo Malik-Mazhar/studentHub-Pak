@@ -10,6 +10,7 @@ import {
   Laptop,
   Briefcase,
   MessageCircle,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -38,7 +39,9 @@ export default function Sidebar() {
               <SidebarItem icon={<Home size={18} />} text="Feed" />
             </Link>
 
-            <SidebarItem icon={<Users size={18} />} text="My Groups" />
+            <Link href="/history">
+              <SidebarItem icon={<History size={18} />} text="History" />
+            </Link>
 
             <Link href="/myPosts">
               <SidebarItem icon={<FileText size={18} />} text="My Posts" />
