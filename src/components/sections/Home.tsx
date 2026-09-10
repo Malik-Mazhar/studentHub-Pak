@@ -1,30 +1,11 @@
 import CustomButton from '@/src/components/shared/CustomButton'
-import { ArrowRight, BookOpen, Briefcase, FileText, GraduationCap, PlayCircle, Users } from 'lucide-react'
-import { FaAward, FaBookOpen } from "react-icons/fa6";
-import { HiUsers } from "react-icons/hi2";
-import { MdLanguage, MdOutlineWorkspacePremium, MdVideoLibrary } from "react-icons/md";
-import { IoSchoolSharp, IoBriefcaseSharp } from "react-icons/io5";
-import { FaGlobeEurope, FaUniversity, FaUsers } from "react-icons/fa";
-import { BsBriefcaseFill, BsFileTextFill } from "react-icons/bs";
-import Image from 'next/image';
-import { FaFacebook } from "react-icons/fa6";
-import { FaInstagramSquare } from "react-icons/fa";
-import { IoLogoLinkedin } from "react-icons/io5";
-import {
-  FaRegCommentDots,
-  FaShare,
-  FaRegBookmark,
-} from "react-icons/fa";
+import { ArrowRight, BookOpen, Clock3 } from 'lucide-react'
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { AiFillLike } from "react-icons/ai";
-import { BsThreeDots } from "react-icons/bs";
-import { FaEye } from "react-icons/fa";
-import { PiStudentFill } from "react-icons/pi";
 import DashboardSidebar from "@/src/components/shared/DashboardSidebar"
-import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
-import { title } from 'process';
 import Link from 'next/link';
 import axios from 'axios';
 import { setCurrentUserPosts, setPosts } from '@/src/store/postSlice';
@@ -32,11 +13,12 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import { useAppSelector } from '@/src/store/useSelecterhook';
 import { handleLikesAndComments } from '@/src/services/ApiServices/handleLikesAndComments';
-import { FaVideo, FaQuestionCircle, FaBookmark, } from "react-icons/fa";
+import { FaVideo, } from "react-icons/fa";
 import { setBookmarks } from '@/src/store/bookmarkSlice';
-import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/src/store/userDataSlice';
+import { setHistory } from '@/src/store/historySlice';
+import { FaGlobeEurope, FaUniversity, FaAward, FaUsers, FaFileAlt, FaQuestionCircle, FaPlayCircle, FaBookOpen, FaList, FaUser, FaPlusCircle, FaEnvelope, FaBookmark, } from "react-icons/fa";
+import Footer from './Footer';
 
 const Scholarships = [
   {
@@ -67,7 +49,8 @@ function Home() {
   const PostData = useAppSelector((state) => state.postData.posts)
   const currentUserAllPosts = useAppSelector((state) => state.postData.currentUserPosts)
   const allBookmarksData = useAppSelector((state) => state.bookmarksData);
-  const {data: session} = useSession()
+  const history = useAppSelector((state) => state.history.history);
+  const historyLoading = useAppSelector((state) => state.history.loading);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -82,15 +65,17 @@ function Home() {
   const getAllPosts = async () => {
     try {
       setIsLoading(true);
-      const [allPostsResponse, savedResponse, currentUserPostResponse] = await Promise.all([
+      const [allPostsResponse, savedResponse, currentUserPostResponse, historyResponse] = await Promise.all([
         axios.get("/api/user/get/getallposts?sort=latest"),
         axios.get("/api/user/get/getSaved"),
         axios.get("/api/user/get/getCurrentUserAllPosts"),
+        axios.get("/api/user/history?page=1&limit=5")
     ]);
 
       dispatch(setPosts(allPostsResponse.data.data))
       dispatch(setBookmarks(savedResponse.data.data))
       dispatch(setCurrentUserPosts(currentUserPostResponse.data.data))
+      dispatch(setHistory(historyResponse.data.data));
 
     } catch (error) {
       console.log("getAllPosts api Error please check the community page api :", error);
@@ -99,6 +84,7 @@ function Home() {
         setIsLoading(false);
     };
   };
+
 
   const postCounts = useMemo(() => {
     return currentUserAllPosts.reduce(
@@ -124,8 +110,98 @@ function Home() {
     getAllPosts();
   }, []);
 
+  const historyConfig = {
+    community: {
+      title: "Community",
+      icon: FaUsers,
+      iconColor: "text-blue-500",
+      iconBg: "bg-blue-50 dark:bg-blue-900/20",
+      href: "/community",
+    },
+
+    notes: {
+      title: "Notes",
+      icon: FaFileAlt,
+      iconColor: "text-green-500",
+      iconBg: "bg-green-50 dark:bg-green-900/20",
+      href: "/notes",
+    },
+
+    questions: {
+      title: "Questions",
+      icon: FaQuestionCircle,
+      iconColor: "text-purple-500",
+      iconBg: "bg-purple-50 dark:bg-purple-900/20",
+      href: "/questions",
+    },
+
+    videos: {
+      title: "Videos",
+      icon: FaPlayCircle,
+      iconColor: "text-red-500",
+      iconBg: "bg-red-50 dark:bg-red-900/20",
+      href: "/videos",
+    },
+
+    courses: {
+      title: "Courses",
+      icon: FaBookOpen,
+      iconColor: "text-orange-500",
+      iconBg: "bg-orange-50 dark:bg-orange-900/20",
+      href: "/courses",
+    },
+
+    playlists: {
+      title: "Playlists",
+      icon: FaList,
+      iconColor: "text-pink-500",
+      iconBg: "bg-pink-50 dark:bg-pink-900/20",
+      href: "/courses/playlists",
+    },
+
+    profile: {
+      title: "Profile",
+      icon: FaUser,
+      iconColor: "text-cyan-500",
+      iconBg: "bg-cyan-50 dark:bg-cyan-900/20",
+      href: "/profile/profile",
+    },
+
+    createPost: {
+      title: "Create Post",
+      icon: FaPlusCircle,
+      iconColor: "text-indigo-500",
+      iconBg: "bg-indigo-50 dark:bg-indigo-900/20",
+      href: "/community/create",
+    },
+
+    contact: {
+      title: "Contact",
+      icon: FaEnvelope,
+      iconColor: "text-yellow-500",
+      iconBg: "bg-yellow-50 dark:bg-yellow-900/20",
+      href: "/contact",
+    },
+
+    myPosts: {
+      title: "My Posts",
+      icon: FaFileAlt,
+      iconColor: "text-teal-500",
+      iconBg: "bg-teal-50 dark:bg-teal-900/20",
+      href: "/profile/my-posts",
+    },
+
+    savePost: {
+      title: "Saved Posts",
+      icon: FaBookmark,
+      iconColor: "text-rose-500",
+      iconBg: "bg-rose-50 dark:bg-rose-900/20",
+      href: "/profile/saved-posts",
+    },
+  };
+
   return (
-    <div className="min-h-screen mt-5 w-full mx-auto bg-[#FCFDFD] dark:bg-[#0B1120] text-gray-800 dark:text-gray-100">
+    <div className="min-h-screen mt-18 md:mt-5 w-full mx-auto bg-[#FCFDFD] dark:bg-[#0B1120] text-gray-800 dark:text-gray-100">
 
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto bg-[#F5F8FA] dark:bg-[#0F172A]">
@@ -183,12 +259,20 @@ function Home() {
 
         {/* Profile Section */}
 
-        <section className="max-w-7xl mx-auto border border-gray-200 dark:border-gray-700 bg-linear-to-b from-[#07347A] via-[#073F87] to-[#00549A] md:h-130 md:bg-white md:dark:bg-[#0F172A] overflow-scroll shadow rounded-xl mt-4">
+        <section className="max-w-7xl md:mx-auto mx-3.5  border border-gray-200 dark:border-gray-700 bg-linear-to-b from-[#07347A] via-[#073F87] to-[#00549A] md:h-130 md:bg-white md:dark:bg-[#0F172A] overflow-scroll shadow rounded-xl mt-4">
               
-              <div className='md:hidden p-5'>
-                <h1 className='text-2xl sm:text-4xl font-sans font-bold  leading-tight text-white dark:text-[#FBFCFE]'>Dashboard Preview</h1>
+              <div className='flex justify-between md:hidden p-5'>
+                <div>
+                  <h1 className='text-2xl sm:text-4xl font-sans font-bold  leading-tight text-white dark:text-[#FBFCFE]'>Dashboard Preview</h1>
 
-                <p className='text-white mt-2 text-sm'>Track your learning progress and activities</p>
+                  <p className='text-white mt-2 text-sm'>Track your learning progress and activities</p>
+                </div>
+                <div className="flex gap-2 text-gray-200 dark:text-gray-300">
+                    <FaRegCalendarAlt size={18} />
+                    <p className="font-semibold text-sm">
+                      {formattedDate}
+                    </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-[144px_1fr] sm:grid-cols-[192px_1fr] lg:grid-cols-[240px_1fr] items-stretch">
@@ -316,260 +400,141 @@ function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-3 sm:px-5 pb-5">
 
 
-                      {/* Continue Learning */}
-                      <div className="lg:col-span-1 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
 
-                        <div className="flex justify-between items-center mb-5">
-                          <div>
-                            <h2 className="font-semibold text-lg text-gray-900 dark:text-white">
-                              Continue Learning
+                      {/* Recent History */}
+                      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5 dark:border-gray-700 dark:bg-[#111827]">
+
+                        {/* Header */}
+                        <div className="mb-4 flex items-center justify-between sm:mb-5">
+
+                          <div className="flex min-w-0 items-center gap-2.5">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                              <Clock3
+                                size={18}
+                                className="text-blue-500 dark:text-blue-400"
+                              />
+                            </div>
+
+                            <h2 className="truncate text-base font-semibold text-gray-900 sm:text-lg dark:text-white">
+                              Recent History
                             </h2>
-
-                            <p className="text-xs text-gray-400 mt-1">
-                              Pick up where you left off
-                            </p>
                           </div>
 
                           <Link
-                            href="/courses"
-                            className="text-blue-600 dark:text-blue-400 text-sm shrink-0"
+                            href="/history"
+                            className="flex shrink-0 items-center gap-1 text-xs font-medium text-blue-600 transition hover:text-blue-700 sm:text-sm dark:text-blue-400 dark:hover:text-blue-300"
                           >
-                            View All
+                            <span>View All</span>
+                            <ArrowRight size={14} className="sm:h-4 sm:w-4" />
                           </Link>
+
                         </div>
 
+                        {/* Loading */}
+                        {historyLoading ? (
+                          <div className="space-y-3">
+                            {[1, 2, 3, 4].map((item) => (
+                              <div
+                                key={item}
+                                className="flex animate-pulse items-center gap-3 rounded-lg p-2.5"
+                              >
+                                <div className="h-9 w-9 shrink-0 rounded-full bg-gray-200 dark:bg-gray-700" />
 
-                        {/* Course */}
-                        <div className="flex flex-col sm:flex-row gap-4">
-
-                          <div className="w-full sm:w-32 h-20 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
-                            <FaBookOpen className="text-blue-500 text-2xl" />
-                          </div>
-
-
-                          <div className="flex-1 min-w-0">
-
-                            <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                              Mathematics
-                            </h3>
-
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                              Quadratic Equations
-                            </p>
-
-
-                            <div className="flex items-center gap-3 mt-3">
-
-                              <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                <div className="bg-blue-500 h-2 rounded-full w-[72%]" />
+                                <div className="min-w-0 flex-1 space-y-2">
+                                  <div className="h-3 w-28 max-w-full rounded bg-gray-200 dark:bg-gray-700" />
+                                  <div className="h-2.5 w-20 max-w-full rounded bg-gray-200 dark:bg-gray-700" />
+                                </div>
                               </div>
-
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                72%
-                              </span>
-
-                            </div>
-
-
-                            <button
-                              className="mt-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                            >
-                              Continue Learning →
-                            </button>
-
+                            ))}
                           </div>
 
-                        </div>
+                        ) : history.length === 0 ? (
 
-                      </div>
-
-
-                      {/* Recent Activity */}
-                      <div className="bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
-
-                        <div className="flex justify-between items-center mb-5">
-
-                          <h2 className="font-semibold text-lg text-gray-900 dark:text-white">
-                            Recent Activity
-                          </h2>
-
-                          <Link
-                            href="/activity"
-                            className="text-blue-600 dark:text-blue-400 text-sm"
-                          >
-                            View All
-                          </Link>
-
-                        </div>
-
-
-                        <div className="space-y-5">
-
-                          {/* Activity 1 */}
-                          <div className="flex gap-3">
-
-                            <div className="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
-                              <FaFilePdf className="text-blue-500 text-sm" />
+                          /* Empty */
+                          <div className="py-7 text-center sm:py-8">
+                            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                              <Clock3
+                                size={20}
+                                className="text-gray-400 dark:text-gray-500"
+                              />
                             </div>
 
-                            <div className="min-w-0">
-                              <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                                Viewed Physics Notes
-                              </p>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                10 minutes ago
-                              </p>
-                            </div>
-
-                          </div>
-
-
-                          {/* Activity 2 */}
-                          <div className="flex gap-3">
-
-                            <div className="w-9 h-9 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center shrink-0">
-                              <AiFillLike className="text-red-500 text-sm" />
-                            </div>
-
-                            <div className="min-w-0">
-                              <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                                Liked a post
-                              </p>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                1 hour ago
-                              </p>
-                            </div>
-
-                          </div>
-
-
-                          {/* Activity 3 */}
-                          <div className="flex gap-3">
-
-                            <div className="w-9 h-9 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0">
-                              <FaQuestionCircle className="text-purple-500 text-sm" />
-                            </div>
-
-                            <div className="min-w-0">
-                              <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                                Answered a question
-                              </p>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                2 hours ago
-                              </p>
-                            </div>
-
-                          </div>
-
-
-                          {/* Activity 4 */}
-                          <div className="flex gap-3">
-
-                            <div className="w-9 h-9 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center shrink-0">
-                              <FaBookmark className="text-green-500 text-sm" />
-                            </div>
-
-                            <div className="min-w-0">
-                              <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
-                                Saved a resource
-                              </p>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                Yesterday
-                              </p>
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-
-                      {/* Recent / Pending Items */}
-                      <div className="lg:col-span-3 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
-
-                        <div className="flex justify-between items-center mb-5">
-
-                          <div>
-                            <h2 className="font-semibold text-lg text-gray-900 dark:text-white">
-                              Your Recent Items
-                            </h2>
-
-                            <p className="text-xs text-gray-400 mt-1">
-                              Recently added and saved content
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              No recent history
                             </p>
                           </div>
 
-                          <Link
-                            href="/notes"
-                            className="text-blue-600 dark:text-blue-400 text-sm"
-                          >
-                            View All
-                          </Link>
+                        ) : (
 
-                        </div>
+                          /* History */
+                          <div className="space-y-1">
 
+                            {history.map((item) => {
+                              const config = historyConfig[item.page];
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                              if (!config) return null;
 
-                          {/* Item 1 */}
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                              const Icon = config.icon;
 
-                            <FaFilePdf className="text-blue-500 text-xl shrink-0" />
+                              const title =
+                                item.resourceId === "viewAllPlayList"
+                                  ? "All Playlists"
+                                  : config.title;
 
-                            <div className="min-w-0">
-                              <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
-                                Physics Chapter 4 Notes
-                              </h3>
+                              const href =
+                                item.resourceId === "viewAllPlayList"
+                                  ? "/courses/playlists"
+                                  : config.href;
 
-                              <p className="text-xs text-gray-400 mt-1">
-                                Added recently
-                              </p>
-                            </div>
+                              const time = new Date(item.visitedAt).toLocaleString(
+                                "en-US",
+                                {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                }
+                              );
+
+                              return (
+                                <Link
+                                  key={item._id}
+                                  href={href}
+                                  className="group flex items-center gap-3 rounded-xl p-2.5 transition hover:bg-gray-50 sm:p-3 dark:hover:bg-gray-800/60"
+                                >
+
+                                  {/* Icon */}
+                                  <div
+                                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${config.iconBg}`}
+                                  >
+                                    <Icon
+                                      className={`text-base ${config.iconColor}`}
+                                    />
+                                  </div>
+
+                                  {/* Content */}
+                                  <div className="min-w-0 flex-1">
+
+                                    <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                      {title}
+                                    </p>
+
+                                    <p className="mt-1 truncate text-[11px] text-gray-400 sm:text-xs dark:text-gray-500">
+                                      {time}
+                                    </p>
+
+                                  </div>
+
+                                  {/* Arrow */}
+                                  <ArrowRight
+                                    size={15}
+                                    className="shrink-0 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-gray-500 dark:text-gray-600 dark:group-hover:text-gray-400"
+                                  />
+
+                                </Link>
+                              );
+                            })}
 
                           </div>
-
-
-                          {/* Item 2 */}
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-
-                            <FaVideo className="text-red-500 text-xl shrink-0" />
-
-                            <div className="min-w-0">
-                              <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
-                                JavaScript Fundamentals
-                              </h3>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                Saved recently
-                              </p>
-                            </div>
-
-                          </div>
-
-
-                          {/* Item 3 */}
-                          <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-
-                            <FaQuestionCircle className="text-purple-500 text-xl shrink-0" />
-
-                            <div className="min-w-0">
-                              <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
-                                React State Management
-                              </h3>
-
-                              <p className="text-xs text-gray-400 mt-1">
-                                Question
-                              </p>
-                            </div>
-
-                          </div>
-
-                        </div>
+                        )}
 
                       </div>
 
@@ -764,6 +729,8 @@ function Home() {
 
           </div>
         </footer>
+
+        <Footer />
 
 
     </div>

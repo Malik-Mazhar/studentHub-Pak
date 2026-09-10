@@ -22,15 +22,15 @@ export async function POST(
 
     const { userId } = await params;
 
-    // if (session.user._id === userId) {
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       message: "You cannot follow yourself.",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
+    if (session.user._id === userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "You cannot follow yourself.",
+        },
+        { status: 400 }
+      );
+    }
 
     await dbConnect();
 
@@ -103,7 +103,7 @@ export async function GET(
       follower: session.user._id,
       following: userId,
     });
-
+    console.log("follow", follow)
     return NextResponse.json({
       success: true,
       isFollowing: !!follow,

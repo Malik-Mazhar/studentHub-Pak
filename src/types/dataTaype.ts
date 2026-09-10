@@ -128,6 +128,30 @@ export interface NotificationType {
   sender: User
 }
 
+
+export interface HistoryItem {
+  _id: string;
+
+  page:
+    | "community"
+    | "createPost"
+    | "notes" 
+    | "contact"
+    | "myPosts"
+    | "savePost"
+    | "questions"
+    | "videos"
+    | "courses"
+    | "playlists"
+    | "profile";
+
+  resourceId?: string;
+
+  visitedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse {
   success: boolean;
   message: string;

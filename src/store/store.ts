@@ -6,6 +6,7 @@ import postsReducer from './postSlice'
 import playlistReducer from './playlistSlice'
 import bookmarksReducer from './bookmarkSlice'
 import notificationReducer from "./notificationSlice";
+import historyReducer from "./historySlice";
 
 export const store = configureStore({
    reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     playlist: playlistReducer,
     bookmarksData: bookmarksReducer,
     notifications: notificationReducer,
+    history: historyReducer,
    },
    devTools: true
 });

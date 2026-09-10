@@ -19,6 +19,7 @@ import { copyLink } from "@/src/services/ApiServices/copyLink";
 import FollowButton from "@/src/components/shared/FollowButton";
 import { useSearchParams } from "next/navigation";
 import { addToHistory } from "@/src/services/ApiServices/addToHistory";
+import FollowingPage from "@/src/components/sections/following";
 
 export default function CommunityCenter() {
   const searchParams = useSearchParams();
@@ -32,6 +33,7 @@ export default function CommunityCenter() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [following, setFollowing] = useState(false);
 
 
   const getAllPosts = async () => {
@@ -214,15 +216,27 @@ export default function CommunityCenter() {
 
             <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1">
 
-                <button onClick={() => getAllPosts()} className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition">
+                <button 
+                  onClick={() => {
+                    setFollowing(false)
+                    getAllPosts()
+                  }} 
+                  className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition"
+                >
                   All
                 </button>
 
-                <button className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition">
+                <button onClick={() => setFollowing(true)} className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition">
                   Following
                 </button>
 
-                <button onClick={() => getPopularPosts()} className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition">
+                <button 
+                  onClick={() => {
+                    getPopularPosts()
+                    setFollowing(false)
+                  }}
+                  className="shrink-0 px-4 sm:px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 cursor-pointer transition"
+                >
                   Popular
                 </button>
 
@@ -254,591 +268,595 @@ export default function CommunityCenter() {
 
           {/* Posts */}
 
-          <div className="space-y-4 sm:space-y-6">
+          {following ?
+            <FollowingPage />
+          :
+            <div className="space-y-4 sm:space-y-6">
 
-            {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
-              <div
-                key={post?._id}
-                id={`post-${post._id}`}
-                className={`bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 transition-colors
-                    ${
-                      targetPostId === post._id
-                        ? "ring-2 ring-[#017D63] dark:ring-[#0aa382]"
-                        : ""
-                    }
-                `}>
-                {/* Header */}
+              {PostData && PostData.filter((post) => post && !post.postDocumentUrl && post.postType !== "playlist").map((post) => (
+                <div
+                  key={post?._id}
+                  id={`post-${post._id}`}
+                  className={`bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 transition-colors
+                      ${
+                        targetPostId === post._id
+                          ? "ring-2 ring-[#017D63] dark:ring-[#0aa382]"
+                          : ""
+                      }
+                  `}>
+                  {/* Header */}
 
-                <div className="flex justify-between items-start gap-3">
+                  <div className="flex justify-between items-start gap-3">
 
-                  <div className="flex gap-2 sm:gap-3 min-w-0">
+                    <div className="flex gap-2 sm:gap-3 min-w-0">
 
-                      <Link href="/profile/profile" 
-                        onClick={(e) => {
-                          if (status !== "authenticated") {
-                            e.preventDefault();
-                            handleAuthentication();
-                          }
-                        }}
-                      >
-                        <img
-                          src={
-                            post?.author?.userProfile?.profileImgUrl ||
-                            "/img/defaultProfile.jfif"
-                          }
-                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
-                        />
-                      </Link>
-                    <div className="min-w-0">
+                        <Link href="/profile/profile" 
+                          onClick={(e) => {
+                            if (status !== "authenticated") {
+                              e.preventDefault();
+                              handleAuthentication();
+                            }
+                          }}
+                        >
+                          <img
+                            src={
+                              post?.author?.userProfile?.profileImgUrl ||
+                              "/img/defaultProfile.jfif"
+                            }
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
+                          />
+                        </Link>
+                      <div className="min-w-0">
 
-                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
 
-                        <h3 className="font-semibold truncate max-w-45 sm:max-w-none">{post?.author?.userProfile?.profileName}</h3>
+                          <h3 className="font-semibold truncate max-w-45 sm:max-w-none">{post?.author?.userProfile?.profileName}</h3>
 
 
 
-                      </div>
+                        </div>
 
-                      <div className="flex items-center gap-4 pt-1">
-                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
-                        
-                        <FollowButton userId={post.author._id} />
+                        <div className="flex items-center gap-4 pt-1">
+                          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">2 hours ago</p>
+                          
+                          <FollowButton userId={post.author._id} />
+                        </div>
+
                       </div>
 
                     </div>
 
-                  </div>
+                    <div className="relative" ref={menuRef}>
 
-                  <div className="relative" ref={menuRef}>
+                      <button
+                        onClick={() => setOpenPostId(post._id)}
+                        className="text-gray-500 dark:text-gray-400 rounded-full p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1E293B] hover:text-gray-800 dark:hover:text-white shrink-0 transition"
+                      >
+                        <FaEllipsisH />
+                      </button>
 
-                    <button
-                      onClick={() => setOpenPostId(post._id)}
-                      className="text-gray-500 dark:text-gray-400 rounded-full p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1E293B] hover:text-gray-800 dark:hover:text-white shrink-0 transition"
-                    >
-                      <FaEllipsisH />
-                    </button>
+                      { openPostId === post._id && (
+                        <div className="absolute right-0 top-8 w-52 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] shadow-xl z-50 overflow-hidden">
 
-                    { openPostId === post._id && (
-                      <div className="absolute right-0 top-8 w-52 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#101827] shadow-xl z-50 overflow-hidden">
+                          {post.author._id === session?.user._id && (
+                            <>
+                              <Link
+                                href={`/edit-post/${post._id}`}
+                                onClick={() => setOpenPostId(null)}
+                                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
+                              >
+                                <Pencil size={18} />
+                                Edit Note
+                              </Link>
 
-                        {post.author._id === session?.user._id && (
-                          <>
-                            <Link
-                              href={`/edit-post/${post._id}`}
-                              onClick={() => setOpenPostId(null)}
-                              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
-                            >
-                              <Pencil size={18} />
-                              Edit Note
-                            </Link>
+                              <button
+                                onClick={() => {
+                                  removePost({postId:post._id, dispatch});
+                                  setOpenPostId(null);
+                                }}
+                                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
+                              >
+                                <Trash2 size={18} />
+                                Delete Note
+                              </button>
 
+                              <hr className="border-gray-200 dark:border-gray-700" />
+                            </>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              copyLink({
+                                pagePath: "/community",
+                                postId: post._id,
+                              });
+                              setOpenPostId(null);
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
+                          >
+                            <Link2 size={18} />
+                            Copy Link
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              sharePost({
+                                pagePath: "/community",
+                                postId: post._id,
+                              });
+                              setOpenPostId(null);
+                            }}
+                            className="flex w-full items-center gap-3 cursor-pointer px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
+                          >
+                            <Share2 size={18} />
+                            Share
+                          </button>
+
+                          {post.author._id !== session?.user._id && (
                             <button
-                              onClick={() => {
-                                removePost({postId:post._id, dispatch});
-                                setOpenPostId(null);
-                              }}
+                              onClick={() => setOpenPostId(null)}
                               className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
                             >
-                              <Trash2 size={18} />
-                              Delete Note
+                              <Flag size={18} />
+                              Report
                             </button>
+                          )}
 
-                            <hr className="border-gray-200 dark:border-gray-700" />
-                          </>
-                        )}
+                        </div>
+                      )}
 
-                        <button
-                          onClick={() => {
-                            copyLink({
-                              pagePath: "/community",
-                              postId: post._id,
-                            });
-                            setOpenPostId(null);
-                          }}
-                          className="flex w-full items-center gap-3 px-4 py-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
-                        >
-                          <Link2 size={18} />
-                          Copy Link
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            sharePost({
-                              pagePath: "/community",
-                              postId: post._id,
-                            });
-                            setOpenPostId(null);
-                          }}
-                          className="flex w-full items-center gap-3 cursor-pointer px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] transition"
-                        >
-                          <Share2 size={18} />
-                          Share
-                        </button>
-
-                        {post.author._id !== session?.user._id && (
-                          <button
-                            onClick={() => setOpenPostId(null)}
-                            className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
-                          >
-                            <Flag size={18} />
-                            Report
-                          </button>
-                        )}
-
-                      </div>
-                    )}
+                    </div>
 
                   </div>
 
-                </div>
+                    {/* Title */}
 
-                  {/* Title */}
+                <h3 className="my-3 sm:my-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-6 sm:leading-7 wrap-break-words">
+                  {post?.title}
+                </h3>
 
-              <h3 className="my-3 sm:my-4 text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-6 sm:leading-7 wrap-break-words">
-                {post?.title}
-              </h3>
+                  {/* Content */}
 
-                {/* Content */}
+                  <p className="my-3 sm:my-4 text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-6 sm:leading-7 wrap-break-words">{post?.content}</p>
 
-                <p className="my-3 sm:my-4 text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-6 sm:leading-7 wrap-break-words">{post?.content}</p>
+                  {/* Image */}
 
-                {/* Image */}
+                  <div className="relative">
 
-                <div className="relative">
-
-                  {Array.isArray(post.postImageUrl) && post.postImageUrl.length > 0  &&
-                    <img
-                      src={ post?.postImageUrl?.[0]}
-                      className="rounded-lg sm:rounded-xl w-full h-auto max-h-125 object-cover"
-                    />
-                  }
-
-                  {post.postType === "video" && post.videoLink?.trim() && (
-                      <iframe
-                        className="w-full aspect-video rounded-lg sm:rounded-xl"
-                        src={`https://www.youtube.com/embed/${getYoutubeVideoId(
-                          post.videoLink
-                        )}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        title={post.title}
-                        allowFullScreen
+                    {Array.isArray(post.postImageUrl) && post.postImageUrl.length > 0  &&
+                      <img
+                        src={ post?.postImageUrl?.[0]}
+                        className="rounded-lg sm:rounded-xl w-full h-auto max-h-125 object-cover"
                       />
-                  )}
+                    }
 
-                  {post.postType === "video" && post.postVideoUrl && (
-                      <video
-                        className="w-full aspect-video rounded-lg sm:rounded-xl object-cover"
-                        src={post.postVideoUrl}
-                        controls
-                        preload="metadata"
-                        playsInline
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                  )}
-
-
-                </div>
-
-                {/* Poll */}
-
-                {post.postType === "poll" &&
-
-                  <div className="mt-4">
-
-                    {/* Poll Label */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40">
-                        <BarChart3
-                          size={16}
-                          className="text-blue-600 dark:text-blue-400"
+                    {post.postType === "video" && post.videoLink?.trim() && (
+                        <iframe
+                          className="w-full aspect-video rounded-lg sm:rounded-xl"
+                          src={`https://www.youtube.com/embed/${getYoutubeVideoId(
+                            post.videoLink
+                          )}`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          title={post.title}
+                          allowFullScreen
                         />
+                    )}
+
+                    {post.postType === "video" && post.postVideoUrl && (
+                        <video
+                          className="w-full aspect-video rounded-lg sm:rounded-xl object-cover"
+                          src={post.postVideoUrl}
+                          controls
+                          preload="metadata"
+                          playsInline
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                    )}
+
+
+                  </div>
+
+                  {/* Poll */}
+
+                  {post.postType === "poll" &&
+
+                    <div className="mt-4">
+
+                      {/* Poll Label */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40">
+                          <BarChart3
+                            size={16}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
+                        </div>
+
+                        <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
+                          Poll
+                        </span>
                       </div>
 
-                      <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
-                        Poll
-                      </span>
-                    </div>
 
+                      {/* Poll */}
+                      <div className="mt-4 p-2 sm:p-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0f172a]">
 
-                    {/* Poll */}
-                    <div className="mt-4 p-2 sm:p-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0f172a]">
+                        {/* Poll Options */}
+                        <div className="space-y-2">
 
-                      {/* Poll Options */}
-                      <div className="space-y-2">
+                          {post?.pollResults?.map((result) => {
 
-                        {post?.pollResults?.map((result) => {
+                            const isSelected = selectedOption === result.option;
 
-                          const isSelected = selectedOption === result.option;
+                            const isVotedOption =
+                              post.hasVoted && post.votedOption === result.option;
 
-                          const isVotedOption =
-                            post.hasVoted && post.votedOption === result.option;
+                            return (
+                              <label
+                                key={result.option}
+                                className={`block px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border transition
+                                  ${
+                                    isSelected || isVotedOption
+                                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+                                      : "border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827]"
+                                  }
+                                  ${
+                                    post.hasVoted
+                                      ? "cursor-default"
+                                      : "cursor-pointer hover:border-blue-400"
+                                  }
+                                `}
+                              >
 
-                          return (
-                            <label
-                              key={result.option}
-                              className={`block px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border transition
-                                ${
-                                  isSelected || isVotedOption
-                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111827]"
-                                }
-                                ${
-                                  post.hasVoted
-                                    ? "cursor-default"
-                                    : "cursor-pointer hover:border-blue-400"
-                                }
-                              `}
-                            >
+                                {/* Option + Percentage */}
+                                <div className="flex items-center justify-between gap-3">
 
-                              {/* Option + Percentage */}
-                              <div className="flex items-center justify-between gap-3">
+                                  {/* Option */}
+                                  <div className="flex items-center gap-3 min-w-0">
 
-                                {/* Option */}
-                                <div className="flex items-center gap-3 min-w-0">
+                                    <input
+                                      type="radio"
+                                      name={`poll-${post._id}`}
+                                      value={result.option}
+                                      checked={isSelected}
+                                      onChange={() =>
+                                        setSelectedOption(result.option)
+                                      }
+                                      disabled={isVoting}
+                                      className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 accent-blue-600"
+                                    />
 
-                                  <input
-                                    type="radio"
-                                    name={`poll-${post._id}`}
-                                    value={result.option}
-                                    checked={isSelected}
-                                    onChange={() =>
-                                      setSelectedOption(result.option)
-                                    }
-                                    disabled={isVoting}
-                                    className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 accent-blue-600"
-                                  />
+                                    <span className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 wrap-break-words">
+                                      {result.option}
+                                    </span>
 
-                                  <span className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 wrap-break-words">
-                                    {result.option}
-                                  </span>
+                                  </div>
 
-                                </div>
+                                  {/* Percentage + Votes */}
+                                  <div className="flex items-center gap-1.5 shrink-0">
 
-                                {/* Percentage + Votes */}
-                                <div className="flex items-center gap-1.5 shrink-0">
+                                    <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
+                                      {result.percentage}%
+                                    </span>
 
-                                  <span className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
-                                    {result.percentage}%
-                                  </span>
+                                    <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
+                                      ({result.votes} votes)
+                                    </span>
 
-                                  <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-                                    ({result.votes} votes)
-                                  </span>
+                                  </div>
 
                                 </div>
 
-                              </div>
+                                {/* Progress Bar */}
+                                <div className="mt-3 ml-7 sm:ml-8">
 
-                              {/* Progress Bar */}
-                              <div className="mt-3 ml-7 sm:ml-8">
+                                  <div className="w-full h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
 
-                                <div className="w-full h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                                    <div
+                                      className="h-full rounded-full bg-blue-500 transition-all duration-500"
+                                      style={{
+                                        width: `${result.percentage}%`,
+                                      }}
+                                    />
 
-                                  <div
-                                    className="h-full rounded-full bg-blue-500 transition-all duration-500"
-                                    style={{
-                                      width: `${result.percentage}%`,
-                                    }}
-                                  />
+                                  </div>
 
                                 </div>
 
-                              </div>
+                                {/* Your Vote */}
+                                {isVotedOption && (
+                                  <div className="mt-2 ml-7 sm:ml-8">
+                                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                                      Your vote
+                                    </span>
+                                  </div>
+                                )}
 
-                              {/* Your Vote */}
-                              {isVotedOption && (
-                                <div className="mt-2 ml-7 sm:ml-8">
-                                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                                    Your vote
-                                  </span>
-                                </div>
-                              )}
+                              </label>
+                            );
+                          })}
 
-                            </label>
-                          );
-                        })}
+                        </div>
 
-                      </div>
+                        {/* Footer */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 px-1 sm:px-2">
 
-                      {/* Footer */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 px-1 sm:px-2">
+                          {/* Left: Poll + Duration */}
+                          <div className="flex flex-wrap items-center gap-2.5 text-sm sm:text-base">
 
-                        {/* Left: Poll + Duration */}
-                        <div className="flex flex-wrap items-center gap-2.5 text-sm sm:text-base">
+                            {/* Poll Badge */}
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/50 bg-blue-50/70 dark:bg-blue-950/30 shadow-sm">
 
-                          {/* Poll Badge */}
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/50 bg-blue-50/70 dark:bg-blue-950/30 shadow-sm">
+                              <BarChart3
+                                size={19}
+                                className="text-blue-600 dark:text-blue-400"
+                              />
 
-                            <BarChart3
-                              size={19}
-                              className="text-blue-600 dark:text-blue-400"
-                            />
+                              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                                Poll
+                              </span>
 
-                            <span className="font-semibold text-blue-600 dark:text-blue-400">
-                              Poll
+                            </div>
+
+                            <span className="text-gray-300 dark:text-gray-600">
+                              •
                             </span>
+
+                            {/* Duration */}
+                            {post.pollDuration && (
+                              <div className="flex items-center gap-2">
+
+                                <Clock
+                                  size={19}
+                                  className="text-gray-500 dark:text-gray-400"
+                                />
+
+                                <span className="font-medium text-gray-500 dark:text-gray-400">
+                                  Ends in{" "}
+                                  {Math.floor(post.pollDuration / (60 * 24))}{" "}
+                                  {Math.floor(post.pollDuration / (60 * 24)) === 1
+                                    ? "day"
+                                    : "days"}
+                                </span>
+
+                              </div>
+                            )}
 
                           </div>
 
-                          <span className="text-gray-300 dark:text-gray-600">
-                            •
-                          </span>
+                          {/* Right: Total Votes + All Votes */}
+                          <div className="flex items-center gap-3 text-sm sm:text-base">
 
-                          {/* Duration */}
-                          {post.pollDuration && (
-                            <div className="flex items-center gap-2">
+                            {/* Total Votes */}
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shadow-sm">
 
-                              <Clock
+                              <Users
                                 size={19}
                                 className="text-gray-500 dark:text-gray-400"
                               />
 
                               <span className="font-medium text-gray-500 dark:text-gray-400">
-                                Ends in{" "}
-                                {Math.floor(post.pollDuration / (60 * 24))}{" "}
-                                {Math.floor(post.pollDuration / (60 * 24)) === 1
-                                  ? "day"
-                                  : "days"}
+                                {post.totalVotes} votes
                               </span>
 
                             </div>
-                          )}
 
-                        </div>
-
-                        {/* Right: Total Votes + All Votes */}
-                        <div className="flex items-center gap-3 text-sm sm:text-base">
-
-                          {/* Total Votes */}
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shadow-sm">
-
-                            <Users
-                              size={19}
-                              className="text-gray-500 dark:text-gray-400"
-                            />
-
-                            <span className="font-medium text-gray-500 dark:text-gray-400">
-                              {post.totalVotes} votes
+                            <span className="text-gray-300 dark:text-gray-600">
+                              •
                             </span>
 
+                            {/* All Votes */}
+                            <button
+                              type="button"
+                              onClick={() => handleVote(post._id)}
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold transition"
+                            >
+                              <BarChart3 size={18} />
+
+                              All Votes
+                            </button>
+
                           </div>
-
-                          <span className="text-gray-300 dark:text-gray-600">
-                            •
-                          </span>
-
-                          {/* All Votes */}
-                          <button
-                            type="button"
-                            onClick={() => handleVote(post._id)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold transition"
-                          >
-                            <BarChart3 size={18} />
-
-                            All Votes
-                          </button>
 
                         </div>
 
                       </div>
-
                     </div>
-                  </div>
-                }
+                  }
 
-                { post.postType === "question" && 
-                  <div className="px-3 sm:px-4 pb-4">
-                    <div className="space-y-2.5 sm:space-y-3">
-                      {post.pollOptions?.map((option: string, index: number) => {
-                        const optionNumber = index + 1;
+                  { post.postType === "question" && 
+                    <div className="px-3 sm:px-4 pb-4">
+                      <div className="space-y-2.5 sm:space-y-3">
+                        {post.pollOptions?.map((option: string, index: number) => {
+                          const optionNumber = index + 1;
 
-                        const isSelected = selectedAnswer === optionNumber;
-                        const isCorrect = post.correctAnswer === optionNumber;
+                          const isSelected = selectedAnswer === optionNumber;
+                          const isCorrect = post.correctAnswer === optionNumber;
 
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => handleAnswer(optionNumber)}
-                            disabled={selectedAnswer !== null}
-                            className={`
-                              w-full
-                              flex items-center gap-2.5 sm:gap-3
-                              p-3 sm:p-3.5
-                              rounded-xl
-                              border
-                              text-left
-                              transition-colors
-                              duration-200
+                          return (
+                            <button
+                              key={index}
+                              onClick={() => handleAnswer(optionNumber)}
+                              disabled={selectedAnswer !== null}
+                              className={`
+                                w-full
+                                flex items-center gap-2.5 sm:gap-3
+                                p-3 sm:p-3.5
+                                rounded-xl
+                                border
+                                text-left
+                                transition-colors
+                                duration-200
 
-                              ${
-                                selectedAnswer !== null && isCorrect
-                                  ? `
-                                    border-green-500
-                                    bg-green-50
-                                    dark:border-green-500
-                                    dark:bg-green-950/30
-                                  `
-                                  : ""
-                              }
+                                ${
+                                  selectedAnswer !== null && isCorrect
+                                    ? `
+                                      border-green-500
+                                      bg-green-50
+                                      dark:border-green-500
+                                      dark:bg-green-950/30
+                                    `
+                                    : ""
+                                }
 
-                              ${
-                                selectedAnswer === optionNumber && !isCorrect
-                                  ? `
-                                    border-red-500
-                                    bg-red-50
-                                    dark:border-red-500
-                                    dark:bg-red-950/30
-                                  `
-                                  : ""
-                              }
+                                ${
+                                  selectedAnswer === optionNumber && !isCorrect
+                                    ? `
+                                      border-red-500
+                                      bg-red-50
+                                      dark:border-red-500
+                                      dark:bg-red-950/30
+                                    `
+                                    : ""
+                                }
 
-                              ${
-                                selectedAnswer === null
-                                  ? `
-                                    border-gray-200
-                                    bg-white
-                                    hover:bg-gray-50
-                                    hover:border-gray-300
+                                ${
+                                  selectedAnswer === null
+                                    ? `
+                                      border-gray-200
+                                      bg-white
+                                      hover:bg-gray-50
+                                      hover:border-gray-300
 
-                                    dark:border-gray-700
-                                    dark:bg-[#111827]
-                                    dark:hover:bg-gray-800
-                                    dark:hover:border-gray-600
-                                  `
-                                  : ""
-                              }
-                            `}
-                          >
-                            {/* Option Number */}
-                            <span
-                              className="
-                                shrink-0
-                                w-7 h-7
-                                sm:w-8 sm:h-8
-                                flex items-center justify-center
-                                rounded-lg
-                                bg-gray-100
-                                dark:bg-gray-800
-                                text-xs sm:text-sm
-                                font-semibold
-                                text-gray-700
-                                dark:text-gray-300
-                              "
+                                      dark:border-gray-700
+                                      dark:bg-[#111827]
+                                      dark:hover:bg-gray-800
+                                      dark:hover:border-gray-600
+                                    `
+                                    : ""
+                                }
+                              `}
                             >
-                              {optionNumber}
-                            </span>
-
-                            {/* Option Text */}
-                            <span
-                              className="
-                                flex-1
-                                min-w-0
-                                text-sm sm:text-base
-                                leading-5 sm:leading-6
-                                text-gray-800
-                                dark:text-gray-200
-                                wrap-break-words
-                              "
-                            >
-                              {option}
-                            </span>
-
-                            {/* Correct */}
-                            {selectedAnswer !== null && isCorrect && (
+                              {/* Option Number */}
                               <span
                                 className="
                                   shrink-0
-                                  text-green-600
-                                  dark:text-green-400
-                                  font-bold
-                                  text-lg
+                                  w-7 h-7
+                                  sm:w-8 sm:h-8
+                                  flex items-center justify-center
+                                  rounded-lg
+                                  bg-gray-100
+                                  dark:bg-gray-800
+                                  text-xs sm:text-sm
+                                  font-semibold
+                                  text-gray-700
+                                  dark:text-gray-300
                                 "
                               >
-                                ✓
+                                {optionNumber}
                               </span>
-                            )}
 
-                            {/* Wrong */}
-                            {selectedAnswer === optionNumber && !isCorrect && (
+                              {/* Option Text */}
                               <span
                                 className="
-                                  shrink-0
-                                  text-red-600
-                                  dark:text-red-400
-                                  font-bold
-                                  text-lg
+                                  flex-1
+                                  min-w-0
+                                  text-sm sm:text-base
+                                  leading-5 sm:leading-6
+                                  text-gray-800
+                                  dark:text-gray-200
+                                  wrap-break-words
                                 "
                               >
-                                ✕
+                                {option}
                               </span>
-                            )}
-                          </button>
-                        );
-                      })}
+
+                              {/* Correct */}
+                              {selectedAnswer !== null && isCorrect && (
+                                <span
+                                  className="
+                                    shrink-0
+                                    text-green-600
+                                    dark:text-green-400
+                                    font-bold
+                                    text-lg
+                                  "
+                                >
+                                  ✓
+                                </span>
+                              )}
+
+                              {/* Wrong */}
+                              {selectedAnswer === optionNumber && !isCorrect && (
+                                <span
+                                  className="
+                                    shrink-0
+                                    text-red-600
+                                    dark:text-red-400
+                                    font-bold
+                                    text-lg
+                                  "
+                                >
+                                  ✕
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                }
+                  }
 
-                {/* Tags */}
+                  {/* Tags */}
 
-                <div className="flex flex-wrap gap-x-3 gap-y-2 text-blue-600 dark:text-blue-400 text-xs sm:text-sm mt-4">
-                  {post?.tags && post?.tags.map((tag: string, index: number) => (
-                    <span key={index}> #{tag} </span>
-                  ))}
-
-                </div>
-
-                {/* Footer */}
-
-                <div className="flex justify-between mt-5 sm:mt-6 border-t border-gray-200 dark:border-slate-800 pt-3 sm:pt-4">
-
-                  <div className="flex gap-4 sm:gap-8">
-
-                    <button
-                        onClick={() => {
-                          handleLike(post?._id)
-                        }}
-                        className="flex items-center gap-1.5 sm:gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
-
-                      <ThumbsUp size={18} className={`${post?.postLikesCount? "text-blue-500" : ""}`} />
-                      {post?.postLikesCount}
-                    </button>
-
-                    <button 
-                        onClick={() => {
-                          setShowComment((prev) => !prev);
-                          setPostId(post._id)
-                        }} 
-                        className="flex items-center gap-1.5 sm:gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
-
-                      <FaRegComment />
-
-                      <span className="text-sm">
-                        {post?.commentsCount}
-                      </span>
-                    </button>
-
-                    <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
-                      <FaShare />
-                    </button>
+                  <div className="flex flex-wrap gap-x-3 gap-y-2 text-blue-600 dark:text-blue-400 text-xs sm:text-sm mt-4">
+                    {post?.tags && post?.tags.map((tag: string, index: number) => (
+                      <span key={index}> #{tag} </span>
+                    ))}
 
                   </div>
 
-                    <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center gap-1.5 sm:gap-2 ${post?.isBookmarked? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"} cursor-pointer gap-2 `}>
-                      <FaBookmark /> 
+                  {/* Footer */}
+
+                  <div className="flex justify-between mt-5 sm:mt-6 border-t border-gray-200 dark:border-slate-800 pt-3 sm:pt-4">
+
+                    <div className="flex gap-4 sm:gap-8">
+
+                      <button
+                          onClick={() => {
+                            handleLike(post?._id)
+                          }}
+                          className="flex items-center gap-1.5 sm:gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
+
+                        <ThumbsUp size={18} className={`${post?.postLikesCount? "text-blue-500" : ""}`} />
+                        {post?.postLikesCount}
+                      </button>
+
+                      <button 
+                          onClick={() => {
+                            setShowComment((prev) => !prev);
+                            setPostId(post._id)
+                          }} 
+                          className="flex items-center gap-1.5 sm:gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
+
+                        <FaRegComment />
 
                         <span className="text-sm">
-                          {post?.bookmarkCount}
+                          {post?.commentsCount}
                         </span>
+                      </button>
 
-                    </button>
+                      <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer">
+                        <FaShare />
+                      </button>
+
+                    </div>
+
+                      <button onClick={() => handleBookMarksPost(post._id)} className={`flex items-center gap-1.5 sm:gap-2 ${post?.isBookmarked? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"} cursor-pointer gap-2 `}>
+                        <FaBookmark /> 
+
+                          <span className="text-sm">
+                            {post?.bookmarkCount}
+                          </span>
+
+                      </button>
+                  </div>
+
                 </div>
+              ))}
 
-              </div>
-            ))}
-
-          </div>
+            </div>
+          }
 
       </div>
     
